@@ -1,0 +1,100 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "badge3d-coin-generator"
+version = "1.0.0"
+description = "Pure Python 3D Coin, Medal & Relief Generator with Parametric Engine, Binary STL/OBJ Exporters, MCP Server and Web Studio UI"
+readme = "README.md"
+license = { text = "MIT" }
+authors = [
+    { name = "Badge3D Engineering Team", email = "engineering@badge3d.dev" }
+]
+keywords = [
+    "3d",
+    "mesh",
+    "stl",
+    "obj",
+    "3d-printing",
+    "coin",
+    "badge",
+    "medal",
+    "relief",
+    "mcp",
+    "mcp-server",
+    "heightmap",
+    "svg",
+    "parametric-cad",
+    "pure-python",
+    "zero-dependencies"
+]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Manufacturing",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3 :: Only",
+    "Topic :: Multimedia :: Graphics :: 3D Modeling",
+    "Topic :: Scientific/Engineering :: Electronic Design Automation (EDA)",
+    "Topic :: Software Development :: Libraries :: Python Modules"
+]
+requires-python = ">=3.9"
+dependencies = []
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0"
+]
+dev = [
+    "pytest>=7.0.0",
+    "pytest-cov>=4.0.0",
+    "flake8>=6.0.0",
+    "mypy>=1.0.0"
+]
+
+[project.urls]
+Homepage = "https://github.com/google/badge3d-coin-generator"
+Documentation = "https://github.com/google/badge3d-coin-generator#readme"
+Repository = "https://github.com/google/badge3d-coin-generator.git"
+Issues = "https://github.com/google/badge3d-coin-generator/issues"
+
+[project.scripts]
+badge3d = "badge3d_coin_generator.cli:main"
+badge3d-coin-generator = "badge3d_coin_generator.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["badge3d_coin_generator*"]
+
+[tool.setuptools.package-data]
+"*" = ["py.typed", "*.html", "*.css", "*.js", "*.svg", "*.png", "*.json"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-v --tb=short --strict-markers"
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "cli: marks tests for the command line interface",
+    "mcp: marks tests for the MCP server protocol",
+    "ui: marks tests for the UI HTTP server"
+]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::PendingDeprecationWarning"
+]

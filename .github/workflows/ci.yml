@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master, "dev/**", "feat/**"]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Test (${{ matrix.os }} - Python ${{ matrix.python-version }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        python-version: ["3.9", "3.10", "3.11", "3.12", "3.13"]
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: "pip"
+          cache-dependency-path: "pyproject.toml"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip setuptools wheel
+          pip install -e ".[test]"
+
+      - name: Verify Zero 3rd-Party Runtime Dependencies
+        run: |
+          python -c "
+          import sys, importlib
+          # Only stdlib should be needed to import badge3d_coin_generator
+          import badge3d_coin_generator
+          print('Successfully imported badge3d_coin_generator using purely stdlib!')
+          "
+
+      - name: Run Pytest Test Suite
+        run: |
+          pytest -v --tb=short
+
+      - name: Test CLI smoke commands
+        run: |
+          badge3d --help
+          badge3d-coin-generator --help
+          badge3d presets
+          badge3d generate --preset challenge_coin --output test_ci_coin.stl
+          python -c "
+          import os
+          size = os.path.getsize('test_ci_coin.stl')
+          assert size > 84, f'STL file too small: {size} bytes'
+          print(f'Generated valid STL of size: {size} bytes')
+          "
+
+  lint:
+    name: Lint & Style Check
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install linters
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+
+      - name: Run Flake8
+        run: |
+          flake8 src tests --count --select=E9,F63,F7,F82 --show-source --statistics
+          flake8 src tests --count --exit-zero --max-complexity=15 --max-line-length=127 --statistics

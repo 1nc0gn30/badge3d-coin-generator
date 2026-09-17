@@ -1,0 +1,1762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Google 3D Coin Studio — Badge3D Relief & Coin Generator</title>
+  <!-- Google Fonts: Google Sans / Roboto / Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&family=Google+Sans+Code:wght@400;600&family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+  <!-- Material Symbols -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <!-- Three.js and OrbitControls -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+  <style>
+    :root {
+      /* Google Material 3 Light Mode Palette */
+      --md-sys-color-primary: #1a73e8;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-primary-container: #d2e3fc;
+      --md-sys-color-on-primary-container: #041e49;
+      --md-sys-color-secondary: #5f6368;
+      --md-sys-color-surface: #ffffff;
+      --md-sys-color-surface-dim: #f8f9fa;
+      --md-sys-color-surface-container: #f1f3f4;
+      --md-sys-color-surface-container-high: #e8eaed;
+      --md-sys-color-on-surface: #202124;
+      --md-sys-color-on-surface-variant: #5f6368;
+      --md-sys-color-outline: #dadce0;
+      --md-sys-color-outline-variant: #e8eaed;
+      --md-sys-color-google-red: #ea4335;
+      --md-sys-color-google-yellow: #fbbc04;
+      --md-sys-color-google-green: #34a853;
+      --md-sys-color-google-blue: #1a73e8;
+      
+      --md-sys-shape-corner-small: 8px;
+      --md-sys-shape-corner-medium: 12px;
+      --md-sys-shape-corner-large: 16px;
+      --md-sys-shape-corner-full: 9999px;
+
+      --md-sys-elevation-1: 0 1px 3px 0 rgba(60, 64, 67, 0.15), 0 1px 2px 0 rgba(60, 64, 67, 0.08);
+      --md-sys-elevation-2: 0 2px 6px 2px rgba(60, 64, 67, 0.15), 0 1px 2px 0 rgba(60, 64, 67, 0.08);
+      --md-sys-elevation-3: 0 4px 12px 3px rgba(60, 64, 67, 0.15), 0 1px 3px 0 rgba(60, 64, 67, 0.08);
+      
+      --transition-smooth: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    [data-theme="dark"] {
+      --md-sys-color-primary: #8ab4f8;
+      --md-sys-color-on-primary: #041e49;
+      --md-sys-color-primary-container: #174ea6;
+      --md-sys-color-on-primary-container: #d2e3fc;
+      --md-sys-color-secondary: #9aa0a6;
+      --md-sys-color-surface: #202124;
+      --md-sys-color-surface-dim: #171717;
+      --md-sys-color-surface-container: #292a2d;
+      --md-sys-color-surface-container-high: #35363a;
+      --md-sys-color-on-surface: #e8eaed;
+      --md-sys-color-on-surface-variant: #9aa0a6;
+      --md-sys-color-outline: #5f6368;
+      --md-sys-color-outline-variant: #3c4043;
+      --md-sys-elevation-1: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
+      --md-sys-elevation-2: 0 2px 8px 2px rgba(0, 0, 0, 0.5);
+      --md-sys-elevation-3: 0 4px 16px 4px rgba(0, 0, 0, 0.6);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Google Sans', 'Roboto', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--md-sys-color-surface-dim);
+      color: var(--md-sys-color-on-surface);
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: var(--transition-smooth);
+    }
+
+    /* Top Google Material App Bar */
+    header.google-appbar {
+      height: 64px;
+      background: var(--md-sys-color-surface);
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 24px;
+      z-index: 100;
+      box-shadow: var(--md-sys-elevation-1);
+    }
+
+    .brand-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .google-dots {
+      display: flex;
+      gap: 3px;
+      align-items: center;
+    }
+    .g-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .g-blue { background: var(--md-sys-color-google-blue); }
+    .g-red { background: var(--md-sys-color-google-red); }
+    .g-yellow { background: var(--md-sys-color-google-yellow); }
+    .g-green { background: var(--md-sys-color-google-green); }
+
+    .brand-title {
+      font-size: 19px;
+      font-weight: 700;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .brand-title span.badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: var(--md-sys-shape-corner-full);
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .appbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .server-status-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: var(--md-sys-shape-corner-full);
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      font-size: 12px;
+      font-weight: 500;
+    }
+    .status-pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--md-sys-color-google-green);
+      box-shadow: 0 0 6px var(--md-sys-color-google-green);
+    }
+    .status-pulse.offline {
+      background: var(--md-sys-color-google-yellow);
+      box-shadow: 0 0 6px var(--md-sys-color-google-yellow);
+    }
+
+    .icon-button {
+      background: transparent;
+      border: none;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--md-sys-color-on-surface-variant);
+      cursor: pointer;
+      transition: var(--transition-smooth);
+    }
+    .icon-button:hover {
+      background: var(--md-sys-color-surface-container-high);
+      color: var(--md-sys-color-on-surface);
+    }
+
+    /* Main Workspace Layout */
+    .studio-workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 380px 1fr 340px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    @media (max-width: 1280px) {
+      .studio-workspace {
+        grid-template-columns: 340px 1fr 300px;
+      }
+    }
+
+    @media (max-width: 1024px) {
+      .studio-workspace {
+        grid-template-columns: 340px 1fr;
+      }
+      .specs-panel {
+        display: none !important;
+      }
+    }
+
+    /* Scrollable Side Panels */
+    .controls-panel, .specs-panel {
+      background: var(--md-sys-color-surface);
+      border-right: 1px solid var(--md-sys-color-outline-variant);
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+    .specs-panel {
+      border-right: none;
+      border-left: 1px solid var(--md-sys-color-outline-variant);
+    }
+
+    /* Custom Scrollbars */
+    .controls-panel::-webkit-scrollbar, .specs-panel::-webkit-scrollbar {
+      width: 6px;
+    }
+    .controls-panel::-webkit-scrollbar-thumb, .specs-panel::-webkit-scrollbar-thumb {
+      background: var(--md-sys-color-outline-variant);
+      border-radius: 3px;
+    }
+
+    /* Studio Section Cards */
+    .studio-card {
+      background: var(--md-sys-color-surface);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-sys-shape-corner-medium);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      box-shadow: var(--md-sys-elevation-1);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--md-sys-color-on-surface);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .card-title .material-symbols-outlined {
+      font-size: 18px;
+      color: var(--md-sys-color-primary);
+    }
+
+    /* Preset Selection Chips */
+    .presets-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .preset-btn {
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-sys-shape-corner-small);
+      padding: 10px 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: var(--transition-smooth);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .preset-btn:hover {
+      border-color: var(--md-sys-color-primary);
+      background: var(--md-sys-color-surface-container-high);
+      transform: translateY(-1px);
+    }
+    .preset-btn.active {
+      border-color: var(--md-sys-color-primary);
+      background: var(--md-sys-color-primary-container);
+      color: var(--md-sys-color-on-primary-container);
+    }
+    .preset-name {
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .preset-desc {
+      font-size: 10px;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+    .preset-btn.active .preset-desc {
+      color: var(--md-sys-color-on-primary-container);
+      opacity: 0.85;
+    }
+
+    /* Form & Slider Controls */
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .control-label-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--md-sys-color-on-surface);
+    }
+    .control-value {
+      font-family: 'Google Sans Code', monospace;
+      font-size: 12px;
+      color: var(--md-sys-color-primary);
+      font-weight: 700;
+      background: var(--md-sys-color-surface-container);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      background: var(--md-sys-color-surface-container-high);
+      border-radius: 3px;
+      outline: none;
+      cursor: pointer;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: var(--md-sys-color-primary);
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+      transition: transform 0.1s;
+    }
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.15);
+    }
+
+    select, input[type="text"] {
+      width: 100%;
+      padding: 8px 12px;
+      background: var(--md-sys-color-surface-container);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-sys-shape-corner-small);
+      color: var(--md-sys-color-on-surface);
+      font-family: inherit;
+      font-size: 13px;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+    select:focus, input[type="text"]:focus {
+      border-color: var(--md-sys-color-primary);
+      box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+    }
+
+    /* Material Selector Chips */
+    .materials-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+    }
+    .mat-chip {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 4px;
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-sys-shape-corner-small);
+      cursor: pointer;
+      background: var(--md-sys-color-surface-container);
+      transition: var(--transition-smooth);
+    }
+    .mat-chip:hover {
+      border-color: var(--md-sys-color-primary);
+      transform: translateY(-2px);
+    }
+    .mat-chip.active {
+      border-color: var(--md-sys-color-primary);
+      background: var(--md-sys-color-primary-container);
+    }
+    .mat-preview-swatch {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      box-shadow: inset 0 1px 2px rgba(255,255,255,0.4), 0 2px 4px rgba(0,0,0,0.25);
+    }
+    .mat-chip-name {
+      font-size: 10px;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    /* SVG / Image Dropzone */
+    .dropzone-container {
+      border: 2px dashed var(--md-sys-color-outline);
+      border-radius: var(--md-sys-shape-corner-medium);
+      padding: 16px 12px;
+      text-align: center;
+      cursor: pointer;
+      background: var(--md-sys-color-surface-dim);
+      transition: var(--transition-smooth);
+      position: relative;
+    }
+    .dropzone-container:hover, .dropzone-container.dragover {
+      border-color: var(--md-sys-color-primary);
+      background: var(--md-sys-color-primary-container);
+    }
+    .dropzone-container input[type="file"] {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      opacity: 0;
+      cursor: pointer;
+    }
+    .dropzone-icon {
+      font-size: 28px;
+      color: var(--md-sys-color-primary);
+      margin-bottom: 4px;
+    }
+    .dropzone-text {
+      font-size: 12px;
+      font-weight: 600;
+    }
+    .dropzone-subtext {
+      font-size: 10px;
+      color: var(--md-sys-color-on-surface-variant);
+      margin-top: 2px;
+    }
+    .uploaded-logo-preview {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 10px;
+      background: var(--md-sys-color-surface-container);
+      border-radius: var(--md-sys-shape-corner-small);
+      margin-top: 8px;
+      font-size: 11px;
+    }
+
+    /* 3D Center Viewport */
+    .viewport-container {
+      position: relative;
+      background: radial-gradient(circle at center, #2e3034 0%, #151618 100%);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #three-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Viewport Floating Action Bar */
+    .viewport-overlay-controls {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(32, 33, 36, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      padding: 6px 12px;
+      border-radius: var(--md-sys-shape-corner-full);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+      border: 1px solid rgba(255,255,255,0.1);
+      z-index: 10;
+    }
+    .v-action-btn {
+      background: transparent;
+      border: none;
+      color: #e8eaed;
+      padding: 6px 12px;
+      border-radius: var(--md-sys-shape-corner-full);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: var(--transition-smooth);
+    }
+    .v-action-btn:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: #fff;
+    }
+    .v-action-btn.active {
+      background: var(--md-sys-color-primary);
+      color: #fff;
+    }
+    .v-action-btn .material-symbols-outlined {
+      font-size: 16px;
+    }
+
+    /* Right Specs & Slicing Panel */
+    .stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--md-sys-color-outline-variant);
+      font-size: 12px;
+    }
+    .stat-row:last-child {
+      border-bottom: none;
+    }
+    .stat-name {
+      color: var(--md-sys-color-on-surface-variant);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-value {
+      font-weight: 700;
+      font-family: 'Google Sans Code', monospace;
+      color: var(--md-sys-color-on-surface);
+    }
+
+    .metals-breakdown {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .metal-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 4px;
+      background: var(--md-sys-color-surface-container);
+    }
+
+    /* Primary Action Buttons */
+    .btn-primary {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      border: none;
+      border-radius: var(--md-sys-shape-corner-medium);
+      padding: 12px 16px;
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: var(--md-sys-elevation-2);
+      transition: var(--transition-smooth);
+      width: 100%;
+    }
+    .btn-primary:hover {
+      box-shadow: var(--md-sys-elevation-3);
+      filter: brightness(1.08);
+      transform: translateY(-1px);
+    }
+    .btn-secondary {
+      background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-sys-shape-corner-medium);
+      padding: 10px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: var(--transition-smooth);
+      width: 100%;
+    }
+    .btn-secondary:hover {
+      background: var(--md-sys-color-surface-container-high);
+      border-color: var(--md-sys-color-outline);
+    }
+
+    /* Modal / Code Snippet */
+    .mcp-box {
+      background: var(--md-sys-color-surface-dim);
+      border: 1px solid var(--md-sys-color-outline-variant);
+      border-radius: var(--md-sys-shape-corner-small);
+      padding: 10px;
+      font-family: 'Google Sans Code', monospace;
+      font-size: 11px;
+      overflow-x: auto;
+      white-space: pre-wrap;
+      word-break: break-all;
+      color: var(--md-sys-color-on-surface-variant);
+    }
+
+    /* Toast Notification */
+    #toast-notification {
+      position: fixed;
+      bottom: 30px;
+      right: 30px;
+      background: #202124;
+      color: #fff;
+      padding: 12px 20px;
+      border-radius: var(--md-sys-shape-corner-medium);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+      font-size: 13px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      transform: translateY(100px);
+      opacity: 0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      z-index: 1000;
+    }
+    #toast-notification.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  </style>
+</head>
+<body data-theme="light">
+
+  <!-- Top Material App Bar -->
+  <header class="google-appbar">
+    <div class="brand-container">
+      <div class="google-dots">
+        <div class="g-dot g-blue"></div>
+        <div class="g-dot g-red"></div>
+        <div class="g-dot g-yellow"></div>
+        <div class="g-dot g-green"></div>
+      </div>
+      <div class="brand-title">
+        Google 3D Coin Studio
+        <span class="badge">v1.0 • Pure Stdlib</span>
+      </div>
+    </div>
+
+    <div class="appbar-actions">
+      <div class="server-status-chip" id="server-status" title="Pure Python HTTP Server Status">
+        <div class="status-pulse" id="status-dot"></div>
+        <span id="status-label">Studio API Connected</span>
+      </div>
+      <button class="icon-button" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
+        <span class="material-symbols-outlined">dark_mode</span>
+      </button>
+      <a href="https://github.com/google/badge3d-coin-generator" target="_blank" class="icon-button" title="View Source on GitHub">
+        <span class="material-symbols-outlined">code</span>
+      </a>
+    </div>
+  </header>
+
+  <!-- Studio Workspace -->
+  <main class="studio-workspace">
+    <!-- Left Controls Sidebar -->
+    <aside class="controls-panel">
+      
+      <!-- Presets Section -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">stars</span>
+            Coin Presets
+          </div>
+        </div>
+        <div class="presets-grid">
+          <button class="preset-btn active" onclick="applyPreset('challenge_coin')">
+            <span class="preset-name">Challenge Coin</span>
+            <span class="preset-desc">40mm Military Brass</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset('crypto_token')">
+            <span class="preset-name">Crypto Token</span>
+            <span class="preset-desc">35mm Web3 Cyber</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset('roman_medallion')">
+            <span class="preset-name">Roman Medallion</span>
+            <span class="preset-desc">42mm Antique Silver</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset('sovereign_gold')">
+            <span class="preset-name">Sovereign Gold</span>
+            <span class="preset-desc">22mm Fine Bullion</span>
+          </button>
+          <button class="preset-btn" onclick="applyPreset('scifi_hex_badge')">
+            <span class="preset-name">Sci-Fi Hex</span>
+            <span class="preset-desc">38mm Titanium Badge</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- Geometry Parameters -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">straighten</span>
+            Geometry & Dimensions
+          </div>
+        </div>
+
+        <!-- Shape Selector -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Coin Shape</span>
+          </div>
+          <select id="param-shape" onchange="updateCoinParams()">
+            <option value="circle" selected>Circular Round</option>
+            <option value="hexagon">Hexagon (6-sided)</option>
+            <option value="octagon">Octagon (8-sided)</option>
+            <option value="shield">Heraldic Shield</option>
+            <option value="star">Star Medallion</option>
+            <option value="decagon">Decagon (10-sided)</option>
+          </select>
+        </div>
+
+        <!-- Radius Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Coin Radius</span>
+            <span class="control-value" id="val-radius">20.0 mm</span>
+          </div>
+          <input type="range" id="param-radius" min="10" max="60" step="0.5" value="20" oninput="updateCoinParams()">
+        </div>
+
+        <!-- Thickness Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Thickness</span>
+            <span class="control-value" id="val-thickness">3.0 mm</span>
+          </div>
+          <input type="range" id="param-thickness" min="1.0" max="10.0" step="0.1" value="3.0" oninput="updateCoinParams()">
+        </div>
+
+        <!-- Rim Width Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Raised Rim Width</span>
+            <span class="control-value" id="val-rim-width">2.0 mm</span>
+          </div>
+          <input type="range" id="param-rim-width" min="0.5" max="6.0" step="0.1" value="2.0" oninput="updateCoinParams()">
+        </div>
+
+        <!-- Rim Height Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Rim Elevation</span>
+            <span class="control-value" id="val-rim-height">0.8 mm</span>
+          </div>
+          <input type="range" id="param-rim-height" min="0.1" max="2.5" step="0.05" value="0.8" oninput="updateCoinParams()">
+        </div>
+
+        <!-- Rim Bevel Slider -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Rim Chamfer / Bevel</span>
+            <span class="control-value" id="val-rim-bevel">0.4 mm</span>
+          </div>
+          <input type="range" id="param-rim-bevel" min="0.0" max="1.5" step="0.05" value="0.4" oninput="updateCoinParams()">
+        </div>
+
+        <!-- Serrations (Edge Reeding) -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Edge Serrations (Reeding)</span>
+            <span class="control-value" id="val-serrations">80 ribs</span>
+          </div>
+          <input type="range" id="param-serrations" min="0" max="240" step="4" value="80" oninput="updateCoinParams()">
+        </div>
+
+        <!-- Serration Depth -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Serration Depth</span>
+            <span class="control-value" id="val-serration-depth">0.3 mm</span>
+          </div>
+          <input type="range" id="param-serration-depth" min="0.0" max="1.0" step="0.05" value="0.3" oninput="updateCoinParams()">
+        </div>
+      </section>
+
+      <!-- Relief & Inscriptions -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">brush</span>
+            Relief & Vector Inscription
+          </div>
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Front Inscription</span>
+          </div>
+          <input type="text" id="param-text-front" value="HONOR • COURAGE • INTEGRITY" placeholder="Front inscription text" oninput="updateCoinParams()">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Back Inscription</span>
+          </div>
+          <input type="text" id="param-text-back" value="EXCELLENCE IN ACTION 2026" placeholder="Reverse side text" oninput="updateCoinParams()">
+        </div>
+
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Relief Depth</span>
+            <span class="control-value" id="val-relief-depth">0.8 mm</span>
+          </div>
+          <input type="range" id="param-relief-depth" min="0.0" max="2.0" step="0.05" value="0.8" oninput="updateCoinParams()">
+        </div>
+
+        <!-- SVG / Image Logo Upload -->
+        <div class="control-group">
+          <div class="control-label-row">
+            <span>Vector Logo / Emblem Upload</span>
+          </div>
+          <div class="dropzone-container" id="logo-dropzone">
+            <input type="file" id="logo-file-input" accept=".svg,.png,.jpg,.jpeg" onchange="handleLogoUpload(event)">
+            <span class="material-symbols-outlined dropzone-icon">cloud_upload</span>
+            <div class="dropzone-text">Drop SVG or Image Logo</div>
+            <div class="dropzone-subtext">Auto-rasterized into 3D relief mesh</div>
+          </div>
+          <div class="uploaded-logo-preview" id="logo-preview-box">
+            <span id="logo-filename">logo.svg</span>
+            <button class="icon-button" style="width:24px;height:24px;" onclick="clearUploadedLogo()" title="Remove logo">
+              <span class="material-symbols-outlined" style="font-size:16px;">close</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- PBR Metallic Shaders -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">palette</span>
+            PBR Metal Finish
+          </div>
+        </div>
+        <div class="materials-grid">
+          <div class="mat-chip active" onclick="setMaterial('gold')">
+            <div class="mat-preview-swatch" style="background: linear-gradient(135deg, #FFE066, #D4AF37, #996515);"></div>
+            <span class="mat-chip-name">24K Gold</span>
+          </div>
+          <div class="mat-chip" onclick="setMaterial('silver')">
+            <div class="mat-preview-swatch" style="background: linear-gradient(135deg, #FFFFFF, #C0C0C0, #7D7D82);"></div>
+            <span class="mat-chip-name">Antique Ag</span>
+          </div>
+          <div class="mat-chip" onclick="setMaterial('bronze')">
+            <div class="mat-preview-swatch" style="background: linear-gradient(135deg, #E69A60, #CD7F32, #6B3E11);"></div>
+            <span class="mat-chip-name">Bronze</span>
+          </div>
+          <div class="mat-chip" onclick="setMaterial('obsidian')">
+            <div class="mat-preview-swatch" style="background: linear-gradient(135deg, #434343, #18181A, #000000);"></div>
+            <span class="mat-chip-name">Obsidian</span>
+          </div>
+          <div class="mat-chip" onclick="setMaterial('titanium')">
+            <div class="mat-preview-swatch" style="background: linear-gradient(135deg, #B8BAC0, #8A8D93, #4E5158);"></div>
+            <span class="mat-chip-name">Titanium</span>
+          </div>
+        </div>
+      </section>
+
+    </aside>
+
+    <!-- Center Interactive Three.js Viewport -->
+    <section class="viewport-container" id="viewport-wrapper">
+      <div id="three-canvas"></div>
+
+      <!-- Viewport Floating Action Bar -->
+      <div class="viewport-overlay-controls">
+        <button class="v-action-btn active" id="btn-turntable" onclick="toggleTurntable()">
+          <span class="material-symbols-outlined">360</span>
+          Auto Spin
+        </button>
+        <button class="v-action-btn" onclick="resetCameraView('front')">
+          <span class="material-symbols-outlined">visibility</span>
+          Front
+        </button>
+        <button class="v-action-btn" onclick="resetCameraView('back')">
+          <span class="material-symbols-outlined">flip</span>
+          Back
+        </button>
+        <button class="v-action-btn" onclick="resetCameraView('edge')">
+          <span class="material-symbols-outlined">crop_16_9</span>
+          Edge
+        </button>
+        <button class="v-action-btn" id="btn-wireframe" onclick="toggleWireframe()">
+          <span class="material-symbols-outlined">grid_4x4</span>
+          Wireframe
+        </button>
+        <button class="v-action-btn" onclick="captureSnapshot()">
+          <span class="material-symbols-outlined">photo_camera</span>
+          Snapshot
+        </button>
+      </div>
+    </section>
+
+    <!-- Right Physical Specs & Export Panel -->
+    <aside class="specs-panel">
+      
+      <!-- 1-Click Export Section -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">download</span>
+            Production Export
+          </div>
+        </div>
+        <button class="btn-primary" onclick="exportSTL()">
+          <span class="material-symbols-outlined">view_in_ar</span>
+          Export Binary STL (3D Print)
+        </button>
+        <button class="btn-secondary" onclick="exportOBJ()">
+          <span class="material-symbols-outlined">deployed_code</span>
+          Export Wavefront OBJ (CAD)
+        </button>
+        <button class="btn-secondary" onclick="copyMCPToolCall()">
+          <span class="material-symbols-outlined">terminal</span>
+          Copy MCP Tool Call
+        </button>
+      </section>
+
+      <!-- Geometry Statistics -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">analytics</span>
+            Mesh & Physical Specs
+          </div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Outer Dimensions</span>
+          <span class="stat-value" id="stat-dimensions">40.0 × 40.0 × 3.0 mm</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Triangle Count</span>
+          <span class="stat-value" id="stat-triangles">12,480 Δ</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Vertex Count</span>
+          <span class="stat-value" id="stat-vertices">6,242</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Solid Volume</span>
+          <span class="stat-value" id="stat-volume">3.77 cm³</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Manifold Solid</span>
+          <span class="stat-value" style="color:var(--md-sys-color-google-green);">Watertight ✔</span>
+        </div>
+      </section>
+
+      <!-- Metal Weight Estimator -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">scale</span>
+            Precious Metal Estimates
+          </div>
+        </div>
+        <div class="metals-breakdown">
+          <div class="metal-item">
+            <span>🟡 24K Pure Gold (19.32 g/cm³)</span>
+            <strong id="stat-weight-gold">72.8 g</strong>
+          </div>
+          <div class="metal-item">
+            <span>⚪ Sterling Silver .925 (10.36 g/cm³)</span>
+            <strong id="stat-weight-silver">39.1 g</strong>
+          </div>
+          <div class="metal-item">
+            <span>🟤 C932 Bronze (8.73 g/cm³)</span>
+            <strong id="stat-weight-bronze">32.9 g</strong>
+          </div>
+          <div class="metal-item">
+            <span>🔘 Grade 5 Titanium (4.43 g/cm³)</span>
+            <strong id="stat-weight-titanium">16.7 g</strong>
+          </div>
+          <div class="metal-item">
+            <span>🟢 PLA 3D Filament (1.24 g/cm³)</span>
+            <strong id="stat-weight-pla">4.7 g</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Slicing & 3D Print Guide -->
+      <section class="studio-card">
+        <div class="card-header">
+          <div class="card-title">
+            <span class="material-symbols-outlined">precision_manufacturing</span>
+            Slicing Recommendations
+          </div>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Recommended Layer</span>
+          <span class="stat-value">0.08 - 0.12 mm</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Infill Density</span>
+          <span class="stat-value">100% Solid</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Top Surface Pattern</span>
+          <span class="stat-value">Concentric / Ironing</span>
+        </div>
+        <div class="stat-row">
+          <span class="stat-name">Estimated Print Time</span>
+          <span class="stat-value" id="stat-print-time">~24 mins</span>
+        </div>
+      </section>
+
+    </aside>
+  </main>
+
+  <!-- Toast Notification -->
+  <div id="toast-notification">
+    <span class="material-symbols-outlined" id="toast-icon">check_circle</span>
+    <span id="toast-msg">Operation completed successfully!</span>
+  </div>
+
+  <!-- Three.js App & Logic Script -->
+  <script>
+    // State Management
+    const state = {
+      shape: 'circle',
+      radius: 20.0,
+      thickness: 3.0,
+      rimWidth: 2.0,
+      rimHeight: 0.8,
+      rimBevel: 0.4,
+      serrations: 80,
+      serrationDepth: 0.3,
+      reliefDepth: 0.8,
+      textFront: 'HONOR • COURAGE • INTEGRITY',
+      textBack: 'EXCELLENCE IN ACTION 2026',
+      material: 'gold',
+      turntable: true,
+      wireframe: false,
+      uploadedLogo: null,
+      apiConnected: true
+    };
+
+    // Material Definitions
+    const PBR_MATERIALS = {
+      gold: {
+        color: 0xF5B800,
+        metalness: 0.95,
+        roughness: 0.20,
+        clearcoat: 0.3,
+        clearcoatRoughness: 0.1
+      },
+      silver: {
+        color: 0xD6D6DC,
+        metalness: 0.92,
+        roughness: 0.35,
+        clearcoat: 0.1,
+        clearcoatRoughness: 0.2
+      },
+      bronze: {
+        color: 0xB87333,
+        metalness: 0.88,
+        roughness: 0.25,
+        clearcoat: 0.2,
+        clearcoatRoughness: 0.1
+      },
+      obsidian: {
+        color: 0x18181C,
+        metalness: 0.98,
+        roughness: 0.12,
+        clearcoat: 0.9,
+        clearcoatRoughness: 0.05
+      },
+      titanium: {
+        color: 0x8E9299,
+        metalness: 0.85,
+        roughness: 0.45,
+        clearcoat: 0.0,
+        clearcoatRoughness: 0.4
+      }
+    };
+
+    // Presets catalog
+    const PRESETS = {
+      challenge_coin: {
+        shape: 'circle', radius: 20.0, thickness: 3.5, rimWidth: 2.2,
+        rimHeight: 0.8, rimBevel: 0.4, serrations: 80, serrationDepth: 0.3,
+        reliefDepth: 0.8, material: 'bronze',
+        textFront: 'DEFENSE • HONOR • VALOR', textBack: 'EXCELLENCE UNDER PRESSURE'
+      },
+      crypto_token: {
+        shape: 'hexagon', radius: 17.5, thickness: 2.8, rimWidth: 1.8,
+        rimHeight: 0.6, rimBevel: 0.5, serrations: 0, serrationDepth: 0.0,
+        reliefDepth: 0.9, material: 'obsidian',
+        textFront: 'ETHEREUM • DECENTRALIZED', textBack: 'PROOF OF STAKE 2026'
+      },
+      roman_medallion: {
+        shape: 'circle', radius: 21.0, thickness: 4.0, rimWidth: 2.8,
+        rimHeight: 1.0, rimBevel: 0.6, serrations: 0, serrationDepth: 0.0,
+        reliefDepth: 1.2, material: 'silver',
+        textFront: 'SENATVS POPVLVSQVE ROMANVS', textBack: 'IMPERIVM AETERNVM'
+      },
+      sovereign_gold: {
+        shape: 'circle', radius: 11.0, thickness: 1.8, rimWidth: 1.2,
+        rimHeight: 0.4, rimBevel: 0.2, serrations: 120, serrationDepth: 0.18,
+        reliefDepth: 0.5, material: 'gold',
+        textFront: 'BRITANNIA • REGNA FIDELIS', textBack: 'ONE SOVEREIGN 2026'
+      },
+      scifi_hex_badge: {
+        shape: 'octagon', radius: 19.0, thickness: 3.2, rimWidth: 2.4,
+        rimHeight: 0.9, rimBevel: 0.6, serrations: 48, serrationDepth: 0.4,
+        reliefDepth: 1.0, material: 'titanium',
+        textFront: 'SECTOR 7 • TASK FORCE', textBack: 'ORBITAL COMMAND STATION'
+      }
+    };
+
+    // Three.js Engine Variables
+    let scene, camera, renderer, controls;
+    let coinMeshGroup, activeMaterialInstance;
+
+    function initThreeEngine() {
+      const container = document.getElementById('three-canvas');
+      const width = container.clientWidth || window.innerWidth * 0.5;
+      const height = container.clientHeight || window.innerHeight - 64;
+
+      // Scene
+      scene = new THREE.Scene();
+      scene.background = new THREE.Color(0x1a1b1e);
+
+      // Camera
+      camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
+      camera.position.set(0, 35, 65);
+
+      // Renderer
+      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+      renderer.setSize(width, height);
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.1;
+      container.appendChild(renderer.domElement);
+
+      // OrbitControls
+      controls = new THREE.OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.05;
+      controls.maxDistance = 200;
+      controls.minDistance = 15;
+      controls.target.set(0, 0, 0);
+
+      // Studio Lighting Rig
+      setupStudioLighting();
+
+      // Coin Group
+      coinMeshGroup = new THREE.Group();
+      scene.add(coinMeshGroup);
+
+      // Rebuild Initial Mesh
+      buildProceduralCoinGeometry();
+
+      // Animation Loop
+      animate();
+
+      // Window Resize Listener
+      window.addEventListener('resize', onWindowResize);
+    }
+
+    function setupStudioLighting() {
+      // Ambient Base
+      const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+      scene.add(ambientLight);
+
+      // Key Directional Light (sharp relief highlights)
+      const keyLight = new THREE.DirectionalLight(0xfffaed, 1.4);
+      keyLight.position.set(30, 50, 40);
+      keyLight.castShadow = true;
+      keyLight.shadow.mapSize.width = 2048;
+      keyLight.shadow.mapSize.height = 2048;
+      keyLight.shadow.bias = -0.0001;
+      scene.add(keyLight);
+
+      // Fill Light
+      const fillLight = new THREE.DirectionalLight(0xbad2ff, 0.8);
+      fillLight.position.set(-35, 20, -30);
+      scene.add(fillLight);
+
+      // Rim Backlight
+      const rimLight = new THREE.DirectionalLight(0xffffff, 1.2);
+      rimLight.position.set(0, -40, -40);
+      scene.add(rimLight);
+
+      // Studio Floor Shadow Receiver
+      const shadowPlaneGeo = new THREE.PlaneGeometry(200, 200);
+      const shadowPlaneMat = new THREE.ShadowMaterial({ opacity: 0.25 });
+      const shadowPlane = new THREE.Mesh(shadowPlaneGeo, shadowPlaneMat);
+      shadowPlane.rotation.x = -Math.PI / 2;
+      shadowPlane.position.y = -15;
+      shadowPlane.receiveShadow = true;
+      scene.add(shadowPlane);
+    }
+
+    // Procedural Mesh Generator
+    function buildProceduralCoinGeometry() {
+      while(coinMeshGroup.children.length > 0) {
+        const obj = coinMeshGroup.children[0];
+        if (obj.geometry) obj.geometry.dispose();
+        coinMeshGroup.remove(obj);
+      }
+
+      // Material setup
+      const matProps = PBR_MATERIALS[state.material] || PBR_MATERIALS.gold;
+      activeMaterialInstance = new THREE.MeshStandardMaterial({
+        color: matProps.color,
+        metalness: matProps.metalness,
+        roughness: matProps.roughness,
+        wireframe: state.wireframe
+      });
+
+      // Build Coin Body
+      const R = state.radius;
+      const H = state.thickness;
+      const rimW = Math.min(state.rimWidth, R * 0.4);
+      const rimH = state.rimHeight;
+      const bevel = Math.min(state.rimBevel, rimW * 0.5, H * 0.3);
+      const numSerrations = state.serrations;
+      const serrDepth = state.serrationDepth;
+
+      // Base cylinder / polygon geometry
+      let radialSegs = 96;
+      if (state.shape === 'hexagon') radialSegs = 6;
+      else if (state.shape === 'octagon') radialSegs = 8;
+      else if (state.shape === 'decagon') radialSegs = 10;
+      else if (state.shape === 'star') radialSegs = 10;
+
+      const bodyGeo = new THREE.CylinderGeometry(R, R, H, radialSegs, 4, false);
+      
+      // Apply Serration Deformation to Body if requested
+      if (numSerrations > 0 && state.shape === 'circle') {
+        const pos = bodyGeo.attributes.position;
+        for (let i = 0; i < pos.count; i++) {
+          const x = pos.getX(i);
+          const y = pos.getY(i);
+          const z = pos.getZ(i);
+          const dist = Math.sqrt(x*x + z*z);
+          if (dist > R * 0.95 && Math.abs(y) < H * 0.48) {
+            const angle = Math.atan2(z, x);
+            const wave = Math.sin(angle * numSerrations);
+            const delta = (wave > 0 ? 1 : -1) * serrDepth * 0.5 * Math.abs(wave);
+            const scale = (dist + delta) / dist;
+            pos.setX(i, x * scale);
+            pos.setZ(i, z * scale);
+          }
+        }
+        bodyGeo.computeVertexNormals();
+      }
+
+      const bodyMesh = new THREE.Mesh(bodyGeo, activeMaterialInstance);
+      bodyMesh.castShadow = true;
+      bodyMesh.receiveShadow = true;
+      coinMeshGroup.add(bodyMesh);
+
+      // Raised Front & Back Rims
+      const rimShape = new THREE.Shape();
+      const outerR = R;
+      const innerR = R - rimW;
+
+      // 2D Outer Circle
+      rimShape.absarc(0, 0, outerR, 0, Math.PI * 2, false);
+      const holePath = new THREE.Path();
+      holePath.absarc(0, 0, innerR, 0, Math.PI * 2, true);
+      rimShape.holes.push(holePath);
+
+      const rimExtrudeSettings = {
+        steps: 1,
+        depth: rimH,
+        bevelEnabled: bevel > 0.01,
+        bevelThickness: bevel,
+        bevelSize: bevel,
+        bevelSegments: 3
+      };
+
+      const rimGeoFront = new THREE.ExtrudeGeometry(rimShape, rimExtrudeSettings);
+      const rimMeshFront = new THREE.Mesh(rimGeoFront, activeMaterialInstance);
+      rimMeshFront.rotation.x = Math.PI / 2;
+      rimMeshFront.position.y = H / 2;
+      rimMeshFront.castShadow = true;
+      coinMeshGroup.add(rimMeshFront);
+
+      const rimGeoBack = new THREE.ExtrudeGeometry(rimShape, rimExtrudeSettings);
+      const rimMeshBack = new THREE.Mesh(rimGeoBack, activeMaterialInstance);
+      rimMeshBack.rotation.x = -Math.PI / 2;
+      rimMeshBack.position.y = -H / 2;
+      rimMeshBack.castShadow = true;
+      coinMeshGroup.add(rimMeshBack);
+
+      // Add Central Relief Motif
+      addCentralReliefMotif(innerR, H);
+
+      // Update Spec stats
+      updateGeometryStats();
+    }
+
+    function addCentralReliefMotif(maxR, H) {
+      const reliefDepth = state.reliefDepth;
+      if (reliefDepth < 0.05) return;
+
+      // Create procedural star / crest relief
+      const motifGroup = new THREE.Group();
+      
+      // Star / Emblem shape
+      const starShape = new THREE.Shape();
+      const points = 5;
+      const outerStarR = maxR * 0.55;
+      const innerStarR = outerStarR * 0.45;
+
+      for (let i = 0; i < points * 2; i++) {
+        const r = (i % 2 === 0) ? outerStarR : innerStarR;
+        const a = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
+        const x = Math.cos(a) * r;
+        const y = Math.sin(a) * r;
+        if (i === 0) starShape.moveTo(x, y);
+        else starShape.lineTo(x, y);
+      }
+      starShape.closePath();
+
+      const starGeo = new THREE.ExtrudeGeometry(starShape, {
+        steps: 1,
+        depth: reliefDepth,
+        bevelEnabled: true,
+        bevelThickness: 0.2,
+        bevelSize: 0.2,
+        bevelSegments: 2
+      });
+
+      // Front Relief
+      const frontRelief = new THREE.Mesh(starGeo, activeMaterialInstance);
+      frontRelief.rotation.x = -Math.PI / 2;
+      frontRelief.position.y = H / 2;
+      frontRelief.castShadow = true;
+      coinMeshGroup.add(frontRelief);
+
+      // Reverse Inscription Ring Motif
+      const ringGeo = new THREE.TorusGeometry(maxR * 0.75, 0.4, 8, 48);
+      const ringFront = new THREE.Mesh(ringGeo, activeMaterialInstance);
+      ringFront.rotation.x = Math.PI / 2;
+      ringFront.position.y = H / 2 + 0.2;
+      coinMeshGroup.add(ringFront);
+
+      const ringBack = new THREE.Mesh(ringGeo, activeMaterialInstance);
+      ringBack.rotation.x = Math.PI / 2;
+      ringBack.position.y = -H / 2 - 0.2;
+      coinMeshGroup.add(ringBack);
+    }
+
+    function updateCoinParams() {
+      state.shape = document.getElementById('param-shape').value;
+      state.radius = parseFloat(document.getElementById('param-radius').value);
+      state.thickness = parseFloat(document.getElementById('param-thickness').value);
+      state.rimWidth = parseFloat(document.getElementById('param-rim-width').value);
+      state.rimHeight = parseFloat(document.getElementById('param-rim-height').value);
+      state.rimBevel = parseFloat(document.getElementById('param-rim-bevel').value);
+      state.serrations = parseInt(document.getElementById('param-serrations').value);
+      state.serrationDepth = parseFloat(document.getElementById('param-serration-depth').value);
+      state.reliefDepth = parseFloat(document.getElementById('param-relief-depth').value);
+      state.textFront = document.getElementById('param-text-front').value;
+      state.textBack = document.getElementById('param-text-back').value;
+
+      // Update Labels
+      document.getElementById('val-radius').innerText = `${state.radius.toFixed(1)} mm`;
+      document.getElementById('val-thickness').innerText = `${state.thickness.toFixed(1)} mm`;
+      document.getElementById('val-rim-width').innerText = `${state.rimWidth.toFixed(1)} mm`;
+      document.getElementById('val-rim-height').innerText = `${state.rimHeight.toFixed(2)} mm`;
+      document.getElementById('val-rim-bevel').innerText = `${state.rimBevel.toFixed(2)} mm`;
+      document.getElementById('val-serrations').innerText = `${state.serrations} ribs`;
+      document.getElementById('val-serration-depth').innerText = `${state.serrationDepth.toFixed(2)} mm`;
+      document.getElementById('val-relief-depth').innerText = `${state.reliefDepth.toFixed(2)} mm`;
+
+      buildProceduralCoinGeometry();
+    }
+
+    function applyPreset(presetKey) {
+      const p = PRESETS[presetKey];
+      if (!p) return;
+
+      // Highlight active chip
+      document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
+      event.currentTarget.classList.add('active');
+
+      document.getElementById('param-shape').value = p.shape;
+      document.getElementById('param-radius').value = p.radius;
+      document.getElementById('param-thickness').value = p.thickness;
+      document.getElementById('param-rim-width').value = p.rimWidth;
+      document.getElementById('param-rim-height').value = p.rimHeight;
+      document.getElementById('param-rim-bevel').value = p.rimBevel;
+      document.getElementById('param-serrations').value = p.serrations;
+      document.getElementById('param-serration-depth').value = p.serrationDepth;
+      document.getElementById('param-relief-depth').value = p.reliefDepth;
+      document.getElementById('param-text-front').value = p.textFront;
+      document.getElementById('param-text-back').value = p.textBack;
+
+      setMaterial(p.material);
+      updateCoinParams();
+      showToast(`Applied preset: ${presetKey.replace('_', ' ').toUpperCase()}`);
+    }
+
+    function setMaterial(matKey) {
+      state.material = matKey;
+      document.querySelectorAll('.mat-chip').forEach(chip => chip.classList.remove('active'));
+      const activeChip = Array.from(document.querySelectorAll('.mat-chip')).find(c => c.getAttribute('onclick').includes(matKey));
+      if (activeChip) activeChip.classList.add('active');
+
+      const matProps = PBR_MATERIALS[matKey];
+      if (activeMaterialInstance && matProps) {
+        activeMaterialInstance.color.setHex(matProps.color);
+        activeMaterialInstance.metalness = matProps.metalness;
+        activeMaterialInstance.roughness = matProps.roughness;
+        activeMaterialInstance.needsUpdate = true;
+      }
+    }
+
+    function updateGeometryStats() {
+      let totalTriangles = 0;
+      let totalVertices = 0;
+
+      coinMeshGroup.traverse(child => {
+        if (child.isMesh && child.geometry) {
+          const geo = child.geometry;
+          if (geo.index) {
+            totalTriangles += geo.index.count / 3;
+          } else if (geo.attributes.position) {
+            totalTriangles += geo.attributes.position.count / 3;
+          }
+          if (geo.attributes.position) {
+            totalVertices += geo.attributes.position.count;
+          }
+        }
+      });
+
+      const R = state.radius;
+      const H = state.thickness;
+      const diam = (R * 2).toFixed(1);
+      const volCm3 = ((Math.PI * (R / 10) * (R / 10) * (H / 10)) * 1.05); // cm3
+
+      document.getElementById('stat-dimensions').innerText = `${diam} × ${diam} × ${H.toFixed(1)} mm`;
+      document.getElementById('stat-triangles').innerText = `${totalTriangles.toLocaleString()} Δ`;
+      document.getElementById('stat-vertices').innerText = `${totalVertices.toLocaleString()}`;
+      document.getElementById('stat-volume').innerText = `${volCm3.toFixed(2)} cm³`;
+
+      // Metal Weights
+      document.getElementById('stat-weight-gold').innerText = `${(volCm3 * 19.32).toFixed(1)} g`;
+      document.getElementById('stat-weight-silver').innerText = `${(volCm3 * 10.36).toFixed(1)} g`;
+      document.getElementById('stat-weight-bronze').innerText = `${(volCm3 * 8.73).toFixed(1)} g`;
+      document.getElementById('stat-weight-titanium').innerText = `${(volCm3 * 4.43).toFixed(1)} g`;
+      document.getElementById('stat-weight-pla').innerText = `${(volCm3 * 1.24).toFixed(1)} g`;
+
+      // Slicing Time Estimate
+      const layers = Math.round(H / 0.12);
+      const estMin = Math.round(layers * 0.8 + 4);
+      document.getElementById('stat-print-time').innerText = `~${estMin} mins (${layers} layers @ 0.12mm)`;
+    }
+
+    // Viewport Actions
+    function toggleTurntable() {
+      state.turntable = !state.turntable;
+      document.getElementById('btn-turntable').classList.toggle('active', state.turntable);
+    }
+
+    function toggleWireframe() {
+      state.wireframe = !state.wireframe;
+      document.getElementById('btn-wireframe').classList.toggle('active', state.wireframe);
+      if (activeMaterialInstance) {
+        activeMaterialInstance.wireframe = state.wireframe;
+      }
+    }
+
+    function resetCameraView(view) {
+      if (view === 'front') {
+        camera.position.set(0, 0, 70);
+      } else if (view === 'back') {
+        camera.position.set(0, 0, -70);
+      } else if (view === 'edge') {
+        camera.position.set(70, 0, 0);
+      }
+      controls.target.set(0, 0, 0);
+      controls.update();
+    }
+
+    function captureSnapshot() {
+      renderer.render(scene, camera);
+      const dataURL = renderer.domElement.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `coin-${state.shape}-${Date.now()}.png`;
+      link.href = dataURL;
+      link.click();
+      showToast('HD Snapshot saved!');
+    }
+
+    // Export Handlers (STL / OBJ)
+    async function exportSTL() {
+      showToast('Generating 3D Print Ready Binary STL...');
+      try {
+        const response = await fetch('/api/export-stl', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state)
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `coin-${state.shape}-${state.radius}mm.stl`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+          showToast('Binary STL downloaded successfully!');
+          return;
+        }
+      } catch (err) {
+        console.warn('Backend API unavailable, generating client-side binary STL fallback...', err);
+      }
+
+      // Fallback Client-Side Binary STL generation
+      generateClientSideSTL();
+    }
+
+    function generateClientSideSTL() {
+      const triangles = [];
+      coinMeshGroup.traverse(child => {
+        if (child.isMesh && child.geometry) {
+          const geo = child.geometry.clone().toNonIndexed();
+          const pos = geo.attributes.position;
+          child.updateMatrixWorld();
+          for (let i = 0; i < pos.count; i += 3) {
+            const vA = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(child.matrixWorld);
+            const vB = new THREE.Vector3(pos.getX(i+1), pos.getY(i+1), pos.getZ(i+1)).applyMatrix4(child.matrixWorld);
+            const vC = new THREE.Vector3(pos.getX(i+2), pos.getY(i+2), pos.getZ(i+2)).applyMatrix4(child.matrixWorld);
+            
+            const cb = new THREE.Vector3().subVectors(vC, vB);
+            const ab = new THREE.Vector3().subVectors(vA, vB);
+            const normal = new THREE.Vector3().crossVectors(cb, ab).normalize();
+
+            triangles.push({ normal, vA, vB, vC });
+          }
+        }
+      });
+
+      const bufferLength = 84 + triangles.length * 50;
+      const buffer = new ArrayBuffer(bufferLength);
+      const view = new DataView(buffer);
+
+      // 80 bytes header
+      const headerStr = 'Binary STL generated by Google 3D Coin Studio (badge3d-coin-generator)';
+      for (let i = 0; i < 80; i++) {
+        view.setUint8(i, i < headerStr.length ? headerStr.charCodeAt(i) : 0);
+      }
+
+      // Triangle Count (4 bytes uint32)
+      view.setUint32(80, triangles.length, true);
+
+      let offset = 84;
+      for (const t of triangles) {
+        view.setFloat32(offset, t.normal.x, true); offset += 4;
+        view.setFloat32(offset, t.normal.y, true); offset += 4;
+        view.setFloat32(offset, t.normal.z, true); offset += 4;
+
+        view.setFloat32(offset, t.vA.x, true); offset += 4;
+        view.setFloat32(offset, t.vA.y, true); offset += 4;
+        view.setFloat32(offset, t.vA.z, true); offset += 4;
+
+        view.setFloat32(offset, t.vB.x, true); offset += 4;
+        view.setFloat32(offset, t.vB.y, true); offset += 4;
+        view.setFloat32(offset, t.vB.z, true); offset += 4;
+
+        view.setFloat32(offset, t.vC.x, true); offset += 4;
+        view.setFloat32(offset, t.vC.y, true); offset += 4;
+        view.setFloat32(offset, t.vC.z, true); offset += 4;
+
+        view.setUint16(offset, 0, true); offset += 2; // attribute byte count
+      }
+
+      const blob = new Blob([buffer], { type: 'application/sla' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `coin-${state.shape}-${state.radius}mm.stl`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      showToast('Client-side Binary STL generated & downloaded!');
+    }
+
+    async function exportOBJ() {
+      showToast('Generating Wavefront OBJ...');
+      try {
+        const response = await fetch('/api/export-obj', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(state)
+        });
+
+        if (response.ok) {
+          const blob = await response.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `coin-${state.shape}.obj`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+          showToast('OBJ file downloaded!');
+          return;
+        }
+      } catch(e) {}
+
+      // Client-side OBJ export fallback
+      let objContent = `# Wavefront OBJ generated by Google 3D Coin Studio\no CoinMesh\n`;
+      let vertOffset = 1;
+
+      coinMeshGroup.traverse(child => {
+        if (child.isMesh && child.geometry) {
+          const geo = child.geometry.clone().toNonIndexed();
+          const pos = geo.attributes.position;
+          child.updateMatrixWorld();
+          
+          for (let i = 0; i < pos.count; i++) {
+            const v = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(child.matrixWorld);
+            objContent += `v ${v.x.toFixed(4)} ${v.y.toFixed(4)} ${v.z.toFixed(4)}\n`;
+          }
+
+          for (let i = 0; i < pos.count; i += 3) {
+            objContent += `f ${vertOffset + i} ${vertOffset + i + 1} ${vertOffset + i + 2}\n`;
+          }
+          vertOffset += pos.count;
+        }
+      });
+
+      const blob = new Blob([objContent], { type: 'text/plain' });
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `coin-${state.shape}.obj`;
+      a.click();
+      window.URL.revokeObjectURL(url);
+      showToast('OBJ file generated & downloaded!');
+    }
+
+    function copyMCPToolCall() {
+      const mcpJson = JSON.stringify({
+        tool: "generate_coin",
+        arguments: {
+          radius: state.radius,
+          thickness: state.thickness,
+          rim_width: state.rimWidth,
+          rim_height: state.rimHeight,
+          rim_bevel: state.rimBevel,
+          serrations: state.serrations,
+          relief_depth: state.reliefDepth,
+          shape: state.shape,
+          preset: "custom",
+          text_front: state.textFront,
+          text_back: state.textBack
+        }
+      }, null, 2);
+
+      navigator.clipboard.writeText(mcpJson).then(() => {
+        showToast('MCP Tool Call JSON copied to clipboard!');
+      });
+    }
+
+    // Logo Upload & Drag-and-Drop
+    function handleLogoUpload(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        state.uploadedLogo = evt.target.result;
+        document.getElementById('logo-filename').innerText = file.name;
+        document.getElementById('logo-preview-box').style.display = 'flex';
+        showToast(`Loaded logo: ${file.name}`);
+        buildProceduralCoinGeometry();
+      };
+
+      if (file.name.endsWith('.svg') || file.type.includes('svg')) {
+        reader.readAsText(file);
+      } else {
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function clearUploadedLogo() {
+      state.uploadedLogo = null;
+      document.getElementById('logo-file-input').value = '';
+      document.getElementById('logo-preview-box').style.display = 'none';
+      buildProceduralCoinGeometry();
+      showToast('Logo cleared');
+    }
+
+    // Theme Toggle
+    const themeBtn = document.getElementById('theme-toggle-btn');
+    themeBtn.addEventListener('click', () => {
+      const currentTheme = document.body.getAttribute('data-theme');
+      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+      document.body.setAttribute('data-theme', nextTheme);
+      themeBtn.querySelector('.material-symbols-outlined').innerText = nextTheme === 'dark' ? 'light_mode' : 'dark_mode';
+    });
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast-notification');
+      document.getElementById('toast-msg').innerText = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 3000);
+    }
+
+    function onWindowResize() {
+      const container = document.getElementById('three-canvas');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      camera.aspect = width / height;
+      camera.updateProjectionMatrix();
+      renderer.setSize(width, height);
+    }
+
+    function animate() {
+      requestAnimationFrame(animate);
+      if (state.turntable && coinMeshGroup) {
+        coinMeshGroup.rotation.y += 0.008;
+      }
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    // Initialize on load
+    window.addEventListener('DOMContentLoaded', () => {
+      initThreeEngine();
+      // Probe backend
+      fetch('/api/health')
+        .then(r => r.json())
+        .then(d => {
+          document.getElementById('status-dot').classList.remove('offline');
+          document.getElementById('status-label').innerText = 'Studio API Online';
+        })
+        .catch(() => {
+          document.getElementById('status-dot').classList.add('offline');
+          document.getElementById('status-label').innerText = 'Standalone Browser Mode';
+        });
+    });
+  </script>
+</body>
+</html>
