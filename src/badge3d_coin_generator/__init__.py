@@ -52,6 +52,17 @@ from .svg_rasterizer import (
     SVGRasterizer,
     parse_svg_path_d,
 )
+from .slicer_engine import (
+    FilamentType,
+    InfillPattern,
+    OverhangAnalysis,
+    SliceLayer,
+    SliceResult,
+    SliceSegment2D,
+    SlicingConfig,
+    analyze_mesh_overhangs,
+    slice_mesh,
+)
 
 __version__ = "0.1.0"
 __author__ = "Badge3D Architecture Team"
@@ -559,6 +570,24 @@ def export_obj(
         raise TypeError(f"Unsupported type for export_obj: {type(mesh_or_generator)}")
 
 
+def slice_coin(
+    mesh_or_generator: Union[MeshData, CoinGenerator, Dict[str, Any]],
+    config: Optional[SlicingConfig] = None,
+) -> SliceResult:
+    """Slice a 3D coin mesh into G-code layers with infill and printability telemetry."""
+    if isinstance(mesh_or_generator, MeshData):
+        mesh = mesh_or_generator
+    elif isinstance(mesh_or_generator, CoinGenerator):
+        mesh = mesh_or_generator.generate()
+    elif isinstance(mesh_or_generator, dict):
+        gen = CoinGenerator(**mesh_or_generator)
+        mesh = gen.generate()
+    else:
+        raise TypeError(f"Unsupported type for slice_coin: {type(mesh_or_generator)}")
+
+    return slice_mesh(mesh, config=config)
+
+
 # Lazy imports for entry points to avoid cyclic dependencies
 def run_mcp_server() -> None:
     """Entry point for running the Model Context Protocol (MCP) server."""
@@ -595,6 +624,17 @@ __all__ = [
     "generate_relief_heightmap",
     "compute_mesh_volume",
     "compute_mesh_weights",
+    # Slicer Engine
+    "InfillPattern",
+    "FilamentType",
+    "SliceSegment2D",
+    "SliceLayer",
+    "OverhangAnalysis",
+    "SlicingConfig",
+    "SliceResult",
+    "analyze_mesh_overhangs",
+    "slice_mesh",
+    "slice_coin",
     "run_mcp_server",
     "main",
     "__version__",

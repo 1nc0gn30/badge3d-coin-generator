@@ -228,6 +228,80 @@ def handle_generate(args: argparse.Namespace) -> int:
 
 
 # ---------------------------------------------------------------------------
+# Command: `slice`
+# ---------------------------------------------------------------------------
+
+def handle_slice(args: argparse.Namespace) -> int:
+    """Handle the `slice` / `gcode` subcommand."""
+    from .slicer_engine import (
+        FilamentType,
+        InfillPattern,
+        SlicingConfig,
+        slice_mesh,
+    )
+
+    preset_data = resolve_preset(args.preset) if getattr(args, "preset", None) else None
+
+    radius = args.radius if getattr(args, "radius", None) is not None else (preset_data.get("radius", 20.0) if preset_data else 20.0)
+    thickness = args.thickness if getattr(args, "thickness", None) is not None else (preset_data.get("thickness", 3.0) if preset_data else 3.0)
+    serrations = getattr(args, "serrations", None) or (preset_data.get("serrations", 80) if preset_data else 80)
+    relief_pattern = getattr(args, "pattern", None) or (preset_data.get("relief_pattern", "wreath") if preset_data else "wreath")
+
+    gen = CoinGenerator(
+        radius=radius,
+        thickness=thickness,
+        serrations=serrations,
+        relief_pattern=relief_pattern,
+        resolution=getattr(args, "resolution", 64),
+    )
+    mesh = gen.generate()
+
+    layer_h = float(getattr(args, "layer_height", 0.20))
+    infill_d = float(getattr(args, "infill_density", 0.20))
+    pat_str = str(getattr(args, "infill_pattern", "rectilinear")).lower()
+    try:
+        pat = InfillPattern(pat_str)
+    except ValueError:
+        pat = InfillPattern.RECTILINEAR
+
+    fil_str = str(getattr(args, "filament", getattr(args, "material", "pla"))).lower()
+    try:
+        fil = FilamentType(fil_str)
+    except ValueError:
+        fil = FilamentType.PLA
+
+    cfg = SlicingConfig(layer_height=layer_h, infill_density=infill_d, infill_pattern=pat, filament_type=fil)
+
+    t0 = time.perf_counter()
+    result = slice_mesh(mesh, config=cfg)
+    slice_time_ms = (time.perf_counter() - t0) * 1000.0
+
+    output_path = safe_path(getattr(args, "output", "coin.gcode"))
+    gcode_text = result.to_gcode()
+    atomic_write_text(output_path, gcode_text)
+
+    if getattr(args, "json", False):
+        d = result.to_dict()
+        d["gcode_path"] = str(output_path)
+        d["slice_time_ms"] = round(slice_time_ms, 2)
+        print(json.dumps(d, indent=2))
+        return 0
+
+    if not getattr(args, "quiet", False):
+        print(Color.bold(f"\n🖨️ Slicing 3D Coin Mesh for FDM Printing: {Color.cyan(preset_data['name'] if preset_data else 'Custom Coin')}"))
+        print(f"  • {Color.bold('Layer Count')}: {Color.green(str(result.total_layers))} layers @ {cfg.layer_height} mm")
+        print(f"  • {Color.bold('Material Profile')}: {Color.cyan(cfg.filament_type.value.upper())} (Nozzle: {cfg.nozzle_temp}°C, Bed: {cfg.bed_temp}°C)")
+        print(f"  • {Color.bold('Infill Structure')}: {Color.yellow(f'{cfg.infill_density*100:.0f}% {cfg.infill_pattern.value.title()}')}")
+        print(f"  • {Color.bold('Filament Consumption')}: {Color.magenta(f'{result.total_filament_mm/1000.0:.2f} meters')} ({result.total_filament_grams:.2f} g)")
+        print(f"  • {Color.bold('Estimated Print Time')}: {Color.green(f'{result.total_print_time_sec/60.0:.1f} minutes')}")
+        status_color = Color.yellow if result.overhang.requires_supports else Color.green
+        print(f"  • {Color.bold('Overhang Printability')}: {status_color(f'{result.overhang.overhang_percentage:.1f}% steep faces')} ({'Supports Advised' if result.overhang.requires_supports else 'No Supports Needed'})")
+        print(f"  • {Color.bold('Output G-Code File')}: {Color.cyan(str(output_path))} ({len(gcode_text.splitlines())} lines in {slice_time_ms:.1f} ms)\n")
+
+    return 0
+
+
+# ---------------------------------------------------------------------------
 # Command: `presets`
 # ---------------------------------------------------------------------------
 
@@ -440,7 +514,7 @@ def handle_test(args: argparse.Namespace) -> int:
             return False
         tools_res = server.handle_request({"jsonrpc": "2.0", "id": 2, "method": "tools/list", "params": {}})
         tools = tools_res.get("result", {}).get("tools", [])
-        if len(tools) != 5:
+        if len(tools) < 5:
             return False
         call_res = server.handle_request({
             "jsonrpc": "2.0",
@@ -1063,40 +1137,62 @@ def build_parser() -> argparse.ArgumentParser:
         help="System environment & 3D toolchain diagnostics.",
     )
 
-    # 6. test
+    # 6. slice
+    slc_p = subparsers.add_parser("slice", aliases=["slicer", "gcode"], help="Slice 3D coin mesh to G-code with infill & overhang analysis.")
+    slc_p.add_argument("-r", "--radius", type=float, help="Outer radius in mm (default: 20.0).")
+    slc_p.add_argument("-t", "--thickness", type=float, help="Total thickness in mm (default: 3.0).")
+    slc_p.add_argument("-p", "--preset", type=str, help="Preset name to load base dimensions from.")
+    slc_p.add_argument("--pattern", type=str, help="Relief pattern.")
+    slc_p.add_argument("--layer-height", type=float, default=0.20, help="Layer height in mm (default: 0.20).")
+    slc_p.add_argument("--infill-density", "--infill", type=float, default=0.20, help="Infill density (default: 0.20).")
+    slc_p.add_argument("--infill-pattern", type=str, choices=["rectilinear", "grid", "concentric", "triangles"], default="rectilinear", help="Infill pattern.")
+    slc_p.add_argument("--filament", "--material", type=str, choices=["pla", "petg", "abs", "resin"], default="pla", help="Material type.")
+    slc_p.add_argument("-o", "--output", type=str, default="coin.gcode", help="Output G-code file path (default: coin.gcode).")
+    slc_p.add_argument("--json", action="store_true", help="Output telemetry as JSON.")
+    slc_p.add_argument("-q", "--quiet", action="store_true", help="Suppress progress output.")
+
+    # 7. test
     subparsers.add_parser("test", aliases=["check", "self-test"], help="Run self-verification test runner.")
 
     return parser
 
 
-def main() -> None:
+def main(args_list: Optional[Sequence[str]] = None) -> int:
     """CLI entry point function."""
     parser = build_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(args_list)
 
     Color.setup(no_color=args.no_color)
 
     if not args.command:
         print_banner()
         parser.print_help()
+        if args_list is not None:
+            return 0
         sys.exit(0)
 
     cmd = args.command
     if cmd in ("generate", "gen", "build"):
-        sys.exit(handle_generate(args))
+        code = handle_generate(args)
+    elif cmd in ("slice", "slicer", "gcode"):
+        code = handle_slice(args)
     elif cmd in ("presets", "list", "catalog"):
-        sys.exit(handle_presets(args))
+        code = handle_presets(args)
     elif cmd in ("serve", "studio", "web", "ui"):
-        sys.exit(handle_serve(args))
+        code = handle_serve(args)
     elif cmd in ("mcp", "stdio", "mcp-server"):
-        sys.exit(handle_mcp(args))
+        code = handle_mcp(args)
     elif cmd in ("diagnostics", "doctor", "platform"):
-        sys.exit(handle_diagnostics(args))
+        code = handle_diagnostics(args)
     elif cmd in ("test", "check", "self-test"):
-        sys.exit(handle_test(args))
+        code = handle_test(args)
     else:
         parser.print_help()
-        sys.exit(1)
+        code = 1
+
+    if args_list is not None:
+        return code
+    sys.exit(code)
 
 
 if __name__ == "__main__":

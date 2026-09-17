@@ -360,6 +360,65 @@ TOOLS_DEFINITIONS: List[Dict[str, Any]] = [
             "properties": {},
         },
     },
+    {
+        "name": "coin_slice_gcode",
+        "description": (
+            "Slice 3D coin mesh into G-code layers with infill pattern generation, "
+            "overhang angle printability analysis, filament volume/mass calculations, "
+            "and standard RepRap/Marlin G-code export."
+        ),
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "preset": {
+                    "type": "string",
+                    "description": "Base coin preset ID (e.g. 'challenge_coin', 'commemorative_gold', 'ancient_drachma').",
+                },
+                "radius": {
+                    "type": "number",
+                    "default": 20.0,
+                    "description": "Outer radius of the coin in millimeters.",
+                },
+                "thickness": {
+                    "type": "number",
+                    "default": 3.0,
+                    "description": "Base thickness in millimeters.",
+                },
+                "layer_height": {
+                    "type": "number",
+                    "default": 0.20,
+                    "description": "Slicing layer height in millimeters (e.g. 0.12, 0.16, 0.20).",
+                },
+                "infill_density": {
+                    "type": "number",
+                    "default": 0.20,
+                    "description": "Infill density from 0.0 (hollow) to 1.0 (solid 100%).",
+                },
+                "infill_pattern": {
+                    "type": "string",
+                    "enum": ["rectilinear", "grid", "concentric", "triangles"],
+                    "default": "rectilinear",
+                    "description": "Infill toolpath geometry pattern.",
+                },
+                "filament_type": {
+                    "type": "string",
+                    "enum": ["pla", "petg", "abs", "resin"],
+                    "default": "pla",
+                    "description": "Filament material type for mass and temperature modeling.",
+                },
+                "output_path": {
+                    "type": "string",
+                    "description": "Optional file path to save synthesized .gcode file.",
+                },
+                "format": {
+                    "type": "string",
+                    "enum": ["summary", "gcode", "json"],
+                    "default": "summary",
+                    "description": "Response representation format.",
+                },
+            },
+        },
+    },
 ]
 
 
@@ -378,6 +437,7 @@ class MCPServer:
             "coin_export_obj": self._handle_coin_export_obj,
             "coin_presets": self._handle_coin_presets,
             "coin_diagnostics": self._handle_coin_diagnostics,
+            "coin_slice_gcode": self._handle_coin_slice_gcode,
         }
 
     # -----------------------------------------------------------------------
@@ -721,6 +781,98 @@ class MCPServer:
             ],
             "isError": False,
         }
+
+    def _handle_coin_slice_gcode(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        """Handler for coin_slice_gcode tool."""
+        try:
+            from .slicer_engine import (
+                FilamentType,
+                InfillPattern,
+                SlicingConfig,
+                slice_mesh,
+            )
+            from .compat import atomic_write_text
+            from .__init__ import CoinGenerator, resolve_preset
+
+            preset_id = args.get("preset")
+            if preset_id:
+                coin_dict = resolve_preset(preset_id)
+                generator = CoinGenerator(**coin_dict)
+            else:
+                generator = CoinGenerator(
+                    radius=float(args.get("radius", 20.0)),
+                    thickness=float(args.get("thickness", 3.0)),
+                )
+
+            mesh = generator.generate()
+
+            layer_h = float(args.get("layer_height", 0.20))
+            infill_dens = float(args.get("infill_density", 0.20))
+            infill_pat_str = str(args.get("infill_pattern", "rectilinear")).lower()
+            try:
+                infill_pat = InfillPattern(infill_pat_str)
+            except ValueError:
+                infill_pat = InfillPattern.RECTILINEAR
+
+            fil_str = str(args.get("filament_type", "pla")).lower()
+            try:
+                fil_type = FilamentType(fil_str)
+            except ValueError:
+                fil_type = FilamentType.PLA
+
+            config = SlicingConfig(
+                layer_height=layer_h,
+                infill_density=infill_dens,
+                infill_pattern=infill_pat,
+                filament_type=fil_type,
+            )
+
+            result = slice_mesh(mesh, config=config)
+            gcode_text = result.to_gcode()
+
+            out_path = args.get("output_path")
+            if out_path:
+                atomic_write_text(out_path, gcode_text)
+
+            fmt = str(args.get("format", "summary")).lower()
+            if fmt == "json":
+                return {
+                    "content": [{"type": "text", "text": json.dumps(result.to_dict(), indent=2)}],
+                    "isError": False,
+                }
+            elif fmt == "gcode":
+                return {
+                    "content": [{"type": "text", "text": gcode_text}],
+                    "isError": False,
+                }
+
+            # Summary Markdown
+            lines = [
+                "### 🖨️ 3D Coin Slicing & G-Code Telemetry",
+                "",
+                f"- **Total Layers**: `{result.total_layers}` (layer height: `{result.layer_height} mm`)",
+                f"- **Material**: `{config.filament_type.value.upper()}` (Bed: `{config.bed_temp}°C`, Nozzle: `{config.nozzle_temp}°C`)",
+                f"- **Infill**: `{config.infill_density * 100:.0f}% {config.infill_pattern.value.title()}`",
+                f"- **Estimated Print Time**: `{result.total_print_time_sec / 60.0:.1f} minutes`",
+                f"- **Filament Consumed**: `{result.total_filament_mm / 1000.0:.2f} meters` ({result.total_filament_grams:.2f} grams)",
+                f"- **Overhang Status**: `{'⚠️ Supports Recommended' if result.overhang.requires_supports else '✅ Print Ready'}` ({result.overhang.overhang_percentage:.1f}% overhang area)",
+            ]
+            if out_path:
+                lines.append(f"- **G-code Saved**: `{out_path}`")
+            lines.append("")
+            lines.append("```gcode")
+            lines.append(result.gcode_preview)
+            lines.append("```")
+
+            return {
+                "content": [{"type": "text", "text": "\n".join(lines)}],
+                "isError": False,
+            }
+        except Exception as err:
+            return {
+                "content": [{"type": "text", "text": f"Error slicing coin mesh: {err}"}],
+                "isError": True,
+            }
 
     # -----------------------------------------------------------------------
     # JSON-RPC 2.0 Protocol Dispatcher

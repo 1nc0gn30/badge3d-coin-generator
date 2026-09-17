@@ -363,7 +363,48 @@ class CoinStudioRequestHandler(SimpleHTTPRequestHandler):
             self._send_json_response(stats)
             return
 
-        # 4. Root index.html or static files
+        # 4. G-code Slicing endpoint
+        if path == "/api/slice-gcode":
+            try:
+                from .slicer_engine import (
+                    FilamentType,
+                    InfillPattern,
+                    SlicingConfig,
+                    slice_mesh,
+                )
+                from .__init__ import CoinGenerator, resolve_preset
+                preset_id = query.get("preset", [None])[0]
+                if preset_id:
+                    coin_dict = resolve_preset(preset_id)
+                    generator = CoinGenerator(**coin_dict)
+                else:
+                    r = float(query.get("radius", ["20.0"])[0])
+                    th = float(query.get("thickness", ["3.0"])[0])
+                    generator = CoinGenerator(radius=r, thickness=th)
+
+                mesh = generator.generate()
+                layer_h = float(query.get("layer_height", ["0.20"])[0])
+                infill_d = float(query.get("infill_density", ["0.20"])[0])
+                pat_str = query.get("infill_pattern", ["rectilinear"])[0]
+                try:
+                    pat = InfillPattern(pat_str)
+                except ValueError:
+                    pat = InfillPattern.RECTILINEAR
+
+                fil_str = query.get("filament_type", ["pla"])[0]
+                try:
+                    fil = FilamentType(fil_str)
+                except ValueError:
+                    fil = FilamentType.PLA
+
+                cfg = SlicingConfig(layer_height=layer_h, infill_density=infill_d, infill_pattern=pat, filament_type=fil)
+                result = slice_mesh(mesh, config=cfg)
+                self._send_json_response(result.to_dict())
+            except Exception as exc:
+                self._send_json_response({"error": str(exc)}, status_code=500)
+            return
+
+        # 5. Root index.html or static files
         if path in ("", "/index.html"):
             index_path = self.public_directory / "index.html"
             if index_path.exists():
@@ -474,7 +515,63 @@ class CoinStudioRequestHandler(SimpleHTTPRequestHandler):
                 self._send_json_response({"error": str(exc)}, status_code=500)
             return
 
-        # 4. Unknown endpoint
+        # 4. G-code Slicing endpoint
+        if path == "/api/slice-gcode":
+            try:
+                from .slicer_engine import (
+                    FilamentType,
+                    InfillPattern,
+                    SlicingConfig,
+                    slice_mesh,
+                )
+                from .__init__ import CoinGenerator, resolve_preset
+                preset_id = req_data.get("preset")
+                if preset_id:
+                    coin_dict = resolve_preset(preset_id)
+                    generator = CoinGenerator(**coin_dict)
+                    mesh = generator.generate()
+                    radius_val = generator.radius
+                else:
+                    params = parse_coin_params_from_dict(req_data)
+                    engine = CoinMeshEngine(params)
+                    mesh = engine.generate()
+                    radius_val = params.radius
+
+                layer_h = float(req_data.get("layer_height", 0.20))
+                infill_d = float(req_data.get("infill_density", 0.20))
+                pat_str = str(req_data.get("infill_pattern", "rectilinear")).lower()
+                try:
+                    pat = InfillPattern(pat_str)
+                except ValueError:
+                    pat = InfillPattern.RECTILINEAR
+
+                fil_str = str(req_data.get("filament_type", "pla")).lower()
+                try:
+                    fil = FilamentType(fil_str)
+                except ValueError:
+                    fil = FilamentType.PLA
+
+                cfg = SlicingConfig(layer_height=layer_h, infill_density=infill_d, infill_pattern=pat, filament_type=fil)
+                result = slice_mesh(mesh, config=cfg)
+
+                if req_data.get("format") == "gcode":
+                    gcode_text = result.to_gcode()
+                    gcode_bytes = gcode_text.encode("utf-8")
+                    filename = f"coin-{radius_val:.1f}mm.gcode"
+                    self.send_response(HTTPStatus.OK)
+                    self.send_header("Content-Type", "text/x-gcode; charset=utf-8")
+                    self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+                    self.send_header("Content-Length", str(len(gcode_bytes)))
+                    self.send_header("Access-Control-Allow-Origin", "*")
+                    self.end_headers()
+                    self.wfile.write(gcode_bytes)
+                else:
+                    self._send_json_response(result.to_dict())
+            except Exception as exc:
+                self._send_json_response({"error": str(exc)}, status_code=500)
+            return
+
+        # 5. Unknown endpoint
         self._send_json_response({"error": f"Endpoint not found: {path}"}, status_code=404)
 
 
