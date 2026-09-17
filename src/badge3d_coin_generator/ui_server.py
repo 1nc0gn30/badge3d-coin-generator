@@ -198,6 +198,13 @@ def parse_coin_params_from_dict(data: Dict[str, Any]) -> CoinParameters:
     obverse_hm = data.get("obverse_heightmap", data.get("heightmap"))
     reverse_hm = data.get("reverse_heightmap")
 
+    edge_inscription = data.get("edge_inscription", data.get("edgeInscription", data.get("inscription")))
+    edge_inscription_depth = float(data.get("edge_inscription_depth", data.get("edgeInscriptionDepth", 0.25)))
+    edge_inscription_mode = str(data.get("edge_inscription_mode", data.get("edgeInscriptionMode", "incuse")))
+    security_stamp_seed = data.get("security_stamp_seed", data.get("securityStampSeed", data.get("security_stamp", data.get("stamp"))))
+    security_stamp_grooves = int(data.get("security_stamp_grooves", data.get("securityStampGrooves", 64)))
+    segmented_sectors = int(data.get("segmented_sectors", data.get("segmentedSectors", 0)))
+
     return CoinParameters(
         radius=radius,
         thickness=thickness,
@@ -216,6 +223,12 @@ def parse_coin_params_from_dict(data: Dict[str, Any]) -> CoinParameters:
         relief_depth_reverse=relief_depth_rev,
         relief_mode_obverse=relief_mode_obv,
         relief_mode_reverse=relief_mode_rev,
+        edge_inscription=edge_inscription,
+        edge_inscription_depth=edge_inscription_depth,
+        edge_inscription_mode=edge_inscription_mode,
+        security_stamp_seed=security_stamp_seed,
+        security_stamp_grooves=security_stamp_grooves,
+        segmented_sectors=segmented_sectors,
         smooth_shading=bool(data.get("smooth_shading", True)),
     )
 
@@ -571,7 +584,91 @@ class CoinStudioRequestHandler(SimpleHTTPRequestHandler):
                 self._send_json_response({"error": str(exc)}, status_code=500)
             return
 
-        # 5. Unknown endpoint
+        # 5. Edge profile summary endpoint
+        if path == "/api/edge/profile":
+            try:
+                from .edge_milling import (
+                    CompoundMillingSpec,
+                    EdgeInscriptionSpec,
+                    SecurityStampSpec,
+                    SegmentedReedingSpec,
+                    generate_edge_milling_profile_summary,
+                )
+                spec = CompoundMillingSpec(
+                    reeding_profile=req_data.get("reeding_profile", "sinusoidal"),
+                    reed_count=int(req_data.get("reed_count", 120)),
+                    reed_depth=float(req_data.get("reed_depth", 0.25)),
+                    inscription=EdgeInscriptionSpec(
+                        text=req_data.get("inscription", ""),
+                        mode=req_data.get("inscription_mode", "incuse"),
+                        depth=float(req_data.get("inscription_depth", 0.25)),
+                    ) if req_data.get("inscription") else None,
+                    security_stamp=SecurityStampSpec(
+                        seed=req_data.get("security_seed", ""),
+                        num_grooves=int(req_data.get("security_grooves", 64)),
+                    ) if req_data.get("security_seed") else None,
+                    segmented=SegmentedReedingSpec(
+                        reeded_sectors=int(req_data.get("segmented_sectors", 8)),
+                        reed_depth=float(req_data.get("reed_depth", 0.25)),
+                    ) if req_data.get("segmented_sectors") else None,
+                )
+                summary = generate_edge_milling_profile_summary(spec)
+                self._send_json_response(summary)
+            except Exception as exc:
+                self._send_json_response({"error": str(exc)}, status_code=500)
+            return
+
+        # 6. Cryptographic security stamp derivation endpoint
+        if path == "/api/edge/crypto-stamp":
+            try:
+                import hashlib
+                from .edge_milling import derive_crypto_teeth_pattern
+                seed = req_data.get("seed", "CHALLENGE-COIN-2026")
+                num_grooves = int(req_data.get("num_grooves", 64))
+                base_depth = float(req_data.get("base_depth", 0.3))
+                depth_variation = float(req_data.get("depth_variation", 0.15))
+                teeth = derive_crypto_teeth_pattern(seed, num_grooves)
+                hash_digest = hashlib.sha256(seed.encode("utf-8")).hexdigest()
+                self._send_json_response({
+                    "seed": seed,
+                    "sha256": hash_digest,
+                    "num_grooves": num_grooves,
+                    "base_depth_mm": base_depth,
+                    "depth_variation_mm": depth_variation,
+                    "sample_teeth_depths_mm": [round(base_depth + (t - 0.5) * depth_variation, 4) for t in teeth[:16]],
+                    "parity_verification_checksum": hash_digest[:16],
+                })
+            except Exception as exc:
+                self._send_json_response({"error": str(exc)}, status_code=500)
+            return
+
+        # 7. Edge text inscription mapping endpoint
+        if path == "/api/edge/inscribe":
+            try:
+                from .edge_milling import evaluate_text_rim_distance
+                text = req_data.get("text", "LIBERTY")
+                mode = req_data.get("mode", "incuse")
+                depth = float(req_data.get("depth", 0.25))
+                diameter = float(req_data.get("diameter", 40.0))
+                thickness = float(req_data.get("thickness", 3.0))
+                repeats = int(req_data.get("repeats", 1))
+                circumference = math.pi * diameter
+                self._send_json_response({
+                    "text": text,
+                    "mode": mode,
+                    "depth_mm": depth,
+                    "diameter_mm": diameter,
+                    "thickness_mm": thickness,
+                    "circumference_mm": round(circumference, 2),
+                    "repeats": repeats,
+                    "char_pitch_mm": round(circumference / max(1, len(text) * repeats), 2),
+                    "sample_midpoint_intensity": evaluate_text_rim_distance(text.upper(), 0.5, 0.5),
+                })
+            except Exception as exc:
+                self._send_json_response({"error": str(exc)}, status_code=500)
+            return
+
+        # 8. Unknown endpoint
         self._send_json_response({"error": f"Endpoint not found: {path}"}, status_code=404)
 
 

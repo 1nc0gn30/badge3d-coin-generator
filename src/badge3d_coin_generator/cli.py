@@ -182,6 +182,12 @@ def handle_generate(args: argparse.Namespace) -> int:
         edge_type=edge_type,
         resolution=args.resolution,
         reverse_relief_pattern=args.reverse_pattern,
+        edge_inscription=getattr(args, "edge_inscription", None),
+        edge_inscription_depth=getattr(args, "edge_inscription_depth", 0.25),
+        edge_inscription_mode=getattr(args, "edge_inscription_mode", "incuse"),
+        security_stamp_seed=getattr(args, "security_stamp", None),
+        security_stamp_grooves=getattr(args, "security_grooves", 64),
+        segmented_sectors=getattr(args, "segmented_sectors", 0),
     )
 
     mesh = gen.generate()
@@ -343,6 +349,55 @@ def handle_presets(args: argparse.Namespace) -> int:
         print(f"  {Color.dim('↳ ' + p['description'])}\n")
 
     print(f"Use with: {Color.cyan('badge3d-coin-generator generate --preset <id> -o coin.stl')}\n")
+    return 0
+
+
+# ---------------------------------------------------------------------------
+# Command: `edge` / `milling` / `rim`
+# ---------------------------------------------------------------------------
+
+def handle_edge(args: argparse.Namespace) -> int:
+    """Handle the `edge` subcommand for inspecting or synthesizing rim milling & security stamps."""
+    from .edge_milling import (
+        CompoundMillingSpec,
+        EdgeInscriptionSpec,
+        SecurityStampSpec,
+        SegmentedReedingSpec,
+        generate_edge_milling_profile_summary,
+    )
+    spec = CompoundMillingSpec(
+        reeding_profile=getattr(args, "edge", "sinusoidal") or "sinusoidal",
+        reed_count=getattr(args, "serrations", 120) or 120,
+        reed_depth=getattr(args, "reed_depth", 0.25) or 0.25,
+        inscription=EdgeInscriptionSpec(
+            text=args.inscription,
+            mode=getattr(args, "inscription_mode", "incuse"),
+            depth=getattr(args, "inscription_depth", 0.25),
+        ) if getattr(args, "inscription", None) else None,
+        security_stamp=SecurityStampSpec(
+            seed=args.stamp,
+            num_grooves=getattr(args, "grooves", 64),
+        ) if getattr(args, "stamp", None) else None,
+        segmented=SegmentedReedingSpec(
+            reeded_sectors=getattr(args, "segmented_sectors", 8),
+            reed_depth=getattr(args, "reed_depth", 0.25),
+        ) if getattr(args, "segmented_sectors", 0) > 0 else None,
+    )
+    summary = generate_edge_milling_profile_summary(spec)
+    if getattr(args, "json", False):
+        print(json.dumps(summary, indent=2))
+    else:
+        print(Color.bold(f"\n🪙 Edge Milling Profile Summary:"))
+        print(f"  • Reeding: {summary['reeding_profile']} ({summary['reed_count']} teeth, depth: {summary['reed_depth_mm']}mm)")
+        if summary['has_inscription']:
+            insc = summary['inscription']
+            print(f"  • Inscription: \"{insc['text']}\" ({insc['mode']}, depth: {insc['depth_mm']}mm)")
+        if summary['has_security_stamp']:
+            sec = summary['security_stamp']
+            print(f"  • Security Stamp: seed='{sec['seed']}', {sec['num_grooves']} grooves, checksum: {sec['sample_checksum']}")
+        if summary['has_segmented_reeding']:
+            seg = summary['segmented_reeding']
+            print(f"  • Segmented Reeding: {seg['sectors']} sectors, {seg['reeds_per_sector']} reeds/sector")
     return 0
 
 
@@ -1108,6 +1163,12 @@ def build_parser() -> argparse.ArgumentParser:
     gen_p.add_argument("--rim-width", type=float, help="Width of raised rim in mm (default: 2.0).")
     gen_p.add_argument("--rim-height", type=float, help="Height of raised rim in mm (default: 0.4).")
     gen_p.add_argument("--edge", type=str, choices=["reeded", "serrated", "milled", "plain"], help="Edge style.")
+    gen_p.add_argument("--edge-inscription", type=str, help="Text to inscribe along cylindrical rim.")
+    gen_p.add_argument("--edge-inscription-depth", type=float, default=0.25, help="Inscription depth in mm.")
+    gen_p.add_argument("--edge-inscription-mode", type=str, choices=["incuse", "raised"], default="incuse", help="Inscription mode.")
+    gen_p.add_argument("--security-stamp", type=str, help="Seed string for cryptographic rim stamp grooves.")
+    gen_p.add_argument("--security-grooves", type=int, default=64, help="Number of security grooves.")
+    gen_p.add_argument("--segmented-sectors", type=int, default=0, help="Number of reeded sectors for segmented reeding.")
     gen_p.add_argument("--resolution", type=int, default=64, help="Radial angular divisions (default: 64).")
     gen_p.add_argument("-o", "--output", type=str, default="coin.stl", help="Output file path (default: coin.stl).")
     gen_p.add_argument("-f", "--format", type=str, choices=["stl", "obj", "json"], help="Output format.")
@@ -1151,7 +1212,20 @@ def build_parser() -> argparse.ArgumentParser:
     slc_p.add_argument("--json", action="store_true", help="Output telemetry as JSON.")
     slc_p.add_argument("-q", "--quiet", action="store_true", help="Suppress progress output.")
 
-    # 7. test
+    # 7. edge
+    edge_p = subparsers.add_parser("edge", aliases=["rim", "milling"], help="Inspect, synthesize, or preview coin edge milling, inscriptions, and security stamps.")
+    edge_p.add_argument("-i", "--inscription", type=str, help="Text to inscribe along cylindrical rim.")
+    edge_p.add_argument("--inscription-mode", type=str, choices=["incuse", "raised"], default="incuse", help="Inscription mode.")
+    edge_p.add_argument("--inscription-depth", type=float, default=0.25, help="Inscription depth in mm.")
+    edge_p.add_argument("-s", "--stamp", type=str, help="Seed string for cryptographic rim stamp.")
+    edge_p.add_argument("-g", "--grooves", type=int, default=64, help="Number of security grooves around perimeter.")
+    edge_p.add_argument("--edge", type=str, default="sinusoidal", help="Reeding profile.")
+    edge_p.add_argument("--serrations", type=int, default=120, help="Number of serrations/reeds.")
+    edge_p.add_argument("--reed-depth", type=float, default=0.25, help="Reeding depth in mm.")
+    edge_p.add_argument("--segmented-sectors", type=int, default=0, help="Number of reeded sectors.")
+    edge_p.add_argument("--json", action="store_true", help="Output JSON metadata.")
+
+    # 8. test
     subparsers.add_parser("test", aliases=["check", "self-test"], help="Run self-verification test runner.")
 
     return parser
@@ -1174,6 +1248,8 @@ def main(args_list: Optional[Sequence[str]] = None) -> int:
     cmd = args.command
     if cmd in ("generate", "gen", "build"):
         code = handle_generate(args)
+    elif cmd in ("edge", "rim", "milling"):
+        code = handle_edge(args)
     elif cmd in ("slice", "slicer", "gcode"):
         code = handle_slice(args)
     elif cmd in ("presets", "list", "catalog"):

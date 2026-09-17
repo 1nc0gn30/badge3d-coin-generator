@@ -23,6 +23,7 @@
 
 - **Zero External Dependencies**: 100% Pure Python Standard Library (`dependencies = []`). Runs out-of-the-box on Linux, macOS, Windows, and Termux without compiling C extensions or requiring NumPy/Trimesh.
 - **Parametric 3D Mesh Engine**: Full control over outer diameter, total thickness, raised protective rims, step walls, edge bevels/chamfers, central loops, and edge serrations (sinusoidal, square, fluted, trapezoidal reeding).
+- **Edge Milling & Cryptographic Security Stamp**: High-precision incuse/raised cylindrical rim lettering, deterministic hash-derived anti-counterfeiting micro-grooves with parity verification checksums, and segmented reeding sectors.
 - **Pure Python SVG Vector-to-Relief Rasterizer**: Built-in cubic/quadratic Bézier curve flattener, path tokenizer, and scanline polygon fill rasterizer that converts 2D SVGs into 3D displacement heightmaps.
 - **High-Performance Exporters**:
   - **Binary STL**: Standard IEEE 754 32-bit Little-Endian with 80-byte header, exact face counts, and calculated face normals.

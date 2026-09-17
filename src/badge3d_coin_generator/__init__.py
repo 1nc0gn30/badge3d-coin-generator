@@ -63,6 +63,15 @@ from .slicer_engine import (
     analyze_mesh_overhangs,
     slice_mesh,
 )
+from .edge_milling import (
+    EdgeInscriptionSpec,
+    SecurityStampSpec,
+    SegmentedReedingSpec,
+    CompoundMillingSpec,
+    compute_edge_milling_radius,
+    derive_crypto_teeth_pattern,
+    generate_edge_milling_profile_summary,
+)
 
 __version__ = "0.1.0"
 __author__ = "Badge3D Architecture Team"
@@ -380,6 +389,12 @@ class CoinGenerator:
         field_rings: int = 16,
         preset: Optional[str] = None,
         reverse_relief_pattern: Optional[str] = None,
+        edge_inscription: Optional[str] = None,
+        edge_inscription_depth: float = 0.25,
+        edge_inscription_mode: str = "incuse",
+        security_stamp_seed: Optional[str] = None,
+        security_stamp_grooves: int = 64,
+        segmented_sectors: int = 0,
     ) -> None:
         self.radius = float(radius)
         self.thickness = float(thickness)
@@ -393,6 +408,12 @@ class CoinGenerator:
         self.resolution = int(resolution)
         self.field_rings = int(field_rings)
         self.reverse_relief_pattern = reverse_relief_pattern or self.relief_pattern
+        self.edge_inscription = edge_inscription
+        self.edge_inscription_depth = float(edge_inscription_depth)
+        self.edge_inscription_mode = str(edge_inscription_mode)
+        self.security_stamp_seed = security_stamp_seed
+        self.security_stamp_grooves = int(security_stamp_grooves)
+        self.segmented_sectors = int(segmented_sectors)
 
         if preset:
             p_data = resolve_preset(preset)
@@ -439,6 +460,12 @@ class CoinGenerator:
             reverse_heightmap=rev_hm,
             relief_depth_obverse=self.rim_height * 0.9,
             relief_depth_reverse=self.rim_height * 0.9,
+            edge_inscription=self.edge_inscription,
+            edge_inscription_depth=self.edge_inscription_depth,
+            edge_inscription_mode=self.edge_inscription_mode,
+            security_stamp_seed=self.security_stamp_seed,
+            security_stamp_grooves=self.security_stamp_grooves,
+            segmented_sectors=self.segmented_sectors,
             smooth_shading=True,
         )
         return CoinMeshEngine(params).generate()
@@ -635,6 +662,14 @@ __all__ = [
     "analyze_mesh_overhangs",
     "slice_mesh",
     "slice_coin",
+    # Edge Milling & Cryptographic Stamp
+    "EdgeInscriptionSpec",
+    "SecurityStampSpec",
+    "SegmentedReedingSpec",
+    "CompoundMillingSpec",
+    "compute_edge_milling_radius",
+    "derive_crypto_teeth_pattern",
+    "generate_edge_milling_profile_summary",
     "run_mcp_server",
     "main",
     "__version__",

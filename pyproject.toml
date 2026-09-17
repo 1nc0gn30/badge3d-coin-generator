@@ -26,6 +26,10 @@ keywords = [
     "heightmap",
     "svg",
     "parametric-cad",
+    "edge-milling",
+    "rim-inscription",
+    "security-stamp",
+    "anti-counterfeiting",
     "pure-python",
     "zero-dependencies"
 ]

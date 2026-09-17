@@ -419,6 +419,54 @@ TOOLS_DEFINITIONS: List[Dict[str, Any]] = [
             },
         },
     },
+    {
+        "name": "coin_generate_edge_profile",
+        "description": "Generate technical specifications and preview metrics for coin edge milling, reeding, rim inscriptions, and security grooves.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "reeding_profile": {"type": "string", "default": "sinusoidal"},
+                "reed_count": {"type": "integer", "default": 120},
+                "reed_depth": {"type": "number", "default": 0.25},
+                "inscription": {"type": "string", "description": "Text inscribed along rim."},
+                "inscription_mode": {"type": "string", "enum": ["incuse", "raised"], "default": "incuse"},
+                "inscription_depth": {"type": "number", "default": 0.25},
+                "security_seed": {"type": "string", "description": "Seed for hash-derived anti-counterfeiting rim stamp."},
+                "security_grooves": {"type": "integer", "default": 64},
+                "segmented_sectors": {"type": "integer", "default": 0},
+            },
+        },
+    },
+    {
+        "name": "coin_stamp_crypto_hash",
+        "description": "Derive deterministic anti-counterfeiting rim notch patterns and verification checksum from a cryptographic hash or seed.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "seed": {"type": "string", "description": "Seed string or serial number.", "default": "CHALLENGE-COIN-2026"},
+                "num_grooves": {"type": "integer", "default": 64},
+                "base_depth": {"type": "number", "default": 0.3},
+                "depth_variation": {"type": "number", "default": 0.15},
+            },
+            "required": ["seed"],
+        },
+    },
+    {
+        "name": "coin_inscribe_edge_text",
+        "description": "Evaluate cylindrical coordinate unwrap mapping and parameters for text inscribed along the coin rim.",
+        "inputSchema": {
+            "type": "object",
+            "properties": {
+                "text": {"type": "string", "description": "Inscribed text string.", "default": "LIBERTY"},
+                "mode": {"type": "string", "enum": ["incuse", "raised"], "default": "incuse"},
+                "depth": {"type": "number", "default": 0.25},
+                "diameter": {"type": "number", "default": 40.0},
+                "thickness": {"type": "number", "default": 3.0},
+                "repeats": {"type": "integer", "default": 1},
+            },
+            "required": ["text"],
+        },
+    },
 ]
 
 
@@ -438,6 +486,9 @@ class MCPServer:
             "coin_presets": self._handle_coin_presets,
             "coin_diagnostics": self._handle_coin_diagnostics,
             "coin_slice_gcode": self._handle_coin_slice_gcode,
+            "coin_generate_edge_profile": self._handle_coin_generate_edge_profile,
+            "coin_stamp_crypto_hash": self._handle_coin_stamp_crypto_hash,
+            "coin_inscribe_edge_text": self._handle_coin_inscribe_edge_text,
         }
 
     # -----------------------------------------------------------------------
@@ -873,6 +924,103 @@ class MCPServer:
                 "content": [{"type": "text", "text": f"Error slicing coin mesh: {err}"}],
                 "isError": True,
             }
+
+    def _handle_coin_generate_edge_profile(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        from .edge_milling import (
+            CompoundMillingSpec,
+            EdgeInscriptionSpec,
+            SecurityStampSpec,
+            SegmentedReedingSpec,
+            generate_edge_milling_profile_summary,
+        )
+        spec = CompoundMillingSpec(
+            reeding_profile=args.get("reeding_profile", "sinusoidal"),
+            reed_count=int(args.get("reed_count", 120)),
+            reed_depth=float(args.get("reed_depth", 0.25)),
+            inscription=EdgeInscriptionSpec(
+                text=args.get("inscription", ""),
+                mode=args.get("inscription_mode", "incuse"),
+                depth=float(args.get("inscription_depth", 0.25)),
+            ) if args.get("inscription") else None,
+            security_stamp=SecurityStampSpec(
+                seed=args.get("security_seed", ""),
+                num_grooves=int(args.get("security_grooves", 64)),
+            ) if args.get("security_seed") else None,
+            segmented=SegmentedReedingSpec(
+                reeded_sectors=int(args.get("segmented_sectors", 8)),
+                reeds_per_sector=int(args.get("reeds_per_sector", 7)),
+                reed_depth=float(args.get("reed_depth", 0.25)),
+            ) if args.get("segmented_sectors") else None,
+        )
+        summary = generate_edge_milling_profile_summary(spec)
+        return {
+            "content": [
+                {
+                    "type": "text",
+                    "text": json.dumps(summary, indent=2),
+                }
+            ],
+            "isError": False,
+        }
+
+    def _handle_coin_stamp_crypto_hash(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        import hashlib
+        from .edge_milling import derive_crypto_teeth_pattern
+        seed = args.get("seed", "CHALLENGE-COIN-2026")
+        num_grooves = int(args.get("num_grooves", 64))
+        base_depth = float(args.get("base_depth", 0.3))
+        depth_variation = float(args.get("depth_variation", 0.15))
+        teeth = derive_crypto_teeth_pattern(seed, num_grooves)
+        hash_digest = hashlib.sha256(seed.encode("utf-8")).hexdigest()
+        result = {
+            "seed": seed,
+            "sha256": hash_digest,
+            "num_grooves": num_grooves,
+            "base_depth_mm": base_depth,
+            "depth_variation_mm": depth_variation,
+            "sample_teeth_depths_mm": [round(base_depth + (t - 0.5) * depth_variation, 4) for t in teeth[:16]],
+            "parity_verification_checksum": hash_digest[:16],
+        }
+        return {
+            "content": [
+                {
+                    "type": "text",
+                    "text": json.dumps(result, indent=2),
+                }
+            ],
+            "isError": False,
+        }
+
+    def _handle_coin_inscribe_edge_text(self, args: Dict[str, Any]) -> Dict[str, Any]:
+        from .edge_milling import evaluate_text_rim_distance
+        text = args.get("text", "LIBERTY")
+        mode = args.get("mode", "incuse")
+        depth = float(args.get("depth", 0.25))
+        diameter = float(args.get("diameter", 40.0))
+        thickness = float(args.get("thickness", 3.0))
+        repeats = int(args.get("repeats", 1))
+        circumference = math.pi * diameter
+        char_pitch_mm = circumference / max(1, len(text) * repeats)
+        res = {
+            "text": text,
+            "mode": mode,
+            "depth_mm": depth,
+            "diameter_mm": diameter,
+            "thickness_mm": thickness,
+            "circumference_mm": round(circumference, 2),
+            "repeats": repeats,
+            "char_pitch_mm": round(char_pitch_mm, 2),
+            "sample_midpoint_intensity": evaluate_text_rim_distance(text.upper(), 0.5, 0.5),
+        }
+        return {
+            "content": [
+                {
+                    "type": "text",
+                    "text": json.dumps(res, indent=2),
+                }
+            ],
+            "isError": False,
+        }
 
     # -----------------------------------------------------------------------
     # JSON-RPC 2.0 Protocol Dispatcher

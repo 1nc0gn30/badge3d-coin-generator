@@ -490,6 +490,28 @@ class CoinParameters:
     smooth_shading: bool = True
     """Whether to compute smooth area-weighted vertex normals."""
 
+    edge_inscription: Optional[str] = None
+    """Text inscription running along the cylindrical rim (e.g. 'E PLURIBUS UNUM')."""
+
+    edge_inscription_depth: float = 0.25
+    """Engraving or embossing depth for edge lettering (in mm)."""
+
+    edge_inscription_mode: str = "incuse"
+    """Lettering mode: 'incuse' (engraved) or 'raised' (embossed)."""
+
+    security_stamp_seed: Optional[str] = None
+    """Seed string for cryptographic hash-derived security anti-counterfeiting rim grooves."""
+
+    security_stamp_grooves: int = 64
+    """Number of hash-derived anti-counterfeiting micro-grooves around perimeter."""
+
+    segmented_sectors: int = 0
+    """Number of reeded sectors for segmented reeding (0 for continuous)."""
+
+    edge_vertical_slices: int = 1
+    """Vertical subdivisions along cylindrical rim."""
+
+
 
 class CoinMeshEngine:
     """3D Parametric Mesh Engine for generating challenge coins and badges."""
@@ -670,11 +692,47 @@ class CoinMeshEngine:
         # -------------------------------------------------------------------
         # 4. OBVERSE OUTER BEVEL (from rim_bevel_in_r to reeded edge at top)
         # -------------------------------------------------------------------
+        from .edge_milling import (
+            CompoundMillingSpec,
+            EdgeInscriptionSpec,
+            SecurityStampSpec,
+            SegmentedReedingSpec,
+            compute_edge_milling_radius,
+        )
+
+        has_advanced_edge = bool(p.edge_inscription or p.security_stamp_seed or p.segmented_sectors > 0)
+        v_slices = max(1, p.edge_vertical_slices)
+        if has_advanced_edge and v_slices < 8:
+            v_slices = 8
+
+        milling_spec = CompoundMillingSpec(
+            reeding_profile=p.reed_profile,
+            reed_count=p.edge_reed_count,
+            reed_depth=p.reed_depth,
+            inscription=EdgeInscriptionSpec(
+                text=p.edge_inscription,
+                depth=p.edge_inscription_depth,
+                mode=p.edge_inscription_mode,
+            ) if p.edge_inscription else None,
+            security_stamp=SecurityStampSpec(
+                seed=p.security_stamp_seed,
+                num_grooves=p.security_stamp_grooves,
+            ) if p.security_stamp_seed else None,
+            segmented=SegmentedReedingSpec(
+                reeded_sectors=p.segmented_sectors,
+                reeds_per_sector=max(1, p.edge_reed_count // max(1, p.segmented_sectors * 2)),
+                reed_depth=p.reed_depth,
+            ) if p.segmented_sectors > 0 else None,
+        )
+
         z_edge_top = half_thick - bevel_h
         edge_top_start = len(vertices)
         for s in range(segments):
             theta = (2.0 * math.pi * s) / segments
-            cur_r = calculate_reed_radius(radius, theta, p.edge_reed_count, p.reed_depth, p.reed_profile)
+            if has_advanced_edge:
+                cur_r = compute_edge_milling_radius(radius, theta, z_edge_top, thickness, milling_spec)
+            else:
+                cur_r = calculate_reed_radius(radius, theta, p.edge_reed_count, p.reed_depth, p.reed_profile)
             x = cur_r * math.cos(theta)
             y = cur_r * math.sin(theta)
             vertices.append((x, y, z_edge_top))
@@ -690,26 +748,38 @@ class CoinMeshEngine:
             faces.append((b_curr, e_next, b_next))
 
         # -------------------------------------------------------------------
-        # 5. CYLINDRICAL REEDED EDGE (from +z_edge_top down to -z_edge_top)
+        # 5. CYLINDRICAL REEDED & INSCRIBED EDGE (from +z_edge_top down to -z_edge_top)
         # -------------------------------------------------------------------
         z_edge_bot = -z_edge_top
-        edge_bot_start = len(vertices)
-        for s in range(segments):
-            theta = (2.0 * math.pi * s) / segments
-            cur_r = calculate_reed_radius(radius, theta, p.edge_reed_count, p.reed_depth, p.reed_profile)
-            x = cur_r * math.cos(theta)
-            y = cur_r * math.sin(theta)
-            vertices.append((x, y, z_edge_bot))
-            uvs.append((s / segments, 0.0))
+        edge_ring_starts = [edge_top_start]
+        for slice_idx in range(1, v_slices + 1):
+            cur_z = z_edge_top - slice_idx * (z_edge_top - z_edge_bot) / v_slices
+            ring_start = len(vertices)
+            edge_ring_starts.append(ring_start)
+            for s in range(segments):
+                theta = (2.0 * math.pi * s) / segments
+                if has_advanced_edge:
+                    cur_r = compute_edge_milling_radius(radius, theta, cur_z, thickness, milling_spec)
+                else:
+                    cur_r = calculate_reed_radius(radius, theta, p.edge_reed_count, p.reed_depth, p.reed_profile)
+                x = cur_r * math.cos(theta)
+                y = cur_r * math.sin(theta)
+                vertices.append((x, y, cur_z))
+                uvs.append((s / segments, 1.0 - (slice_idx / v_slices)))
 
-        for s in range(segments):
-            next_s = (s + 1) % segments
-            et_curr = edge_top_start + s
-            et_next = edge_top_start + next_s
-            eb_curr = edge_bot_start + s
-            eb_next = edge_bot_start + next_s
-            faces.append((et_curr, eb_curr, eb_next))
-            faces.append((et_curr, eb_next, et_next))
+        for slice_idx in range(v_slices):
+            r_top = edge_ring_starts[slice_idx]
+            r_bot = edge_ring_starts[slice_idx + 1]
+            for s in range(segments):
+                next_s = (s + 1) % segments
+                et_curr = r_top + s
+                et_next = r_top + next_s
+                eb_curr = r_bot + s
+                eb_next = r_bot + next_s
+                faces.append((et_curr, eb_curr, eb_next))
+                faces.append((et_curr, eb_next, et_next))
+
+        edge_bot_start = edge_ring_starts[-1]
 
         # -------------------------------------------------------------------
         # 6. REVERSE OUTER BEVEL (from reeded edge bot to reverse rim bevel in)
