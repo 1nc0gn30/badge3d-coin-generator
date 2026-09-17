@@ -45,7 +45,7 @@ def test_mesh_to_binary_stl_bytes(sample_mesh: MeshData, stl_validator) -> None:
 def test_export_binary_stl_file(sample_mesh: MeshData, temp_output_dir: Path, stl_validator) -> None:
     """Verify atomic file writing of Binary STL."""
     out_file = temp_output_dir / "exported_coin.stl"
-    written_path = export_binary_stl(sample_mesh, out_file, header_comment="Google3DCoinStudio")
+    written_path = export_binary_stl(sample_mesh, out_file, header_comment="Badge3DCoinStudio")
 
     assert written_path.exists()
     assert written_path.is_file()

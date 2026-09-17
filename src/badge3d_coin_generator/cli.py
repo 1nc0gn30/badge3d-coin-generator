@@ -7,7 +7,7 @@ system toolchain diagnostics, self-test verification, and embedded Material 3 We
 Subcommands:
 - `generate`: Generate 3D coin mesh to STL, OBJ, or JSON.
 - `presets`: List and filter the coin templates catalog.
-- `serve`: Launch the Google Material 3 3D Coin Studio Web UI server.
+- `serve`: Launch the Badge3D Coin Studio Web UI server (design influenced by Material 3).
 - `mcp`: Run the Model Context Protocol (MCP) server over stdio.
 - `diagnostics` / `doctor` / `platform`: System & 3D toolchain diagnostics.
 - `test`: Run comprehensive internal self-verification suite.
@@ -666,7 +666,7 @@ HTML_STUDIO_FALLBACK = """<!DOCTYPE html>
 <body>
   <header>
     <div class="logo">🪙 <span>Badge3D Coin Studio</span></div>
-    <div style="font-size:0.85rem; color: var(--md-sys-color-on-surface-variant)">Google Material 3 Parametric Mint</div>
+    <div style="font-size:0.85rem; color: var(--md-sys-color-on-surface-variant)">Parametric Mint (Design influenced by Material 3)</div>
   </header>
   <main class="container">
     <div class="viewport-card">
@@ -972,7 +972,7 @@ def handle_serve(args: argparse.Namespace) -> int:
     try:
         with socketserver.TCPServer((host, port), handler_factory) as httpd:
             url = f"http://{host}:{port}"
-            print(f"{Color.green('✔')} Google Material 3 3D Coin Studio server active!")
+            print(f"{Color.green('✔')} Badge3D Coin Studio server active!")
             print(f"  {Color.bold('Local URL')}:    {Color.cyan(url)}")
             print(f"  {Color.bold('API Endpoints')}: {Color.dim(f'{url}/api/presets, {url}/api/export/stl, {url}/api/export/obj')}")
             print(f"  {Color.bold('Press Ctrl+C to stop.')}\n")

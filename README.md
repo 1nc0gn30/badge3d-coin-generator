@@ -4,10 +4,10 @@
 
 **Pure Python 3D Parametric Coin, Medal & Relief Mesh Generator with Real-Time Web Studio & AI Agent MCP Server**
 
-[![CI Matrix](https://img.shields.io/badge/CI-Multi--OS%20%7C%20Py%203.9--3.13-success?logo=github-actions)](https://github.com/google/badge3d-coin-generator/actions)
+[![CI Matrix](https://img.shields.io/badge/CI-Multi--OS%20%7C%20Py%203.9--3.13-success?logo=github-actions)](https://github.com/1nc0gn30/badge3d-coin-generator/actions)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Stdlib)-blue.svg)](https://docs.python.org/3/)
 [![3D Print Ready](https://img.shields.io/badge/3D%20Print-Watertight%20Manifold%20STL-orange.svg)](https://en.wikipedia.org/wiki/STL_(file_format))
-[![PBR Studio UI](https://img.shields.io/badge/Studio%20UI-Google%20Material%203-4285F4.svg?logo=google)](http://localhost:8080)
+[![PBR Studio UI](https://img.shields.io/badge/Studio%20UI-Material%203%20Design-4285F4.svg)](http://localhost:8080)
 [![MCP Server](https://img.shields.io/badge/MCP-Claude%20%7C%20Cursor%20%7C%20Cline-8A2BE2.svg)](https://modelcontextprotocol.io)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
@@ -29,7 +29,7 @@
   - **ASCII STL**: Human-readable STL format for CAD debugging.
   - **Wavefront OBJ & MTL**: Complete polygonal mesh with vertex normals (`vn`), UV texture coordinates (`vt`), and material definitions.
   - **glTF / GLB 2.0**: Ready for Three.js, Babylon.js, WebGL viewers, and augmented reality.
-- **Google 3D Coin Studio Web UI**: Google Material 3 Light/Dark studio with interactive Three.js 3D viewport, real-time metallic PBR shaders (24K Gold, Antique Silver, Bronze, Obsidian, Titanium), turntable controls, dropzone logo uploader, and 1-click STL export.
+- **Badge3D Coin Studio Web UI**: Material 3 influenced Light/Dark studio with interactive Three.js 3D viewport, real-time metallic PBR shaders (24K Gold, Antique Silver, Bronze, Obsidian, Titanium), turntable controls, dropzone logo uploader, and 1-click STL export.
 - **AI Agent MCP Server**: Full Model Context Protocol (MCP) server for Claude Desktop, Cursor, and Cline to create 3D coins through natural language.
 - **Watertight Manifold Geometry**: All generated meshes are verified 2-manifolds with outward-facing consistent normals, zero unstitched boundaries, and zero non-manifold edges.
 
@@ -68,7 +68,7 @@
    │  Binary STL (.stl)           │  Wavefront OBJ (.obj/.mtl)   │
    │  glTF / GLB 2.0 Container    │  Physical Mass Calculator    │
    ├──────────────────────────────┼──────────────────────────────┤
-   │  Google 3D Coin Studio (UI)  │  Model Context Protocol (MCP)│
+   │  Badge3D Coin Studio (UI)   │  Model Context Protocol (MCP)│
    └──────────────────────────────┴──────────────────────────────┘
 ```
 
@@ -80,14 +80,14 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/google/badge3d-coin-generator.git
+git clone https://github.com/1nc0gn30/badge3d-coin-generator.git
 cd badge3d-coin-generator
 
 # Install in editable mode
 pip install -e .
 ```
 
-### 2. Launch Google 3D Coin Studio (Web UI)
+### 2. Launch Badge3D Coin Studio (Web UI)
 
 ```bash
 badge3d serve --port 8080

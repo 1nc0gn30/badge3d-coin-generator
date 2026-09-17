@@ -112,7 +112,7 @@ def test_atomic_write_bytes(temp_output_dir: Path) -> None:
 def test_atomic_write_text(temp_output_dir: Path) -> None:
     """Verify atomic text file writes with specific encodings."""
     file_path = temp_output_dir / "atomic_text.txt"
-    text = "Google 3D Coin Studio \u2022 Pure Python \u2728"
+    text = "Badge3D Coin Studio \u2022 Pure Python \u2728"
 
     written = atomic_write_text(file_path, text, encoding="utf-8")
     assert written.exists()

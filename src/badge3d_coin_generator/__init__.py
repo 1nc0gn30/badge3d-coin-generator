@@ -54,7 +54,7 @@ from .svg_rasterizer import (
 )
 
 __version__ = "0.1.0"
-__author__ = "Google DeepMind / Badge3D Architecture Team"
+__author__ = "Badge3D Architecture Team"
 __description__ = "Pure Python 3D Parametric Coin Generator, MCP Server & CLI"
 __license__ = "MIT"
 

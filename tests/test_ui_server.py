@@ -1,4 +1,4 @@
-"""Tests for Google 3D Coin Studio UI Server and REST API endpoints."""
+"""Tests for Badge3D Coin Studio UI Server and REST API endpoints."""
 
 from __future__ import annotations
 
@@ -141,12 +141,12 @@ def test_http_get_stats_query(live_server: str) -> None:
 
 
 def test_http_get_root_index_html(live_server: str) -> None:
-    """Test GET / serves Google 3D Coin Studio UI HTML."""
+    """Test GET / serves Badge3D Coin Studio UI HTML."""
     req = urllib.request.Request(f"{live_server}/")
     with urllib.request.urlopen(req, timeout=5.0) as resp:
         assert resp.status == 200
         content = resp.read().decode("utf-8")
-        assert "Google 3D Coin Studio" in content or "Badge3D" in content
+        assert "Badge3D Coin Studio" in content or "Badge3D" in content
 
 
 def test_http_post_generate_mesh(live_server: str) -> None:

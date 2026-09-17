@@ -1,6 +1,6 @@
-"""Pure Python stdlib ThreadingHTTPServer & REST API for Google 3D Coin Studio.
+"""Pure Python stdlib ThreadingHTTPServer & REST API for Badge3D Coin Studio.
 
-Serves the Google Material 3 web studio UI, handles real-time 3D coin mesh
+Serves the Web Studio UI (design influenced by Material 3), handles real-time 3D coin mesh
 generation requests, streams binary STL & Wavefront OBJ exports, and computes
 physical metal casting weights and 3D printing statistics.
 
@@ -142,7 +142,7 @@ EMBEDDED_HTML_FALLBACK = """<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Google 3D Coin Studio — Badge3D Relief Generator</title>
+  <title>Badge3D Coin Studio — Relief Generator</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f8f9fa; color: #202124; padding: 40px; text-align: center; }
@@ -154,7 +154,7 @@ EMBEDDED_HTML_FALLBACK = """<!DOCTYPE html>
 </head>
 <body>
   <div class="card">
-    <h1>Google 3D Coin Studio API</h1>
+    <h1>Badge3D Coin Studio API</h1>
     <p>Pure Python stdlib 3D Coin & Relief Mesh Engine is running active on this port.</p>
     <p>API Endpoints: <code>/api/generate</code>, <code>/api/export-stl</code>, <code>/api/export-obj</code>, <code>/api/presets</code>, <code>/api/stats</code></p>
     <a href="/api/presets" class="btn">View API Presets</a>
@@ -273,7 +273,7 @@ def compute_physical_statistics(params: CoinParameters, mesh: Optional[MeshData]
 
 
 class CoinStudioRequestHandler(SimpleHTTPRequestHandler):
-    """Custom HTTP Request Handler serving Google 3D Coin Studio."""
+    """Custom HTTP Request Handler serving Badge3D Coin Studio."""
 
     # Explicit class attribute for public directory path
     public_directory: Path = Path(__file__).resolve().parent.parent.parent / "public"
@@ -503,11 +503,11 @@ def start_ui_server(
     public_dir: Optional[PathLike] = None,
     open_browser: bool = False,
 ) -> None:
-    """Start the Google 3D Coin Studio UI server and listen for incoming connections."""
+    """Start the Badge3D Coin Studio UI server and listen for incoming connections."""
     server = create_ui_server(host=host, port=port, public_dir=public_dir)
     url = f"http://{host}:{port}/"
     print("=" * 70)
-    print(f"  Google 3D Coin Studio — Badge3D Relief & Mesh Engine")
+    print(f"  Badge3D Coin Studio — Relief & Mesh Engine")
     print(f"  Server URL:    {url}")
     print(f"  API Docs:      {url}api/presets")
     print(f"  Dependencies:  Zero external dependencies (Pure Python Stdlib)")
@@ -523,7 +523,7 @@ def start_ui_server(
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nShutting down Google 3D Coin Studio server...")
+        print("\nShutting down Badge3D Coin Studio server...")
     finally:
         server.server_close()
 
@@ -531,7 +531,7 @@ def start_ui_server(
 if __name__ == "__main__":
     import argparse
 
-    parser = argparse.ArgumentParser(description="Start Google 3D Coin Studio UI Server")
+    parser = argparse.ArgumentParser(description="Start Badge3D Coin Studio UI Server")
     parser.add_argument("--host", default="127.0.0.1", help="Host interface (default: 127.0.0.1)")
     parser.add_argument("--port", type=int, default=8080, help="Port number (default: 8080)")
     parser.add_argument("--no-browser", action="store_true", help="Do not automatically open browser")
