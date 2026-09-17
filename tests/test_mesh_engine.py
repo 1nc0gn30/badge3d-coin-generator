@@ -128,7 +128,7 @@ def test_reed_radius_profiles() -> None:
     reed_count = 100
     reed_depth = 0.5
 
-    profiles = ["sinusoidal", "square", "triangular", "trapezoidal", "fluted"]
+    profiles = ["sinusoidal", "square", "triangular", "trapezoidal", "fluted", "helical_milled", "segmented"]
     for prof in profiles:
         # At angle 0
         r0 = calculate_reed_radius(base_r, 0.0, reed_count, reed_depth, profile=prof)

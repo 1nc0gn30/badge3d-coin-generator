@@ -359,6 +359,20 @@ def calculate_reed_radius(
             return base_radius - depth_factor * reed_depth
         return base_radius
 
+    elif profile in ("helical_milled", "helical", "milled_bevel"):
+        # Asymmetric angled helical cutter notch
+        saw = (cycle * 2.0) % 1.0
+        val = math.sin(saw * math.pi) ** 1.5
+        return base_radius - (1.0 - val) * reed_depth
+
+    elif profile in ("segmented", "lettered_edge"):
+        # Alternating reeded groups and plain smooth segments
+        segment_group = int(angle_rad * 6.0 / (2.0 * math.pi)) % 2
+        if segment_group == 0:
+            val = 0.5 * (1.0 + math.cos(2.0 * math.pi * cycle))
+            return base_radius - (1.0 - val) * reed_depth
+        return base_radius
+
     else:
         # Default sinusoidal
         val = 0.5 * (1.0 + math.cos(2.0 * math.pi * cycle))
