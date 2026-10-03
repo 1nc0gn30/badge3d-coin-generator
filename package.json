@@ -1,0 +1,21 @@
+{
+  "name": "badge3d-coin-generator",
+  "version": "1.0.0",
+  "description": "Parametric 3D Coin & Relief Mint, Watertight STL/OBJ Engine, Slicer & MCP Server",
+  "main": "electron/main.cjs",
+  "bin": {
+    "badge3d": "./bin/badge3d.js"
+  },
+  "scripts": {
+    "start": "electron .",
+    "desktop": "electron .",
+    "web": "node bin/badge3d.js web",
+    "cli": "node bin/badge3d.js",
+    "test": "pytest tests/"
+  },
+  "author": "Zoth Core Intelligence",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^34.5.8"
+  }
+}

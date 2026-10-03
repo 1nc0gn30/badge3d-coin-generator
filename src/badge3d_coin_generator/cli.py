@@ -1184,7 +1184,8 @@ def build_parser() -> argparse.ArgumentParser:
     # 3. serve
     srv_p = subparsers.add_parser("serve", aliases=["studio", "web", "ui"], help="Launch Material 3 Web Studio.")
     srv_p.add_argument("--host", type=str, default="127.0.0.1", help="Binding host IP (default: 127.0.0.1).")
-    srv_p.add_argument("-P", "--port", type=int, default=8080, help="Port to listen on (default: 8080).")
+    srv_p.add_argument("-P", "--port", type=int, default=8099, help="Port to listen on (default: 8099).")
+    srv_p.add_argument("-p", dest="port", type=int, help=argparse.SUPPRESS)
     srv_p.add_argument("--no-browser", dest="open_browser", action="store_false", help="Do not open browser automatically.")
     srv_p.set_defaults(open_browser=True)
 

@@ -1,9 +1,58 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Badge3D Coin Studio — 3D Relief & Coin Generator (Design influenced by Material 3)</title>
+  <title>Badge3D Coin Studio — 3D WebGL Coin & Relief Token Generator</title>
+  <meta name="description" content="Sovereign browser-based 3D coin, medallion, and relief badge generator. Export high-poly 3D models and renders instantly with dual Stripe & Web3 Solana rails.">
+  <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="canonical" href="https://badge3d-coin-studio.netlify.app/">
+
+  <!-- OpenGraph -->
+  <meta property="og:title" content="Badge3D Coin Studio — 3D Coin & Relief Token Generator">
+  <meta property="og:description" content="Create stunning 3D metallic coins, custom tokens, and relief medallions in WebGL.">
+  <meta property="og:url" content="https://badge3d-coin-studio.netlify.app/">
+  <meta property="og:type" content="website">
+
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://badge3d-coin-studio.netlify.app/#app",
+        "name": "Badge3D Coin Studio",
+        "url": "https://badge3d-coin-studio.netlify.app/",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All",
+        "description": "3D WebGL relief token and metallic medallion studio with instant 3D rendering and export.",
+        "offers": {
+          "@type": "Offer",
+          "price": "15.00",
+          "priceCurrency": "USD",
+          "url": "https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Can I export 3D coins generated in Badge3D Coin Studio?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Yes, Badge3D Coin Studio enables direct browser-based export of 3D geometry and ultra-high-resolution rendered textures."
+            }
+          }
+        ]
+      }
+    ]
+  </script>
+
+  <!-- DePay Web3 Solana CDN -->
+  <script src="https://integrate.depay.com/widgets/v13.js"></script>
+
   <!-- Google Fonts: Google Sans / Roboto / Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -17,9 +66,9 @@
   <style>
     :root {
       /* Google Material 3 Light Mode Palette */
-      --md-sys-color-primary: #B8860B;
+      --md-sys-color-primary: #1a73e8;
       --md-sys-color-on-primary: #ffffff;
-      --md-sys-color-primary-container: #F5E6AB;
+      --md-sys-color-primary-container: #d2e3fc;
       --md-sys-color-on-primary-container: #041e49;
       --md-sys-color-secondary: #5f6368;
       --md-sys-color-surface: #ffffff;
@@ -33,7 +82,7 @@
       --md-sys-color-google-red: #ea4335;
       --md-sys-color-google-yellow: #fbbc04;
       --md-sys-color-google-green: #34a853;
-      --md-sys-color-google-blue: #B8860B;
+      --md-sys-color-google-blue: #1a73e8;
       
       --md-sys-shape-corner-small: 8px;
       --md-sys-shape-corner-medium: 12px;
@@ -48,19 +97,19 @@
     }
 
     [data-theme="dark"] {
-      --md-sys-color-primary: #D4AF37;
-      --md-sys-color-on-primary: #041e49;
-      --md-sys-color-primary-container: #6B5308;
-      --md-sys-color-on-primary-container: #F5E6AB;
-      --md-sys-color-secondary: #9aa0a6;
-      --md-sys-color-surface: #202124;
-      --md-sys-color-surface-dim: #171717;
-      --md-sys-color-surface-container: #292a2d;
-      --md-sys-color-surface-container-high: #35363a;
-      --md-sys-color-on-surface: #e8eaed;
-      --md-sys-color-on-surface-variant: #9aa0a6;
-      --md-sys-color-outline: #5f6368;
-      --md-sys-color-outline-variant: #3c4043;
+      --md-sys-color-primary: #d4af37;
+      --md-sys-color-on-primary: #08080b;
+      --md-sys-color-primary-container: #1a1811;
+      --md-sys-color-on-primary-container: #fef08a;
+      --md-sys-color-secondary: #a1a1aa;
+      --md-sys-color-surface: #08080b;
+      --md-sys-color-surface-dim: #050507;
+      --md-sys-color-surface-container: #14141c;
+      --md-sys-color-surface-container-high: #1c1c27;
+      --md-sys-color-on-surface: #f4f4f5;
+      --md-sys-color-on-surface-variant: #a1a1aa;
+      --md-sys-color-outline: #27272a;
+      --md-sys-color-outline-variant: #18181b;
       --md-sys-elevation-1: 0 1px 3px 0 rgba(0, 0, 0, 0.4);
       --md-sys-elevation-2: 0 2px 8px 2px rgba(0, 0, 0, 0.5);
       --md-sys-elevation-3: 0 4px 16px 4px rgba(0, 0, 0, 0.6);
@@ -634,11 +683,9 @@
       opacity: 1;
     }
   </style>
-  <link rel="stylesheet" href="atelier.css">
 </head>
-<body data-theme="light">
-
-  <!-- Top Material App Bar -->
+<body data-theme="dark">
+<!-- Top Material App Bar -->
   <header class="google-appbar">
     <div class="brand-container">
       <div class="google-dots">
@@ -654,6 +701,12 @@
     </div>
 
     <div class="appbar-actions">
+      <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" style="padding: 6px 14px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 4px;">
+        💳 Buy License ($15)
+      </a>
+      <button onclick="if(window.DePayWidgets){DePayWidgets.Payment({integration:'428790dd-7ad1-407c-8ecf-c048c77a4cb8'})}else{alert('DePay SDK connecting...')}" style="padding: 6px 14px; background: #14F195; color: #000; border-radius: 6px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
+        ⚡ Pay with SOL
+      </button>
       <div class="server-status-chip" id="server-status" title="Pure Python HTTP Server Status">
         <div class="status-pulse" id="status-dot"></div>
         <span id="status-label">Studio API Connected</span>
@@ -1144,23 +1197,48 @@
       camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
       camera.position.set(0, 35, 65);
 
-      // Renderer
-      renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
-      renderer.setSize(width, height);
-      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-      renderer.shadowMap.enabled = true;
-      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-      renderer.toneMapping = THREE.ACESFilmicToneMapping;
-      renderer.toneMappingExposure = 1.1;
-      container.appendChild(renderer.domElement);
+      // Check WebGL Context Availability before initializing Three.js WebGLRenderer
+      const testCanvas = document.createElement('canvas');
+      const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
+      if (!gl) {
+        // Fallback for software renderer / headless environments
+        const fallbackCanvas = document.createElement('canvas');
+        fallbackCanvas.width = width;
+        fallbackCanvas.height = height;
+        const ctx = fallbackCanvas.getContext('2d');
+        if (ctx) {
+          ctx.fillStyle = '#12141D';
+          ctx.fillRect(0, 0, width, height);
+          ctx.fillStyle = '#F59E0B';
+          ctx.font = 'bold 16px monospace';
+          ctx.textAlign = 'center';
+          ctx.fillText('⚡ 3D Relief Studio • Ready (WebGL Acceleration Recommended)', width / 2, height / 2);
+        }
+        container.appendChild(fallbackCanvas);
+        return;
+      }
 
-      // OrbitControls
-      controls = new THREE.OrbitControls(camera, renderer.domElement);
-      controls.enableDamping = true;
-      controls.dampingFactor = 0.05;
-      controls.maxDistance = 200;
-      controls.minDistance = 15;
-      controls.target.set(0, 0, 0);
+      // Renderer
+      try {
+        renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        renderer.toneMapping = THREE.ACESFilmicToneMapping;
+        renderer.toneMappingExposure = 1.1;
+        container.appendChild(renderer.domElement);
+
+        // OrbitControls
+        controls = new THREE.OrbitControls(camera, renderer.domElement);
+        controls.enableDamping = true;
+        controls.dampingFactor = 0.05;
+        controls.maxDistance = 200;
+        controls.minDistance = 15;
+        controls.target.set(0, 0, 0);
+      } catch (err) {
+        return;
+      }
 
       // Studio Lighting Rig
       setupStudioLighting();
@@ -1727,6 +1805,7 @@
 
     function onWindowResize() {
       const container = document.getElementById('three-canvas');
+      if (!container || !renderer || !camera) return;
       const width = container.clientWidth;
       const height = container.clientHeight;
       camera.aspect = width / height;
@@ -1735,29 +1814,27 @@
     }
 
     function animate() {
+      if (!renderer || !scene || !camera) return;
       requestAnimationFrame(animate);
       if (state.turntable && coinMeshGroup) {
         coinMeshGroup.rotation.y += 0.008;
       }
-      controls.update();
+      if (controls && controls.update) controls.update();
       renderer.render(scene, camera);
     }
 
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
       initThreeEngine();
-      // Probe backend
-      fetch('/api/health')
-        .then(r => r.json())
-        .then(d => {
-          document.getElementById('status-dot').classList.remove('offline');
-          document.getElementById('status-label').innerText = 'Studio API Online';
-        })
-        .catch(() => {
-          document.getElementById('status-dot').classList.add('offline');
-          document.getElementById('status-label').innerText = 'Standalone Browser Mode';
-        });
+      const dot = document.getElementById('status-dot');
+      const lbl = document.getElementById('status-label');
+      if (dot) dot.classList.remove('offline');
+      if (lbl) lbl.innerText = 'Studio Active (Client Engine)';
     });
   </script>
+  
+  <footer style="text-align: center; padding: 2rem 1rem; font-size: 0.8rem; color: var(--text-secondary); border-top: 1px solid var(--border-divider); margin-top: 2rem; background: var(--surface-bg);">
+    <div>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">NullAI Platform</a></div>
+  </footer>
 </body>
 </html>

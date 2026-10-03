@@ -674,7 +674,7 @@ class CoinStudioRequestHandler(SimpleHTTPRequestHandler):
 
 def create_ui_server(
     host: str = "127.0.0.1",
-    port: int = 8080,
+    port: int = 8099,
     public_dir: Optional[PathLike] = None,
 ) -> ThreadingHTTPServer:
     """Instantiate and configure the ThreadingHTTPServer instance for the studio."""
@@ -693,7 +693,7 @@ def create_ui_server(
 
 def start_ui_server(
     host: str = "127.0.0.1",
-    port: int = 8080,
+    port: int = 8099,
     public_dir: Optional[PathLike] = None,
     open_browser: bool = False,
 ) -> None:
@@ -727,7 +727,7 @@ if __name__ == "__main__":
 
     parser = argparse.ArgumentParser(description="Start Badge3D Coin Studio UI Server")
     parser.add_argument("--host", default="127.0.0.1", help="Host interface (default: 127.0.0.1)")
-    parser.add_argument("--port", type=int, default=8080, help="Port number (default: 8080)")
+    parser.add_argument("--port", type=int, default=8099, help="Port number (default: 8099)")
     parser.add_argument("--no-browser", action="store_true", help="Do not automatically open browser")
     args = parser.parse_args()
 

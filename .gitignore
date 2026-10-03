@@ -9,3 +9,9 @@ build/
 *.obj
 *.glb
 
+
+.env
+node_modules/
+
+# Local Netlify folder
+.netlify

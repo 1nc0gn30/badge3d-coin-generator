@@ -1,0 +1,20 @@
+[Desktop Entry]
+Version=1.0
+Type=Application
+Name=Badge3D Coin Studio
+GenericName=Parametric 3D Relief & Coin Mint
+Comment=3D Coin Generator, High-Resolution Relief Displacement, Watertight Slicer & MCP Server
+Exec=/usr/local/bin/badge3d desktop
+Icon=/media/neo/f2fdda77-178b-4603-ae80-c7aa4cd97908/zoth-micro-repos/badge3d-coin-generator/assets/icon.png
+Terminal=false
+Categories=Development;Graphics;3DGraphics;Engineering;
+StartupNotify=true
+Actions=CLI;Web;
+
+[Desktop Action CLI]
+Name=Open Badge3D CLI
+Exec=x-terminal-emulator -e "/usr/local/bin/badge3d --help"
+
+[Desktop Action Web]
+Name=Open Web UI (Port 8099)
+Exec=/usr/local/bin/badge3d web
