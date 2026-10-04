@@ -1,0 +1,8 @@
+# Badge3D Coin Studio — Context & Model Discovery (llms.txt)
+> Sovereign in-browser developer utility engineered by Neal Frazier Tech.
+- [Application]: https://badge3d-coin-generator.netlify.app/
+- [Terms of Service]: https://badge3d-coin-generator.netlify.app/terms.html
+- [Privacy Policy]: https://badge3d-coin-generator.netlify.app/privacy.html
+- [Support & FAQ]: https://badge3d-coin-generator.netlify.app/support.html
+- [Netlify AX API]: https://badge3d-coin-generator.netlify.app/api/netlify-ax.json
+- [Netlify MCP API]: https://badge3d-coin-generator.netlify.app/api/netlify-ax-mcp.json

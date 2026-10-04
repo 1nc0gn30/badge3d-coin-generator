@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Privacy Policy — badge3d-coin-generator</title>
+  <meta name="description" content="Privacy Policy for badge3d-coin-generator. 100% client-side zero-logging guarantee by Neal Frazier Tech.">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://badge3d-coin-generator.netlify.app/privacy.html">
+
+  <meta property="og:title" content="Privacy Policy — badge3d-coin-generator">
+  <meta property="og:description" content="100% Client-Side Local Execution Guarantee. Zero telemetry, zero server-side logging, zero selling of user data.">
+  <meta property="og:url" content="https://badge3d-coin-generator.netlify.app/privacy.html">
+  <meta property="og:type" content="website">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@1nc0gn30">
+  <meta name="twitter:creator" content="@1nc0gn30">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07090E;
+      --surface: #0E121B;
+      --surface-dim: #090C14;
+      --surface-bright: #151B28;
+      --outline: #222938;
+      --outline-light: rgba(99, 102, 241, 0.2);
+      --primary: #10B981;
+      --primary-rgb: 16, 185, 129;
+      --accent: #6366F1;
+      --accent-rgb: 99, 102, 241;
+      --on-surface: #F8FAFC;
+      --on-surface-variant: #94A3B8;
+      --font-brand: 'Syne', sans-serif;
+      --font-tech: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      min-height: 100vh;
+      line-height: 1.6;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    .aurora-container {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+    }
+    .aurora-blob-1 {
+      position: absolute; top: -10%; left: 15%; width: 50vw; height: 50vw;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.08) 0%, transparent 70%);
+      filter: blur(80px);
+    }
+    .aurora-blob-2 {
+      position: absolute; bottom: 10%; right: 10%; width: 45vw; height: 45vw;
+      background: radial-gradient(circle, rgba(16, 185, 129, 0.06) 0%, transparent 70%);
+      filter: blur(90px);
+    }
+    header {
+      position: sticky; top: 0; z-index: 50;
+      background: rgba(7, 9, 14, 0.85); backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--outline); padding: 0.85rem 1.5rem;
+    }
+    .header-inner {
+      max-width: 1080px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; text-decoration: none; color: #fff;
+    }
+    .brand-logo {
+      width: 32px; height: 32px; border-radius: var(--radius-sm);
+      background: linear-gradient(135deg, #10B981, #6366F1);
+      display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; color: #fff;
+    }
+    .brand-title {
+      font-family: var(--font-brand); font-size: 1.05rem; font-weight: 700; letter-spacing: -0.02em;
+    }
+    .nav-links {
+      display: flex; gap: 1rem; align-items: center;
+    }
+    .nav-link {
+      font-size: 0.85rem; color: var(--on-surface-variant); text-decoration: none;
+      padding: 0.35rem 0.75rem; border-radius: var(--radius-sm); transition: var(--transition);
+    }
+    .nav-link:hover, .nav-link.active {
+      color: #fff; background: rgba(255, 255, 255, 0.05);
+    }
+    main {
+      position: relative; z-index: 10; max-width: 900px; margin: 0 auto; padding: 3rem 1.5rem 5rem;
+    }
+    .page-title {
+      font-family: var(--font-brand); font-size: 2.25rem; font-weight: 800;
+      letter-spacing: -0.03em; margin-bottom: 0.5rem; color: #fff;
+    }
+    .page-meta {
+      font-size: 0.85rem; color: var(--on-surface-variant); margin-bottom: 2.5rem;
+    }
+    .legal-card {
+      background: var(--surface); border: 1px solid var(--outline);
+      border-radius: var(--radius-md); padding: 1.75rem; margin-bottom: 1.75rem;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    }
+    h2 {
+      font-family: var(--font-tech); font-size: 1.25rem; font-weight: 700;
+      color: #F1F5F9; margin-bottom: 0.75rem; display: flex; align-items: center; gap: 8px;
+    }
+    p, li {
+      font-size: 0.9rem; color: #CBD5E1; margin-bottom: 0.75rem; line-height: 1.65;
+    }
+    ul { padding-left: 1.4rem; margin-bottom: 0.75rem; }
+    .callout-box {
+      background: rgba(16, 185, 129, 0.08); border-left: 3px solid var(--primary);
+      padding: 1rem 1.25rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 1rem 0; font-size: 0.85rem; color: #D1FAE5;
+    }
+    .callout-warn {
+      background: rgba(239, 68, 68, 0.08); border-left: 3px solid #EF4444;
+      padding: 1rem 1.25rem; border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+      margin: 1rem 0; font-size: 0.85rem; color: #FEE2E2;
+    }
+    footer {
+      border-top: 1px solid var(--outline); padding: 2rem 1.5rem;
+      background: var(--surface-dim); font-size: 0.82rem; color: var(--on-surface-variant); text-align: center;
+    }
+    .footer-inner {
+      max-width: 1080px; margin: 0 auto; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem;
+    }
+    .footer-links a {
+      color: var(--on-surface-variant); text-decoration: none; margin-left: 1rem; transition: var(--transition);
+    }
+    .footer-links a:hover { color: #fff; }
+    @media (max-width: 768px) {
+      .page-title { font-size: 1.85rem; }
+      .legal-card { padding: 1.25rem; }
+      .footer-inner { flex-direction: column; text-align: center; }
+      .footer-links a { margin: 0 0.5rem; }
+    }
+  </style>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        "name": "Privacy Policy — badge3d-coin-generator",
+        "url": "https://badge3d-coin-generator.netlify.app/privacy.html",
+        "description": "100% Client-Side Local Execution Guarantee. Zero telemetry, zero cloud data storage by Neal Frazier Tech.",
+        "publisher": {
+          "@type": "Organization",
+          "name": "Neal Frazier Tech",
+          "url": "https://nealfrazier.tech"
+        }
+      }
+    ]
+  }
+  </script>
+</head>
+<body>
+  <div class="aurora-container">
+    <div class="aurora-blob-1"></div>
+    <div class="aurora-blob-2"></div>
+  </div>
+
+  <header>
+    <div class="header-inner">
+      <a href="/" class="brand">
+        <div class="brand-logo">⚡</div>
+        <div class="brand-title">badge3d-coin-generator</div>
+      </a>
+      <nav class="nav-links">
+        <a href="/" class="nav-link">← Workspace</a>
+        <a href="/terms.html" class="nav-link">Terms</a>
+        <a href="/privacy.html" class="nav-link active">Privacy</a>
+        <a href="/support.html" class="nav-link">Support &amp; FAQ</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <h1 class="page-title">Privacy Policy</h1>
+    <p class="page-meta">Last Updated: October 4, 2026 • 100% Client-Side Privacy Commitment</p>
+
+    <div class="legal-card">
+      <h2>1. The Zero-Telemetry Guarantee</h2>
+      <p>At <strong>badge3d-coin-generator</strong> and <strong>Neal Frazier Tech</strong>, your code, data, and keys remain strictly yours. We believe modern developer utilities should operate without surveillance.</p>
+      <div class="callout-box">
+        <strong>Absolute Local Isolation:</strong> 100% of computational logic, AST scanning, code transformations, and file generations occur directly within your local browser execution context. No data ever leaves your device.
+      </div>
+    </div>
+
+    <div class="legal-card">
+      <h2>2. What We Collect (And What We Don't)</h2>
+      <ul>
+        <li><strong>We DO NOT collect:</strong> Your source code, configuration files, secrets, prompts, or AST outputs.</li>
+        <li><strong>We DO NOT run:</strong> Third-party tracking scripts, advertising trackers, or behavioral session recording software.</li>
+        <li><strong>Local Storage Only:</strong> We store your Pro activation status and workspace drafts in your browser's local <code>localStorage</code> purely for state persistence.</li>
+      </ul>
+    </div>
+
+    <div class="legal-card">
+      <h2>3. Payment &amp; Checkout Information</h2>
+      <p>When purchasing a Pro commercial license:</p>
+      <ul>
+        <li><strong>Stripe</strong> processes your credit card / digital wallet data under industry-standard PCI-DSS Level 1 compliance. We never see or store your full card details.</li>
+        <li><strong>DePay / Solana</strong> processes transactions directly on the public blockchain without intermediate custodial accounts.</li>
+      </ul>
+    </div>
+
+    <div class="legal-card">
+      <h2>4. Compliance &amp; Contact</h2>
+      <p>Our architecture inherently complies with GDPR, CCPA, and CPRA standards because we do not ingest, transfer, or commercialize your personal information. For any privacy inquiries, reach us directly at <code>neal@nealfrazier.tech</code>.</p>
+    </div>
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+      <div>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30" target="_blank" style="color: var(--primary); text-decoration: none;">@1nc0gn30</a>) • NullAI Platform</div>
+      <div class="footer-links">
+        <a href="/">Workspace</a>
+        <a href="/terms.html">Terms</a>
+        <a href="/privacy.html">Privacy</a>
+        <a href="/support.html">Support</a>
+        <a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank">GitHub</a>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

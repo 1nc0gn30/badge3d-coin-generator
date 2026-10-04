@@ -1,0 +1,11 @@
+# Autonomous AI Agent Discovery & Crawling Policy (ai.txt)
+software-name: Badge3D Coin Studio
+publisher: Neal Frazier Tech (@1nc0gn30)
+platform: NullAI Platform
+ai-crawling: allowed
+ai-grounding: allowed
+ai-search-index: allowed
+sitemap: https://badge3d-coin-generator.netlify.app/sitemap.xml
+robots-txt: https://badge3d-coin-generator.netlify.app/robots.txt
+netlify-ax-api: https://badge3d-coin-generator.netlify.app/api/netlify-ax.json
+netlify-mcp-api: https://badge3d-coin-generator.netlify.app/api/netlify-ax-mcp.json

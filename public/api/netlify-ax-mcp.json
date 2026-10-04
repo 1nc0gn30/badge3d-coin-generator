@@ -1,0 +1,49 @@
+{
+  "name": "zoth-netlify-ax-expert",
+  "version": "3.5.0",
+  "description": "Sovereign Netlify Build Auditor, Self-Healing Pipeline, and AEO Diagnostics Server",
+  "tools": [
+    {
+      "name": "netlify_audit",
+      "description": "Performs full 14-point deep AST audit of Netlify build configuration, redirects, and assets.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "project_path": {
+            "type": "string",
+            "description": "Local repository directory"
+          }
+        }
+      }
+    },
+    {
+      "name": "netlify_self_heal",
+      "description": "Autonomously heals circular redirects, missing headers, unclosed tags, and legal routes.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "project_path": {
+            "type": "string",
+            "description": "Local repository directory"
+          }
+        }
+      }
+    },
+    {
+      "name": "netlify_fetch_status",
+      "description": "Dynamically fetches live Netlify AX build health and headers for any deployed app URL.",
+      "parameters": {
+        "type": "object",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Target application URL"
+          }
+        },
+        "required": [
+          "url"
+        ]
+      }
+    }
+  ]
+}
