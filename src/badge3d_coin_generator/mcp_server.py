@@ -481,6 +481,7 @@ class MCPServer:
         self.initialized = False
         self._tool_handlers: Dict[str, Callable[[Dict[str, Any]], Dict[str, Any]]] = {
             "coin_generate": self._handle_coin_generate,
+            "generate_coin": self._handle_coin_generate,
             "coin_export_stl": self._handle_coin_export_stl,
             "coin_export_obj": self._handle_coin_export_obj,
             "coin_presets": self._handle_coin_presets,
