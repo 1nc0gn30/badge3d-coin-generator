@@ -5,7 +5,7 @@ platform: NullAI Platform
 ai-crawling: allowed
 ai-grounding: allowed
 ai-search-index: allowed
-sitemap: https://badge3d-coin-generator.netlify.app/sitemap.xml
-robots-txt: https://badge3d-coin-generator.netlify.app/robots.txt
-netlify-ax-api: https://badge3d-coin-generator.netlify.app/api/netlify-ax.json
-netlify-mcp-api: https://badge3d-coin-generator.netlify.app/api/netlify-ax-mcp.json
+sitemap: https://badge3d-coin-studio.netlify.app/sitemap.xml
+robots-txt: https://badge3d-coin-studio.netlify.app/robots.txt
+netlify-ax-api: https://badge3d-coin-studio.netlify.app/api/netlify-ax.json
+netlify-mcp-api: https://badge3d-coin-studio.netlify.app/api/netlify-ax-mcp.json

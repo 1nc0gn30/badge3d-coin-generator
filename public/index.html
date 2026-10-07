@@ -6,6 +6,7 @@
   <title>Badge3D Coin Studio — 3D WebGL Coin & Relief Token Generator</title>
   <meta name="description" content="Sovereign browser-based 3D coin, medallion, and relief badge generator. Export high-poly 3D models and renders instantly with dual Stripe & Web3 Solana rails.">
   <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="canonical" href="https://badge3d-coin-studio.netlify.app/">
 
   <!-- OpenGraph -->
@@ -792,6 +793,40 @@
       transform: translateY(0);
       opacity: 1;
     }
+
+    /* Paywall Frosted Glass Blur & Lock */
+    .paywall-locked-container {
+      position: relative;
+    }
+    .paywall-blur-target {
+      filter: blur(6px);
+      pointer-events: none;
+      user-select: none;
+      transition: filter 0.3s ease;
+    }
+    .paywall-unlocked .paywall-blur-target {
+      filter: none;
+      pointer-events: auto;
+      user-select: auto;
+    }
+    .paywall-lock-overlay {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 12px;
+      background: rgba(12, 13, 20, 0.75);
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      border-radius: var(--md-sys-shape-corner-medium);
+      z-index: 5;
+    }
+    .paywall-unlocked .paywall-lock-overlay {
+      display: none !important;
+    }
   </style>
 </head>
 <body data-theme="dark">
@@ -826,6 +861,9 @@
       <button class="icon-button" id="theme-toggle-btn" title="Toggle Light/Dark Theme">
         <span class="material-symbols-outlined">dark_mode</span>
       </button>
+      <a href="/virginia-beach-coin-minting" class="icon-button" title="Virginia Beach Tooling Desk" style="font-size: 11px; text-decoration: none; color: var(--md-sys-color-on-surface-variant); display: inline-flex; align-items: center; padding: 4px 8px; border-radius: 6px; font-weight: 600; border: 1px solid var(--md-sys-color-outline-variant);">
+        VA Beach Desk
+      </a>
       <a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" class="icon-button" title="View Source on GitHub">
         <span class="material-symbols-outlined">code</span>
       </a>
@@ -868,23 +906,23 @@
           </div>
         </div>
         <div class="presets-grid">
-          <button class="preset-btn active" onclick="applyPreset('challenge_coin')">
+          <button class="preset-btn active" onclick="applyPreset('challenge_coin', event)">
             <span class="preset-name">Challenge Coin</span>
             <span class="preset-desc">40mm Military Brass</span>
           </button>
-          <button class="preset-btn" onclick="applyPreset('crypto_token')">
+          <button class="preset-btn" onclick="applyPreset('crypto_token', event)">
             <span class="preset-name">Crypto Token</span>
             <span class="preset-desc">35mm Web3 Cyber</span>
           </button>
-          <button class="preset-btn" onclick="applyPreset('roman_medallion')">
+          <button class="preset-btn" onclick="applyPreset('roman_medallion', event)">
             <span class="preset-name">Roman Medallion</span>
             <span class="preset-desc">42mm Antique Silver</span>
           </button>
-          <button class="preset-btn" onclick="applyPreset('sovereign_gold')">
+          <button class="preset-btn" onclick="applyPreset('sovereign_gold', event)">
             <span class="preset-name">Sovereign Gold</span>
             <span class="preset-desc">22mm Fine Bullion</span>
           </button>
-          <button class="preset-btn" onclick="applyPreset('scifi_hex_badge')">
+          <button class="preset-btn" onclick="applyPreset('scifi_hex_badge', event)">
             <span class="preset-name">Sci-Fi Hex</span>
             <span class="preset-desc">38mm Titanium Badge</span>
           </button>
@@ -1101,25 +1139,41 @@
     <aside class="specs-panel">
       
       <!-- 1-Click Export Section -->
-      <section class="studio-card">
+      <section class="studio-card paywall-locked-container" id="exportPaywallSection">
         <div class="card-header">
           <div class="card-title">
             <span class="material-symbols-outlined">download</span>
             Production Export
           </div>
+          <span style="font-size: 10px; font-weight: 700; color: #d4af37; background: rgba(212,175,55,0.15); padding: 2px 6px; border-radius: 4px;">PRO EXPORT</span>
         </div>
-        <button class="btn-primary" onclick="exportSTL()">
-          <span class="material-symbols-outlined">view_in_ar</span>
-          Export Binary STL (3D Print)
-        </button>
-        <button class="btn-secondary" onclick="exportOBJ()">
-          <span class="material-symbols-outlined">deployed_code</span>
-          Export Wavefront OBJ (CAD)
-        </button>
-        <button class="btn-secondary" onclick="copyMCPToolCall()">
-          <span class="material-symbols-outlined">terminal</span>
-          Copy MCP Tool Call
-        </button>
+        <div class="paywall-blur-target" style="display: flex; flex-direction: column; gap: 8px;">
+          <button class="btn-primary" onclick="exportSTL()">
+            <span class="material-symbols-outlined">view_in_ar</span>
+            Export Binary STL (3D Print)
+          </button>
+          <button class="btn-secondary" onclick="exportOBJ()">
+            <span class="material-symbols-outlined">deployed_code</span>
+            Export Wavefront OBJ (CAD)
+          </button>
+          <button class="btn-secondary" onclick="copyMCPToolCall()">
+            <span class="material-symbols-outlined">terminal</span>
+            Copy MCP Tool Call
+          </button>
+        </div>
+        <div class="paywall-lock-overlay" id="exportLockOverlay">
+          <span style="font-size: 24px; margin-bottom: 4px;">🔒</span>
+          <strong style="color: #fff; font-size: 13px; margin-bottom: 4px;">Production Exports Locked</strong>
+          <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 8px; line-height: 1.3;">Unlock unlimited binary STL, OBJ CAD models &amp; agent toolcalls.</p>
+          <div style="display: flex; gap: 6px; width: 100%; justify-content: center;">
+            <button onclick="openPaywallModal()" style="padding: 6px 12px; background: #635BFF; color: #fff; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+              Unlock ($19)
+            </button>
+            <button onclick="openDePayCheckout()" style="padding: 6px 10px; background: #14F195; color: #000; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer;">
+              Pay SOL
+            </button>
+          </div>
+        </div>
       </section>
 
       <!-- Geometry Statistics -->
@@ -1604,13 +1658,14 @@
       buildProceduralCoinGeometry();
     }
 
-    function applyPreset(presetKey) {
+    function applyPreset(presetKey, evt) {
       const p = PRESETS[presetKey];
       if (!p) return;
 
       // Highlight active chip
       document.querySelectorAll('.preset-btn').forEach(btn => btn.classList.remove('active'));
-      event.currentTarget.classList.add('active');
+      const activeBtn = (evt && evt.currentTarget) ? evt.currentTarget : (typeof event !== 'undefined' && event && event.currentTarget ? event.currentTarget : null);
+      if (activeBtn) activeBtn.classList.add('active');
 
       document.getElementById('param-shape').value = p.shape;
       document.getElementById('param-radius').value = p.radius;
@@ -1878,6 +1933,10 @@
     }
 
     function copyMCPToolCall() {
+      if (!isProLicensed) {
+        openPaywallModal();
+        return;
+      }
       const mcpJson = JSON.stringify({
         tool: "generate_coin",
         arguments: {
@@ -1987,6 +2046,10 @@
         const container = document.getElementById("header-pro-container");
         if (container) {
           container.innerHTML = '<span style="color: #10B981; font-weight: 700; font-size: 11px; border: 1px solid #10B981; padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.1);">⭐ PRO ACTIVE</span>';
+        }
+        const exportSection = document.getElementById("exportPaywallSection");
+        if (exportSection) {
+          exportSection.classList.add("paywall-unlocked");
         }
       }
     }
@@ -2112,6 +2175,8 @@
       <a href="/terms" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">Terms of Service</a>
       <a href="/privacy" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">Privacy Policy</a>
       <a href="/support" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">Support & FAQ</a>
+      <a href="/virginia-beach-coin-minting" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">VA Beach Tooling</a>
+      <a href="/cities/norfolk-va/aeo/" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">Norfolk Tooling</a>
       <a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">GitHub Repository</a>
     </div>
     <div>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">NullAI Platform</a></div>

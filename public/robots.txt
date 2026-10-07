@@ -1,22 +1,29 @@
 User-agent: *
 Allow: /
+Crawl-delay: 0
 
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Bingbot
 Allow: /
+Crawl-delay: 0
 
 User-agent: PerplexityBot
 Allow: /
+Crawl-delay: 0
 
 User-agent: ClaudeBot
 Allow: /
+Crawl-delay: 0
 
 User-agent: GPTBot
 Allow: /
+Crawl-delay: 0
 
 User-agent: Applebot
 Allow: /
+Crawl-delay: 0
 
 Sitemap: https://badge3d-coin-studio.netlify.app/sitemap.xml

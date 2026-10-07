@@ -12,6 +12,11 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
 
 [[redirects]]
+  from = "/favicon.ico"
+  to = "/favicon.svg"
+  status = 200
+
+[[redirects]]
   from = "/terms"
   to = "/terms.html"
   status = 200
@@ -29,6 +34,16 @@
 [[redirects]]
   from = "/contact"
   to = "/support.html"
+  status = 200
+
+[[redirects]]
+  from = "/virginia-beach-coin-minting"
+  to = "/virginia-beach-coin-minting.html"
+  status = 200
+
+[[redirects]]
+  from = "/cities/norfolk-va/aeo"
+  to = "/cities/norfolk-va/aeo/index.html"
   status = 200
 
 [[redirects]]
