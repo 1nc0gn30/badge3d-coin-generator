@@ -42,7 +42,22 @@
   status = 200
 
 [[redirects]]
+  from = "/virginia-beach"
+  to = "/virginia-beach-coin-minting.html"
+  status = 200
+
+[[redirects]]
+  from = "/norfolk"
+  to = "/cities/norfolk-va/aeo/index.html"
+  status = 200
+
+[[redirects]]
   from = "/cities/norfolk-va/aeo"
+  to = "/cities/norfolk-va/aeo/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cities/norfolk-va/aeo/"
   to = "/cities/norfolk-va/aeo/index.html"
   status = 200
 
