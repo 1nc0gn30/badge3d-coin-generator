@@ -62,6 +62,21 @@
   status = 200
 
 [[redirects]]
+  from = "/boise"
+  to = "/cities/boise-id/aeo/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cities/boise-id/aeo"
+  to = "/cities/boise-id/aeo/index.html"
+  status = 200
+
+[[redirects]]
+  from = "/cities/boise-id/aeo/"
+  to = "/cities/boise-id/aeo/index.html"
+  status = 200
+
+[[redirects]]
   from = "/api/netlify-ax"
   to = "/api/netlify-ax.json"
   status = 200

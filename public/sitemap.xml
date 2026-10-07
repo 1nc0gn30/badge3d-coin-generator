@@ -32,7 +32,13 @@
   </url>
   <url>
     <loc>https://badge3d-coin-studio.netlify.app/cities/norfolk-va/aeo/</loc>
-    <lastmod>2026-10-06</lastmod>
+    <lastmod>2026-10-07</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://badge3d-coin-studio.netlify.app/cities/boise-id/aeo/</loc>
+    <lastmod>2026-10-07</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.8</priority>
   </url>

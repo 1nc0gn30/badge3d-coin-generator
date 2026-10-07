@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Boise Precision Die & Challenge Coin Tooling | Badge3D Coin Studio</title>
+  <meta name="description" content="Direct 3D relief coin, medal, and die-cutting modeling for independent engravers, precision jewelers, and CNC fabricators in Boise, ID. Set tooling rate, watertight STL handoff, zero subscription lock-in.">
+  <meta name="robots" content="index, follow">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="canonical" href="https://badge3d-coin-studio.netlify.app/cities/boise-id/aeo/">
+
+  <meta property="og:title" content="Boise Precision Die & Challenge Coin Tooling — Badge3D Studio">
+  <meta property="og:description" content="Direct 3D relief coin and die modeling for independent engravers and metal fabricators in Boise, ID. Watertight STL mesh handoffs, set tooling price.">
+  <meta property="og:url" content="https://badge3d-coin-studio.netlify.app/cities/boise-id/aeo/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://badge3d-coin-studio.netlify.app/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:site" content="@1nc0gn30">
+  <meta name="twitter:creator" content="@1nc0gn30">
+  <meta name="twitter:title" content="Boise Precision Die & Challenge Coin Tooling — Badge3D Studio">
+  <meta name="twitter:description" content="Direct 3D relief coin and die modeling for independent engravers and CNC fabricators in Boise, ID.">
+  <meta name="twitter:image" content="https://badge3d-coin-studio.netlify.app/og-image.png">
+
+  <!-- Schema.org JSON-LD (AEO + SEO) -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebApplication",
+        "@id": "https://badge3d-coin-studio.netlify.app/cities/boise-id/aeo/#app",
+        "name": "Badge3D Coin Studio — Boise Metal Engravers & Die Tooling",
+        "url": "https://badge3d-coin-studio.netlify.app/cities/boise-id/aeo/",
+        "applicationCategory": "DesignApplication",
+        "operatingSystem": "All",
+        "description": "Browser-based 3D relief coin, medallion, and die design studio tailored for independent precision engravers, jewelers, and CNC machine shops in Boise, ID.",
+        "creator": {
+          "@type": "Person",
+          "name": "Neal Frazier",
+          "url": "https://nealfrazier.tech"
+        },
+        "offers": {
+          "@type": "Offer",
+          "price": "19.00",
+          "priceCurrency": "USD",
+          "url": "https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "What files does this studio deliver for Boise machine and die shops?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Watertight 2-manifold binary STL and Wavefront OBJ meshes configured for direct import into CAM software, CNC routers, fiber laser rotary engravers, and investment casting resin printers."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Is there a recurring seat license or monthly subscription?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "No. The license is a flat one-time $19 tooling pass with lifetime export rights. You keep all generated assets, client models, and physical mint runs forever."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Do proprietary client graphics or brand vector dies ever leave our workstation?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Never. All 3D procedural modeling, vector extrusion, and mesh slicing run 100% locally in your browser. No artwork or client data is ever transmitted to a remote cloud server."
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #07090E;
+      --surface: #0E121B;
+      --surface-dim: #090C14;
+      --surface-bright: #151B28;
+      --outline: #222938;
+      --outline-light: rgba(212, 175, 55, 0.2);
+      --primary: #d4af37;
+      --primary-rgb: 212, 175, 55;
+      --accent: #14F195;
+      --scarlet: #E63946;
+      --on-surface: #F8FAFC;
+      --on-surface-variant: #94A3B8;
+      --font-brand: 'Syne', sans-serif;
+      --font-tech: 'Space Grotesk', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+      --font-mono: 'Fira Code', monospace;
+      --radius-lg: 16px;
+      --radius-md: 10px;
+      --radius-sm: 6px;
+      --transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body {
+      background: var(--bg);
+      color: var(--on-surface);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      width: 100%;
+    }
+    .aurora-container {
+      position: fixed;
+      top: 0; left: 0; right: 0; height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.35;
+      background: radial-gradient(circle at 50% -20%, rgba(212, 175, 55, 0.15), transparent 70%);
+    }
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: rgba(14, 18, 27, 0.85);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--outline);
+      padding: 0.875rem 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: 100%;
+    }
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      text-decoration: none;
+      color: var(--on-surface);
+    }
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--outline-light);
+    }
+    .brand-text {
+      font-family: var(--font-brand);
+      font-size: 1.15rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      white-space: nowrap;
+    }
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      background: rgba(212, 175, 55, 0.12);
+      color: var(--primary);
+      border: 1px solid var(--outline-light);
+      padding: 2px 8px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+    }
+    @media (max-width: 480px) {
+      .brand-badge { display: none; }
+      .brand-text { font-size: 0.95rem; }
+    }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+    }
+    .btn-ghost {
+      font-family: var(--font-tech);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--on-surface-variant);
+      text-decoration: none;
+      padding: 0.45rem 0.85rem;
+      border-radius: var(--radius-sm);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      min-height: 44px;
+    }
+    .btn-ghost:hover {
+      color: var(--on-surface);
+      background: var(--surface-bright);
+    }
+    .btn-cta {
+      font-family: var(--font-tech);
+      font-size: 0.85rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #FFE27D 0%, #D4AF37 100%);
+      color: #07090E;
+      text-decoration: none;
+      padding: 0.45rem 1rem;
+      border-radius: var(--radius-sm);
+      box-shadow: 0 2px 10px rgba(212, 175, 55, 0.25);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      min-height: 44px;
+      white-space: nowrap;
+    }
+    .btn-cta:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.35);
+    }
+    main {
+      position: relative;
+      z-index: 1;
+      max-width: 980px;
+      margin: 0 auto;
+      padding: 3rem 1.5rem 5rem;
+      width: 100%;
+    }
+    .city-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px solid var(--outline-light);
+      padding: 0.35rem 0.85rem;
+      border-radius: 999px;
+      font-family: var(--font-tech);
+      font-size: 0.8rem;
+      color: var(--primary);
+      margin-bottom: 1.25rem;
+    }
+    .city-badge-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+    h1 {
+      font-family: var(--font-brand);
+      font-size: clamp(2rem, 4.5vw, 3.25rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.15;
+      margin-bottom: 1.25rem;
+    }
+    .hero-lead {
+      font-size: 1.15rem;
+      color: var(--on-surface-variant);
+      max-width: 780px;
+      margin-bottom: 2.5rem;
+      line-height: 1.65;
+    }
+    .offer-card {
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-lg);
+      padding: 2.25rem;
+      margin-bottom: 3.5rem;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 16px 36px rgba(0, 0, 0, 0.4);
+    }
+    .offer-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; height: 3px;
+      background: linear-gradient(90deg, #D4AF37, #14F195, #D4AF37);
+    }
+    .price-row {
+      display: flex;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
+    }
+    .price-num {
+      font-family: var(--font-tech);
+      font-size: 3rem;
+      font-weight: 700;
+      color: #FFE27D;
+      letter-spacing: -0.03em;
+    }
+    .price-regular {
+      font-family: var(--font-tech);
+      font-size: 1.25rem;
+      color: #64748B;
+      text-decoration: line-through;
+    }
+    .price-badge {
+      background: rgba(20, 241, 149, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(20, 241, 149, 0.3);
+      padding: 0.25rem 0.75rem;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+    .cta-row {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .btn-checkout {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: linear-gradient(135deg, #FFE27D 0%, #D4AF37 100%);
+      color: #07090E;
+      font-family: var(--font-tech);
+      font-size: 1rem;
+      font-weight: 700;
+      padding: 0.85rem 1.75rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      box-shadow: 0 4px 16px rgba(212, 175, 55, 0.3);
+      transition: var(--transition);
+      min-height: 48px;
+    }
+    .btn-checkout:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(212, 175, 55, 0.45);
+    }
+    .btn-launch {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.6rem;
+      background: var(--surface-bright);
+      color: var(--on-surface);
+      border: 1px solid var(--outline);
+      font-family: var(--font-tech);
+      font-size: 1rem;
+      font-weight: 600;
+      padding: 0.85rem 1.75rem;
+      border-radius: var(--radius-sm);
+      text-decoration: none;
+      transition: var(--transition);
+      min-height: 48px;
+    }
+    .btn-launch:hover {
+      border-color: var(--outline-light);
+      background: #1C2333;
+    }
+    .handoff-sheet {
+      border-top: 1px solid var(--outline);
+      padding-top: 1.75rem;
+    }
+    .handoff-sheet h3 {
+      font-family: var(--font-tech);
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 1rem;
+      color: var(--on-surface);
+    }
+    .handoff-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1rem;
+    }
+    .handoff-item {
+      background: var(--surface-dim);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-sm);
+      padding: 0.85rem 1rem;
+    }
+    .handoff-item strong {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      color: var(--primary);
+      margin-bottom: 0.25rem;
+      letter-spacing: 0.05em;
+    }
+    .handoff-item span {
+      font-size: 0.9rem;
+      color: var(--on-surface-variant);
+    }
+    .owner-entry-card {
+      background: rgba(14, 18, 27, 0.7);
+      border: 1px dashed var(--outline-light);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+      margin-top: 2rem;
+    }
+    .owner-entry-card h4 {
+      font-family: var(--font-tech);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 0.5rem;
+    }
+    .owner-entry-card p {
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      margin-bottom: 1rem;
+    }
+    .owner-contact-row {
+      display: flex;
+      gap: 1.5rem;
+      flex-wrap: wrap;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+    }
+    .owner-contact-item {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--on-surface);
+    }
+    .owner-contact-item a {
+      color: var(--primary);
+      text-decoration: none;
+    }
+    .owner-photos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-top: 1.25rem;
+    }
+    .owner-photo-item {
+      background: var(--surface-dim);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      transition: var(--transition);
+    }
+    .owner-photo-item:hover {
+      border-color: var(--outline-light);
+    }
+    .owner-photo-svg {
+      width: 100%;
+      height: auto;
+      max-height: 120px;
+      display: block;
+    }
+    .spec-section {
+      margin-top: 4rem;
+    }
+    .spec-section h2 {
+      font-family: var(--font-brand);
+      font-size: 1.85rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+      color: var(--on-surface);
+    }
+    .spec-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+    .spec-box {
+      background: var(--surface);
+      border: 1px solid var(--outline);
+      border-radius: var(--radius-md);
+      padding: 1.5rem;
+    }
+    .spec-box h4 {
+      font-family: var(--font-tech);
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #FFE27D;
+      margin-bottom: 0.5rem;
+    }
+    .spec-box p {
+      font-size: 0.9rem;
+      color: var(--on-surface-variant);
+      line-height: 1.6;
+    }
+    footer {
+      border-top: 1px solid var(--outline);
+      background: var(--surface);
+      padding: 2.5rem 1.5rem;
+      text-align: center;
+      font-size: 0.85rem;
+      color: var(--on-surface-variant);
+      position: relative;
+      z-index: 10;
+    }
+    .footer-links {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+      flex-wrap: wrap;
+    }
+    .footer-links a {
+      color: var(--on-surface-variant);
+      text-decoration: none;
+      transition: var(--transition);
+    }
+    .footer-links a:hover {
+      color: var(--primary);
+    }
+    @media (max-width: 640px) {
+      .price-row { flex-direction: column; align-items: flex-start; gap: 0.5rem; }
+      .cta-row { flex-direction: column; }
+      .btn-checkout, .btn-launch { width: 100%; }
+      .owner-contact-row { flex-direction: column; gap: 0.5rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="aurora-container" aria-hidden="true"></div>
+
+  <header>
+    <a href="/" class="brand-wrap">
+      <img src="/favicon.svg" alt="Badge3D Studio Emblem" class="brand-logo" width="32" height="32">
+      <span class="brand-text">Badge3D Coin Studio</span>
+      <span class="brand-badge">Boise Desk</span>
+    </a>
+    <div class="nav-actions">
+      <a href="/support" class="btn-ghost">Support</a>
+      <a href="/" class="btn-cta">Open Studio</a>
+    </div>
+  </header>
+
+  <main>
+    <div class="city-badge">
+      <span class="city-badge-dot" aria-hidden="true"></span>
+      <span>Boise, Idaho &middot; Treasure Valley Precision Tool & Die Corridor</span>
+    </div>
+
+    <h1>3D Relief Coin & Die Tooling for Boise Engravers</h1>
+    <p class="hero-lead">
+      Direct 3D relief coin, medal, and die-cutting modeling built specifically for the independent machine shops, precision laser engravers, and metal artisans operating throughout Boise and the Treasure Valley. Generate watertight 2-manifold STL geometry right in your browser without ongoing subscription overhead.
+    </p>
+
+    <div class="offer-card">
+      <div class="price-row">
+        <span class="price-num">$19</span>
+        <span class="price-regular">$79 regular</span>
+        <span class="price-badge">One-Time Studio Pass • Lifetime Exports</span>
+      </div>
+
+      <p style="font-size: 0.95rem; color: var(--on-surface-variant); margin-bottom: 1.5rem;">
+        An honest, set-price software offer to owners and operators who already do the physical work on the shop floor. No recurring CAD subscriptions, no cloud vendor lock-in, and zero risk of your client vector artwork leaking into a remote model repository.
+      </p>
+
+      <div class="cta-row">
+        <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" class="btn-checkout">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span>Acquire Studio Pass ($19)</span>
+        </a>
+        <button onclick="openDePayCheckout()" class="btn-checkout" style="background: #14F195; color: #07090E; border: none; cursor: pointer;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+          <span>Pay with SOL ($19)</span>
+        </button>
+        <a href="/" class="btn-launch">
+          Open 3D WebGL Studio
+        </a>
+      </div>
+
+      <div class="handoff-sheet">
+        <h3>Handoff Sheet & Technical Output Specs</h3>
+        <div class="handoff-grid">
+          <div class="handoff-item">
+            <strong>Geometry Format</strong>
+            <span>Watertight Binary STL & Wavefront OBJ</span>
+          </div>
+          <div class="handoff-item">
+            <strong>Mesh Topology</strong>
+            <span>Continuous 2-manifold shell, zero non-manifold edges</span>
+          </div>
+          <div class="handoff-item">
+            <strong>CAM Compatibility</strong>
+            <span>Direct load into Aspire, VCarve, LightBurn, Fusion 360 CAM</span>
+          </div>
+          <div class="handoff-item">
+            <strong>Physical Fabrication</strong>
+            <span>Tool steel die sinking, CNC carving, fiber laser ablation, lost-wax casting</span>
+          </div>
+          <div class="handoff-item">
+            <strong>Processing Rail</strong>
+            <span>100% Client-side WebGL / WebAssembly (Zero cloud telemetry)</span>
+          </div>
+          <div class="handoff-item">
+            <strong>Commercial Terms</strong>
+            <span>Perpetual royalty-free fabrication license, 30-day money-back</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="owner-entry-card">
+        <h4>Studio Operator & Dispatch</h4>
+        <p>This City Desk storefront is maintained directly for Boise and Treasure Valley fabricators. The owner adds their name, phone, and photos.</p>
+        <div class="owner-contact-row">
+          <div class="owner-contact-item">
+            <strong>Studio:</strong> Neal Frazier Tech &middot; NullAI Platform
+          </div>
+          <div class="owner-contact-item">
+            <strong>Phone:</strong> <a href="tel:+17578287570">+1 (757) 828-7570</a>
+          </div>
+          <div class="owner-contact-item">
+            <strong>Inquiries:</strong> <a href="mailto:support@nealfrazier.tech">support@nealfrazier.tech</a>
+          </div>
+          <div class="owner-contact-item">
+            <strong>Regional Node:</strong> Boise, ID 83702
+          </div>
+        </div>
+        <div class="owner-photos-grid">
+          <div class="owner-photo-item">
+            <svg viewBox="0 0 200 140" class="owner-photo-svg" role="img" aria-label="Precision CNC steel die milling setup for medal striking">
+              <rect width="200" height="140" fill="#0A0E17"/>
+              <rect x="35" y="30" width="130" height="80" rx="4" fill="#131B2A" stroke="#D4AF37" stroke-width="2"/>
+              <circle cx="100" cy="70" r="28" fill="#0A0E17" stroke="#FFE27D" stroke-width="2"/>
+              <path d="M85 70 L115 70 M100 55 L100 85" stroke="#14F195" stroke-width="2" stroke-linecap="round"/>
+              <text x="100" y="126" text-anchor="middle" fill="#94A3B8" font-size="9" font-family="'Space Grotesk', sans-serif">Precision Die Tooling Fixture &middot; Boise</text>
+            </svg>
+          </div>
+          <div class="owner-photo-item">
+            <svg viewBox="0 0 200 140" class="owner-photo-svg" role="img" aria-label="Treasure valley fiber laser rotary coin texturing bench">
+              <rect width="200" height="140" fill="#0A0E17"/>
+              <rect x="25" y="25" width="150" height="80" rx="6" fill="#131B2A" stroke="#222938"/>
+              <line x1="40" y1="65" x2="160" y2="65" stroke="#14F195" stroke-width="2"/>
+              <circle cx="100" cy="65" r="22" fill="#0A0E17" stroke="#D4AF37" stroke-width="2"/>
+              <line x1="100" y1="20" x2="100" y2="43" stroke="#14F195" stroke-width="2" stroke-dasharray="2 2"/>
+              <text x="100" y="126" text-anchor="middle" fill="#94A3B8" font-size="9" font-family="'Space Grotesk', sans-serif">Fiber Laser Station &middot; Boise Node</text>
+            </svg>
+          </div>
+          <div class="owner-photo-item">
+            <svg viewBox="0 0 200 140" class="owner-photo-svg" role="img" aria-label="Finished struck brass coin specimen with reeded edge">
+              <rect width="200" height="140" fill="#0A0E17"/>
+              <circle cx="100" cy="66" r="40" fill="#1A202C" stroke="#D4AF37" stroke-width="3"/>
+              <circle cx="100" cy="66" r="34" fill="#2D2415" stroke="#FFE885" stroke-width="1.5"/>
+              <polygon points="100,46 112,58 126,60 116,70 119,84 100,75 81,84 84,70 74,60 88,58" fill="#D4AF37"/>
+              <text x="100" y="126" text-anchor="middle" fill="#94A3B8" font-size="9" font-family="'Space Grotesk', sans-serif">Finished Struck Brass Proof &middot; Boise, ID</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="spec-section">
+      <h2>Engineered for Boise & Treasure Valley Precision Workflows</h2>
+      <div class="spec-grid">
+        <div class="spec-box">
+          <h4>Custom Tool & Die Coining</h4>
+          <p>
+            Boise's precision manufacturing and machining corridor requires exact tolerances for die sinking and striking blanks. Model custom relief bevels, draft angles, and stepped perimeters ready for CNC ball-nose endmills and EDM tooling.
+          </p>
+        </div>
+        <div class="spec-box">
+          <h4>Watertight 3D Printing & Lost-Wax Casting</h4>
+          <p>
+            Meshes export closed and error-free for slicing in Lychee, Chitubox, Bambu Studio, or PrusaSlicer. Direct paths for castable wax resins destined for bronze, silver, or gold jewelry foundry pours.
+          </p>
+        </div>
+        <div class="spec-box">
+          <h4>Local-First Confidentiality</h4>
+          <p>
+            Proprietary brand marks, commemorative crests, and commissioned seals never leave your physical workstation. All relief computation and slicing happen strictly inside your browser instance.
+          </p>
+        </div>
+        <div class="spec-box">
+          <h4>Predictable Weight & Density Metrics</h4>
+          <p>
+            Real-time volume calculation estimates accurate poured weights for Sterling Silver (925), 24K Gold, Brass, and Bronze before cutting blank dies or wax molds.
+          </p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="footer-links">
+      <a href="/">Studio</a>
+      <a href="/terms">Terms of Service</a>
+      <a href="/privacy">Privacy Policy</a>
+      <a href="/support">Support & FAQ</a>
+      <a href="/cities/norfolk-va/aeo/">Norfolk Tooling</a>
+      <a href="/virginia-beach-coin-minting">VA Beach Tooling</a>
+      <a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener">GitHub</a>
+    </div>
+    <div>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">NullAI Platform</a></div>
+  </footer>
+
+  <script src="https://integrate.depay.com/widgets/v13.js"></script>
+  <script>
+    function openDePayCheckout() {
+      if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
+        DePayWidgets.Payment({ integration: '428790dd-7ad1-407c-8ecf-c048c77a4cb8' });
+      } else {
+        window.open('https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G', '_blank');
+      }
+    }
+  </script>
+</body>
+</html>
