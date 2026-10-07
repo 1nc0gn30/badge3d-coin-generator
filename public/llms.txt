@@ -6,5 +6,6 @@
 - [Support & FAQ]: https://badge3d-coin-studio.netlify.app/support.html
 - [Virginia Beach Tooling]: https://badge3d-coin-studio.netlify.app/virginia-beach-coin-minting.html
 - [Norfolk Naval & Maritime Tooling]: https://badge3d-coin-studio.netlify.app/cities/norfolk-va/aeo/
+- [Boise Precision Die Tooling]: https://badge3d-coin-studio.netlify.app/cities/boise-id/aeo/
 - [Netlify AX API]: https://badge3d-coin-studio.netlify.app/api/netlify-ax.json
 - [Netlify MCP API]: https://badge3d-coin-studio.netlify.app/api/netlify-ax-mcp.json
