@@ -46,7 +46,7 @@
           "@type": "Offer",
           "price": "19.00",
           "priceCurrency": "USD",
-          "url": "https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G"
+          "url": "https://buy.stripe.com/7sI7sA8hM2X8eFG8ww"
         }
       },
       {
@@ -855,7 +855,7 @@
 
     <div class="appbar-actions">
       <div id="header-pro-container">
-        <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" id="header-buy-btn" style="padding: 6px 14px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
+        <a href="https://buy.stripe.com/7sI7sA8hM2X8eFG8ww" target="_blank" rel="noopener" id="header-buy-btn" style="padding: 6px 14px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
           Buy License ($19)
         </a>
@@ -896,7 +896,7 @@
       <span style="color: #cbd5e1; font-size: 12px;">• Unlimited Binary STL/OBJ Exports • Watertight Manifold Slicing • Zero Telemetry</span>
     </div>
     <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-      <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" style="padding: 5px 12px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
+      <a href="https://buy.stripe.com/7sI7sA8hM2X8eFG8ww" target="_blank" rel="noopener" style="padding: 5px 12px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
         Card / Apple Pay ($19)
       </a>
@@ -1315,6 +1315,7 @@
       turntable: true,
       wireframe: false,
       uploadedLogo: null,
+      uploadedLogoImage: null,
       apiConnected: true
     };
 
@@ -1607,40 +1608,77 @@
       const reliefDepth = state.reliefDepth;
       if (reliefDepth < 0.05) return;
 
-      // Create procedural star / crest relief
-      const motifGroup = new THREE.Group();
-      
-      // Star / Emblem shape
-      const starShape = new THREE.Shape();
-      const points = 5;
-      const outerStarR = maxR * 0.55;
-      const innerStarR = outerStarR * 0.45;
+      if (state.uploadedLogoImage) {
+        // Generate relief geometry from uploaded logo image heightmap/threshold
+        const img = state.uploadedLogoImage;
+        const canvas = document.createElement('canvas');
+        const size = 64;
+        canvas.width = size;
+        canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, size, size);
+        ctx.drawImage(img, 0, 0, size, size);
+        const imgData = ctx.getImageData(0, 0, size, size).data;
 
-      for (let i = 0; i < points * 2; i++) {
-        const r = (i % 2 === 0) ? outerStarR : innerStarR;
-        const a = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
-        const x = Math.cos(a) * r;
-        const y = Math.sin(a) * r;
-        if (i === 0) starShape.moveTo(x, y);
-        else starShape.lineTo(x, y);
+        const planeR = maxR * 0.85;
+        const logoPlaneGeo = new THREE.PlaneGeometry(planeR * 2, planeR * 2, size - 1, size - 1);
+        const pos = logoPlaneGeo.attributes.position;
+
+        for (let i = 0; i < pos.count; i++) {
+          const px = i % size;
+          const py = Math.floor(i / size);
+          const idx = (py * size + px) * 4;
+          const lum = (imgData[idx] * 0.299 + imgData[idx + 1] * 0.587 + imgData[idx + 2] * 0.114) / 255;
+          const vx = pos.getX(i);
+          const vy = pos.getY(i);
+          const dist = Math.sqrt(vx * vx + vy * vy);
+          if (dist <= planeR) {
+            pos.setZ(i, lum * reliefDepth);
+          } else {
+            pos.setZ(i, 0);
+          }
+        }
+        logoPlaneGeo.computeVertexNormals();
+
+        const frontLogoMesh = new THREE.Mesh(logoPlaneGeo, activeMaterialInstance);
+        frontLogoMesh.rotation.x = -Math.PI / 2;
+        frontLogoMesh.position.y = H / 2 + 0.02;
+        frontLogoMesh.castShadow = true;
+        coinMeshGroup.add(frontLogoMesh);
+      } else {
+        // Procedural Star / Crest relief
+        const starShape = new THREE.Shape();
+        const points = 5;
+        const outerStarR = maxR * 0.55;
+        const innerStarR = outerStarR * 0.45;
+
+        for (let i = 0; i < points * 2; i++) {
+          const r = (i % 2 === 0) ? outerStarR : innerStarR;
+          const a = (i / (points * 2)) * Math.PI * 2 - Math.PI / 2;
+          const x = Math.cos(a) * r;
+          const y = Math.sin(a) * r;
+          if (i === 0) starShape.moveTo(x, y);
+          else starShape.lineTo(x, y);
+        }
+        starShape.closePath();
+
+        const starGeo = new THREE.ExtrudeGeometry(starShape, {
+          steps: 1,
+          depth: reliefDepth,
+          bevelEnabled: true,
+          bevelThickness: 0.2,
+          bevelSize: 0.2,
+          bevelSegments: 2
+        });
+
+        // Front Relief
+        const frontRelief = new THREE.Mesh(starGeo, activeMaterialInstance);
+        frontRelief.rotation.x = -Math.PI / 2;
+        frontRelief.position.y = H / 2;
+        frontRelief.castShadow = true;
+        coinMeshGroup.add(frontRelief);
       }
-      starShape.closePath();
-
-      const starGeo = new THREE.ExtrudeGeometry(starShape, {
-        steps: 1,
-        depth: reliefDepth,
-        bevelEnabled: true,
-        bevelThickness: 0.2,
-        bevelSize: 0.2,
-        bevelSegments: 2
-      });
-
-      // Front Relief
-      const frontRelief = new THREE.Mesh(starGeo, activeMaterialInstance);
-      frontRelief.rotation.x = -Math.PI / 2;
-      frontRelief.position.y = H / 2;
-      frontRelief.castShadow = true;
-      coinMeshGroup.add(frontRelief);
 
       // Reverse Inscription Ring Motif
       const ringGeo = new THREE.TorusGeometry(maxR * 0.75, 0.4, 8, 48);
@@ -1948,8 +1986,25 @@
         state.uploadedLogo = evt.target.result;
         document.getElementById('logo-filename').innerText = file.name;
         document.getElementById('logo-preview-box').style.display = 'flex';
-        showToast(`Loaded logo: ${file.name}`);
-        buildProceduralCoinGeometry();
+        
+        const img = new Image();
+        img.onload = function() {
+          state.uploadedLogoImage = img;
+          showToast(`Embossed relief logo: ${file.name}`);
+          buildProceduralCoinGeometry();
+        };
+        img.onerror = function() {
+          state.uploadedLogoImage = null;
+          showToast(`Loaded logo: ${file.name}`);
+          buildProceduralCoinGeometry();
+        };
+
+        if (file.name.endsWith('.svg') || file.type.includes('svg')) {
+          const svgBlob = new Blob([evt.target.result], { type: 'image/svg+xml;charset=utf-8' });
+          img.src = URL.createObjectURL(svgBlob);
+        } else {
+          img.src = evt.target.result;
+        }
       };
 
       if (file.name.endsWith('.svg') || file.type.includes('svg')) {
@@ -1961,6 +2016,7 @@
 
     function clearUploadedLogo() {
       state.uploadedLogo = null;
+      state.uploadedLogoImage = null;
       document.getElementById('logo-file-input').value = '';
       document.getElementById('logo-preview-box').style.display = 'none';
       buildProceduralCoinGeometry();
@@ -1969,12 +2025,20 @@
 
     // Theme Toggle
     const themeBtn = document.getElementById('theme-toggle-btn');
-    themeBtn.addEventListener('click', () => {
-      const currentTheme = document.body.getAttribute('data-theme');
-      const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      document.body.setAttribute('data-theme', nextTheme);
-      themeBtn.querySelector('.material-symbols-outlined').innerText = nextTheme === 'dark' ? 'light_mode' : 'dark_mode';
-    });
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || document.body.getAttribute('data-theme') || 'dark';
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', nextTheme);
+        document.body.setAttribute('data-theme', nextTheme);
+        localStorage.setItem('badge3d_theme', nextTheme);
+        const iconSpan = themeBtn.querySelector('.material-symbols-outlined');
+        if (iconSpan) iconSpan.innerText = nextTheme === 'dark' ? 'light_mode' : 'dark_mode';
+        if (scene) {
+          scene.background = new THREE.Color(nextTheme === 'dark' ? 0x1a1b1e : 0xf1f3f4);
+        }
+      });
+    }
 
     function showToast(msg) {
       const toast = document.getElementById('toast-notification');
@@ -2074,13 +2138,23 @@
       if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
         DePayWidgets.Payment({ integration: '428790dd-7ad1-407c-8ecf-c048c77a4cb8' });
       } else {
-        window.open('https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G', '_blank');
+        window.open('https://buy.stripe.com/7sI7sA8hM2X8eFG8ww', '_blank');
       }
     }
 
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('badge3d_theme');
+      if (savedTheme) {
+        document.documentElement.setAttribute('data-theme', savedTheme);
+        document.body.setAttribute('data-theme', savedTheme);
+        const iconSpan = document.querySelector('#theme-toggle-btn .material-symbols-outlined');
+        if (iconSpan) iconSpan.innerText = savedTheme === 'dark' ? 'light_mode' : 'dark_mode';
+      }
       initThreeEngine();
+      if (savedTheme === 'light' && scene) {
+        scene.background = new THREE.Color(0xf1f3f4);
+      }
       checkProLicense();
       const dot = document.getElementById('status-dot');
       const lbl = document.getElementById('status-label');
@@ -2122,7 +2196,7 @@
       </div>
 
       <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem;">
-        <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" style="padding: 0.8rem; border-radius: 8px; background: #635BFF; color: #fff; text-decoration: none; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.92rem;">
+        <a href="https://buy.stripe.com/7sI7sA8hM2X8eFG8ww" target="_blank" rel="noopener" style="padding: 0.8rem; border-radius: 8px; background: #635BFF; color: #fff; text-decoration: none; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.92rem;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
           Unlock with Credit Card / Apple Pay ($19)
         </a>
