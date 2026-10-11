@@ -855,7 +855,8 @@
     </div>
 
     <div class="appbar-actions">
-      <div id="header-pro-container">
+      <div id="header-pro-container" style="display: inline-flex; align-items: center; gap: 8px;">
+        <span id="licenseBadge" class="license-badge-free" style="color: #a1a1aa; font-weight: 700; font-size: 11px; border: 1px solid rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 9999px; background: rgba(255, 255, 255, 0.04);">⚡ FREE TIER</span>
         <a href="https://buy.stripe.com/7sI7sA8hM2X8eFG8ww" target="_blank" rel="noopener" id="header-buy-btn" style="padding: 6px 14px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
           Buy License ($19)
@@ -2089,7 +2090,7 @@
         if (banner) banner.style.display = "none";
         const container = document.getElementById("header-pro-container");
         if (container) {
-          container.innerHTML = '<span style="color: #10B981; font-weight: 700; font-size: 11px; border: 1px solid #10B981; padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.1);">⭐ PRO ACTIVE</span>';
+          container.innerHTML = '<span id="licenseBadge" style="color: #10B981; font-weight: 700; font-size: 11px; border: 1px solid #10B981; padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.1);">⭐ PRO ACTIVE</span>';
         }
         const exportSection = document.getElementById("exportPaywallSection");
         if (exportSection) {
