@@ -12,11 +12,6 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
 
 [[redirects]]
-  from = "/favicon.ico"
-  to = "/favicon.svg"
-  status = 200
-
-[[redirects]]
   from = "/terms"
   to = "/terms.html"
   status = 200

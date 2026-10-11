@@ -2,6 +2,11 @@
   "name": "badge3d-coin-generator",
   "version": "2.5.0",
   "description": "Parametric 3D Coin & Relief Mint, Watertight STL/OBJ Engine, Slicer & MCP Server",
+  "homepage": "https://badge3d-coin-studio.netlify.app",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/1nc0gn30/badge3d-coin-generator.git"
+  },
   "main": "electron/main.cjs",
   "bin": {
     "badge3d": "./bin/badge3d.js"
@@ -11,8 +16,21 @@
     "desktop": "electron .",
     "web": "node bin/badge3d.js web",
     "cli": "node bin/badge3d.js",
-    "test": "pytest tests/"
+    "test": "pytest tests/",
+    "test:ui": "python3 scripts/verify_ui.py"
   },
+  "keywords": [
+    "3d-coin",
+    "coin-mint",
+    "webgl",
+    "threejs",
+    "stl-export",
+    "obj-export",
+    "slicer",
+    "gcode",
+    "mcp-server",
+    "sovereign-saas"
+  ],
   "author": "Neal Frazier Tech (@1nc0gn30) • NullAI Platform",
   "license": "MIT",
   "devDependencies": {
