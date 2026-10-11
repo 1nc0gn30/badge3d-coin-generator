@@ -15,7 +15,10 @@
   <meta property="og:description" content="Create stunning 3D metallic coins, custom tokens, and relief medallions in WebGL.">
   <meta property="og:url" content="https://badge3d-coin-studio.netlify.app/">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="https://badge3d-coin-studio.netlify.app/og-image.png">
+  <meta property="og:image" content="https://badge3d-coin-studio.netlify.app/assets/banner.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Badge3D Coin Studio Banner - 3D WebGL Coin & Relief Token Generator">
 
   <!-- Twitter Card -->
   <meta name="twitter:card" content="summary_large_image">
@@ -23,7 +26,8 @@
   <meta name="twitter:creator" content="@1nc0gn30">
   <meta name="twitter:title" content="Badge3D Coin Studio — 3D Coin & Relief Token Generator">
   <meta name="twitter:description" content="Create stunning 3D metallic coins, custom tokens, and relief medallions in WebGL.">
-  <meta name="twitter:image" content="https://badge3d-coin-studio.netlify.app/og-image.png">
+  <meta name="twitter:image" content="https://badge3d-coin-studio.netlify.app/assets/banner.png">
+  <link rel="apple-touch-icon" href="/assets/icon.png">
 
   <!-- Schema.org JSON-LD (AEO + SEO) -->
   <script type="application/ld+json">
@@ -842,15 +846,10 @@
 <!-- Top Material App Bar -->
   <header class="google-appbar">
     <div class="brand-container">
-      <div class="google-dots">
-        <div class="g-dot g-blue"></div>
-        <div class="g-dot g-red"></div>
-        <div class="g-dot g-yellow"></div>
-        <div class="g-dot g-green"></div>
-      </div>
+      <img src="/assets/icon.png" alt="Badge3D Coin Studio Logo" style="width:36px; height:36px; border-radius:8px; border:1px solid rgba(212,175,55,0.4); box-shadow:0 0 12px rgba(212,175,55,0.25); object-fit:contain;">
       <div class="brand-title">
         Badge3D Coin Studio
-        <span class="badge">v1.0 • Pure Stdlib</span>
+        <span class="badge">v2.5 SOVEREIGN</span>
       </div>
     </div>
 
@@ -2074,11 +2073,17 @@
 
     function checkProLicense() {
       const urlParams = new URLSearchParams(window.location.search);
-      if (urlParams.get("licensed") === "true" || urlParams.get("session_id")) {
-        activateProLicense("STRIPE-CHECKOUT");
+      const isParamLicensed = urlParams.get("licensed") === "true" || urlParams.get("pro") === "true" || urlParams.get("session_id");
+      if (isParamLicensed) {
+        activateProLicense("URL-PRO-ACTIVATE");
+        if (window.history && window.history.replaceState) {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
         return;
       }
-      if (localStorage.getItem("pro_licensed") === "true") {
+      if (localStorage.getItem("pro_licensed") === "true" ||
+          localStorage.getItem("zoth_badge3d_licensed") === "true" ||
+          localStorage.getItem("badge3d_pro_licensed") === "true") {
         isProLicensed = true;
         updateProUI();
       }
@@ -2102,6 +2107,9 @@
     function activateProLicense(key) {
       isProLicensed = true;
       localStorage.setItem("pro_licensed", "true");
+      localStorage.setItem("zoth_badge3d_licensed", "true");
+      localStorage.setItem("badge3d_pro_licensed", "true");
+      if (key) localStorage.setItem("badge3d_pro_key", key);
       updateProUI();
       closeLicenseModal();
       closePaywallModal();
@@ -2129,12 +2137,18 @@
       if (m) m.style.display = "none";
     }
 
-    function activateLicenseSubmit() {
-      const val = document.getElementById("licenseKeyInput").value.trim();
-      if (val) {
+    function activateLicenseSubmit(providedKey) {
+      const inputEl = document.getElementById("licenseKeyInput") || document.getElementById("license-input");
+      const val = (providedKey || (inputEl ? inputEl.value : "")).trim();
+      if (val.length >= 3) {
         activateProLicense(val);
+        return true;
+      } else {
+        alert("Please enter a valid license key or receipt email.");
+        return false;
       }
     }
+    window.activateLicenseKey = activateLicenseSubmit;
 
     function openDePayCheckout() {
       if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
@@ -2226,8 +2240,8 @@
         <button onclick="closeLicenseModal()" style="background: none; border: none; color: #a1a1aa; cursor: pointer; font-size: 1.25rem;">✕</button>
       </div>
       <p style="font-size: 0.85rem; color: #a1a1aa; margin-bottom: 0.75rem;">Enter your Stripe receipt email or license key to activate:</p>
-      <input type="text" id="licenseKeyInput" placeholder="name@example.com or PRO-COIN-KEY" style="width: 100%; padding: 0.7rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #14141c; color: #fff; margin-bottom: 0.75rem; box-sizing: border-box; font-size: 0.9rem;">
-      <button onclick="activateLicenseSubmit()" style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #635BFF; color: #fff; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
+      <input type="text" id="licenseKeyInput" placeholder="BADGE-PRO-2026 or receipt email" style="width: 100%; padding: 0.7rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #14141c; color: #fff; margin-bottom: 0.75rem; box-sizing: border-box; font-size: 0.9rem;">
+      <button id="btnActivateKey" onclick="activateLicenseSubmit()" style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #635BFF; color: #fff; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
         Activate Lifetime License
       </button>
