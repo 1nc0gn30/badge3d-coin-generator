@@ -4,15 +4,17 @@
 
 **Pure Python 3D Parametric Coin, Medal & Relief Mesh Generator with Real-Time Web Studio & AI Agent MCP Server**
 
+[![Live Demo](https://img.shields.io/badge/Live%20App-badge3d--coin--studio.netlify.app-00DC82?style=flat&logo=netlify)](https://badge3d-coin-studio.netlify.app)
+[![License: Pro](https://img.shields.io/badge/Pro%20Lifetime-$19%20USD-635BFF?style=flat&logo=stripe)](https://buy.stripe.com/7sI7sA8hM2X8eFG8ww)
+[![Solana Pay](https://img.shields.io/badge/Solana-DePay%20Accepted-14F195?style=flat&logo=solana)](https://badge3d-coin-studio.netlify.app)
 [![CI Matrix](https://img.shields.io/badge/CI-Multi--OS%20%7C%20Py%203.9--3.13-success?logo=github-actions)](https://github.com/1nc0gn30/badge3d-coin-generator/actions)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Stdlib)-blue.svg)](https://docs.python.org/3/)
 [![3D Print Ready](https://img.shields.io/badge/3D%20Print-Watertight%20Manifold%20STL-orange.svg)](https://en.wikipedia.org/wiki/STL_(file_format))
-[![PBR Studio UI](https://img.shields.io/badge/Studio%20UI-Material%203%20Design-4285F4.svg)](http://localhost:8080)
 [![MCP Server](https://img.shields.io/badge/MCP-Claude%20%7C%20Cursor%20%7C%20Cline-8A2BE2.svg)](https://modelcontextprotocol.io)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
 <p align="center">
-  <b>Generate millimeter-accurate, 3D-printable challenge coins, bullion medals, and crypto badges directly from vector SVGs, text inscriptions, or parametric specifications.</b>
+  <b>Generate millimeter-accurate, 3D-printable challenge coins, bullion medals, and crypto badges directly in the browser or via AI Agent MCP commands.</b><br/>
+  🌐 <b>Live Web App</b>: <a href="https://badge3d-coin-studio.netlify.app">badge3d-coin-studio.netlify.app</a> • 💳 <b>Founding License</b>: $19 Lifetime • ⚡ <b>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30">@1nc0gn30</a>)</b>
 </p>
 
 </div>
@@ -290,3 +292,7 @@ pytest --cov=badge3d_coin_generator tests/
 ## 📄 License
 
 This project is licensed under the **MIT License**. Free for commercial and personal 3D printing, CAD modeling, and manufacturing.
+
+---
+
+*Engineered with precision by Neal Frazier Tech ([@1nc0gn30](https://github.com/1nc0gn30)) • NullAI Platform ([nullai.tech](https://nullai.tech))*

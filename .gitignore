@@ -17,4 +17,5 @@ node_modules/
 .netlify
 exports/
 shots/
-test-shots/
+test-shots*/
+test-verify*/

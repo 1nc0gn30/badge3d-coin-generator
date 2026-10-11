@@ -1,0 +1,14 @@
+/terms   /terms.html   200
+/privacy   /privacy.html   200
+/support   /support.html   200
+/contact   /support.html   200
+/virginia-beach-coin-minting   /virginia-beach-coin-minting.html   200
+/virginia-beach   /virginia-beach-coin-minting.html   200
+/norfolk   /cities/norfolk-va/aeo/index.html   200
+/cities/norfolk-va/aeo   /cities/norfolk-va/aeo/index.html   200
+/cities/norfolk-va/aeo/   /cities/norfolk-va/aeo/index.html   200
+/boise   /cities/boise-id/aeo/index.html   200
+/cities/boise-id/aeo   /cities/boise-id/aeo/index.html   200
+/cities/boise-id/aeo/   /cities/boise-id/aeo/index.html   200
+/api/netlify-ax   /api/netlify-ax.json   200
+/*   /index.html   200
