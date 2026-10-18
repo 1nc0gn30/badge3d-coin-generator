@@ -444,6 +444,7 @@
     }
     .preset-btn {
       background: var(--md-sys-color-surface-container);
+      color: var(--md-sys-color-on-surface, #f4f4f5);
       border: 1px solid var(--md-sys-color-outline-variant);
       border-radius: var(--md-sys-shape-corner-small);
       padding: 10px 12px;
@@ -842,24 +843,10 @@
   </style>
 </head>
 <body data-theme="dark">
-<aside class="sales-funnel-banner" id="salesBanner" style="background: linear-gradient(90deg, rgba(212,175,55,0.15) 0%, rgba(0,255,136,0.15) 50%, rgba(153,69,255,0.15) 100%); border-bottom: 1px solid rgba(212,175,55,0.3); backdrop-filter: blur(12px); padding: 0.65rem 1.25rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; position: sticky; top: 0; z-index: 100; font-family: monospace; font-size: 0.78rem;">
-  <div style="display:flex; align-items:center; gap:0.5rem; color:#f4f4f5;">
-    <span style="background:rgba(255,23,68,0.2); border:1px solid #ff1744; color:#ff1744; padding:0.15rem 0.45rem; border-radius:4px; font-weight:700; font-size:0.7rem;">FOUNDING COHORT</span>
-    <span><strong>BADGE3D COIN STUDIO PRO</strong> // Lifetime License:</span>
-    <span style="text-decoration:line-through; color:#71717a;">$79.00</span>
-    <span style="color:#d4af37; font-weight:800; font-size:0.95rem;">$19.00 USD</span>
-    <span style="color:#a1a1aa;">· Instant Key Activation</span>
-  </div>
-  <div style="display:flex; gap:0.5rem; align-items:center; flex-wrap:wrap;">
-    <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" style="background:#635bff; color:#fff; padding:0.35rem 0.85rem; border-radius:4px; text-decoration:none; font-weight:700; font-size:0.75rem;">Credit Card / Apple Pay ($19)</a>
-    <a href="https://depay.com/pay?integration=428790dd-7ad1-407c-8ecf-c048c77a4cb8&receiver=GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="openDePayCheckout(event)" target="_blank" rel="noopener" style="background:#9945ff; color:#fff; padding:0.35rem 0.85rem; border-radius:4px; text-decoration:none; font-weight:700; font-size:0.75rem;">Pay with Solana ($19)</a>
-    <button id="btn-banner-key" onclick="openLicenseActivationModal()" style="background:transparent; border:1px solid #d4af37; color:#d4af37; padding:0.35rem 0.75rem; border-radius:4px; font-weight:700; font-size:0.75rem; cursor:pointer;">Enter Key</button>
-  </div>
-</aside>
 <!-- Top Material App Bar -->
   <header class="google-appbar">
     <div class="brand-container">
-      <img src="/assets/icon.png" alt="Badge3D Coin Studio Logo" style="width:36px; height:36px; border-radius:8px; border:1px solid rgba(212,175,55,0.4); box-shadow:0 0 12px rgba(212,175,55,0.25); object-fit:contain;">
+      <img src="assets/icon.png" alt="Badge3D Coin Studio Logo" style="width:36px; height:36px; border-radius:8px; border:1px solid rgba(212,175,55,0.4); box-shadow:0 0 12px rgba(212,175,55,0.25); object-fit:contain;">
       <div class="brand-title">
         Badge3D Coin Studio
         <span class="badge">v2.5 SOVEREIGN</span>
@@ -1254,7 +1241,7 @@
         </div>
         <div class="metals-breakdown">
           <div class="metal-item">
-            <span>🟡 24K Pure Gold (19.32 g/cm³)</span>
+            <span>● 24K Pure Gold (19.32 g/cm³)</span>
             <strong id="stat-weight-gold">72.8 g</strong>
           </div>
           <div class="metal-item">
@@ -1262,15 +1249,15 @@
             <strong id="stat-weight-silver">39.1 g</strong>
           </div>
           <div class="metal-item">
-            <span>🟤 C932 Bronze (8.73 g/cm³)</span>
+            <span>● C932 Bronze (8.73 g/cm³)</span>
             <strong id="stat-weight-bronze">32.9 g</strong>
           </div>
           <div class="metal-item">
-            <span>🔘 Grade 5 Titanium (4.43 g/cm³)</span>
+            <span>◎ Grade 5 Titanium (4.43 g/cm³)</span>
             <strong id="stat-weight-titanium">16.7 g</strong>
           </div>
           <div class="metal-item">
-            <span>🟢 PLA 3D Filament (1.24 g/cm³)</span>
+            <span>● PLA 3D Filament (1.24 g/cm³)</span>
             <strong id="stat-weight-pla">4.7 g</strong>
           </div>
         </div>
@@ -2212,7 +2199,7 @@
     <div style="max-width: 520px; width: 100%; border: 1px solid rgba(212,175,55,0.4); background: #0c0d14; border-radius: 16px; padding: 1.75rem; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative;">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
         <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.5rem;">🪙</span>
+          <span style="font-size: 1.5rem;">◉</span>
           <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #f4f4f5;">Unlock Badge3D Pro</h3>
         </div>
         <button onclick="closePaywallModal()" style="background: none; border: none; color: #a1a1aa; font-size: 1.25rem; cursor: pointer; padding: 4px;">✕</button>
