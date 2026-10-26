@@ -1,4 +1,10 @@
 <div align="center">
+  <img src="assets/hero-banner.svg" alt="Badge3D Coin Generator — Sovereign Architecture Banner" width="100%" />
+</div>
+
+<br />
+
+<div align="center">
 
 # 🪙 Badge3D Coin Generator
 
