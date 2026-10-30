@@ -11,8 +11,9 @@
 **Pure Python 3D Parametric Coin, Medal & Relief Mesh Generator with Real-Time Web Studio & AI Agent MCP Server**
 
 [![Live Demo](https://img.shields.io/badge/Live%20App-badge3d--coin--studio.netlify.app-00DC82?style=flat&logo=netlify)](https://badge3d-coin-studio.netlify.app)
-[![License: Pro](https://img.shields.io/badge/Pro%20Lifetime-$19%20USD-635BFF?style=flat&logo=stripe)](https://buy.stripe.com/4gMfZg9AheOsdhKbcAfw40L)
-[![Solana Pay](https://img.shields.io/badge/Solana-DePay%20Accepted-14F195?style=flat&logo=solana)](https://badge3d-coin-studio.netlify.app)
+[![Access](https://img.shields.io/badge/Access-100%25%20Free%20%26%20Open-10B981?style=flat)](https://zoth.nullai.tech/tools/badge3d-coin-generator)
+[![Buy Us a Coffee](https://img.shields.io/badge/Support-☕%20Buy%20Us%20a%20Coffee-D4AF37?style=flat)](https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X)
+[![Solana Tip](https://img.shields.io/badge/Tip-◎%20Solana-14F195?style=flat)](solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK)
 [![Zoth Studio Ready](https://img.shields.io/badge/Zoth%20Studio-God%20Mode%20Active-D4AF37?style=flat)](https://zoth.nullai.tech/tools/badge3d-coin-generator)
 [![CI Matrix](https://img.shields.io/badge/CI-Multi--OS%20%7C%20Py%203.9--3.13-success?logo=github-actions)](https://github.com/1nc0gn30/badge3d-coin-generator/actions)
 [![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Stdlib)-blue.svg)](https://docs.python.org/3/)
@@ -21,7 +22,7 @@
 
 <p align="center">
   <b>Generate millimeter-accurate, 3D-printable challenge coins, bullion medals, and crypto badges directly in the browser or via AI Agent MCP commands.</b><br/>
-  🌐 <b>Live Web App</b>: <a href="https://badge3d-coin-studio.netlify.app">badge3d-coin-studio.netlify.app</a> • 💻 <b>Zoth Studio</b>: <a href="https://zoth.nullai.tech/tools/badge3d-coin-generator">zoth.nullai.tech/tools/badge3d-coin-generator</a> • 💳 <b>Founding License</b>: <a href="https://buy.stripe.com/4gMfZg9AheOsdhKbcAfw40L">$19 Lifetime via Stripe</a> or Solana DePay (`GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK`) • ⚡ <b>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30">@1nc0gn30</a>)</b> • NullAI Platform
+  🌐 <b>Live Web App</b>: <a href="https://badge3d-coin-studio.netlify.app">badge3d-coin-studio.netlify.app</a> • 💻 <b>Zoth Studio</b>: <a href="https://zoth.nullai.tech/tools/badge3d-coin-generator">zoth.nullai.tech/tools/badge3d-coin-generator</a> • 💳 <b>Founding License</b>: <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X">$19 Lifetime via Stripe</a> or Solana Tip (`GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK`) • ⚡ <b>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30">@1nc0gn30</a>)</b> • NullAI Platform
 </p>
 
 </div>

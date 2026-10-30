@@ -49,9 +49,9 @@
         },
         "offers": {
           "@type": "Offer",
-          "price": "19.00",
+          "price": "0",
           "priceCurrency": "USD",
-          "url": "https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G"
+          "url": "https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X"
         }
       },
       {
@@ -78,7 +78,7 @@
             "name": "What payment methods are supported for Pro activation?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "Badge3D Coin Studio supports dual checkout rails: instant Credit Card / Apple Pay / Google Pay via Stripe, and Web3 crypto checkout via Solana DePay."
+              "text": "Badge3D Coin Studio supports dual checkout rails: instant Credit Card / Apple Pay / Google Pay via Stripe, and Web3 crypto checkout via Solana Tip."
             }
           }
         ]
@@ -88,8 +88,6 @@
   </script>
 
   <!-- DePay Web3 Solana CDN -->
-  <script src="https://integrate.depay.com/widgets/v13.js"></script>
-
   <!-- Google Fonts: Google Sans / Roboto / Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -813,7 +811,7 @@
       position: relative;
     }
     .paywall-blur-target {
-      filter: blur(6px);
+      filter: none;
       user-select: none;
       transition: filter 0.3s ease;
     }
@@ -832,8 +830,8 @@
       text-align: center;
       padding: 12px;
       background: rgba(12, 13, 20, 0.75);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
       border-radius: var(--md-sys-shape-corner-medium);
       z-index: 5;
     }
@@ -841,8 +839,47 @@
       display: none !important;
     }
   </style>
+
+  <!-- Zoth 100% Open-Access & Buy Us a Coffee Invariant -->
+  <script id="zoth-open-access-init">
+    (function() {
+      try {
+        var keys = ['agent_audiocipher_pro', 'agent_cyber_turtle_pro', 'agent_datamosh_pro', 'agent_nexus3d_pro', 'agent_policy_pro', 'audiocipher_license', 'audiocipher_pro_licensed', 'badge3d_pro_licensed', 'certpath_pro_key', 'certpath_pro_licensed', 'cron_rhythm_pro_key', 'cron_rhythm_pro_licensed', 'cwv-speed-engine_pro_licensed', 'cwv_pro_licensed', 'cyber_turtle_pro_licensed', 'datamosh_pro_licensed', 'deepsearch-research-agent_pro_licensed', 'deepsearch_pro_licensed', 'entropy_studio_licensed', 'envguard-secrets-vault_pro_licensed', 'envguard_pro_license', 'etsy_connector_pro', 'jwt_guard_licensed', 'mdg_pro_licensed', 'neuro_pro_licensed', 'nexus3d_pro_licensed', 'omnipost_pro_key', 'omnipost_pro_licensed', 'osint_pro_licensed', 'payload-entropy-studio_pro_licensed', 'polyglot_pro_licensed', 'pro_licensed', 'promptmaster_pro_licensed', 'promptmaster_pro_active', 'robots-txt-auditor_pro_licensed', 'robots_pro_licensed', 'schema_illustrator_pro_licensed', 'sovereign_pro_licensed', 'subsweep-lead-scanner_pro_licensed', 'subsweep_licensed', 'turtle_pro_licensed', 'ufo_sacred_licensed', 'vector-search-engine_pro_licensed', 'vector_studio_pro_licensed', 'web-security-guard_pro_licensed', 'web_security_guard_licensed', 'yourdigitalspace_pro', 'zela_guide_pro_licensed', 'zoth_ascii_magic_pro', 'zoth_audiocipher_licensed', 'zoth_badge3d_licensed', 'zoth_cyber_turtle_licensed', 'zoth_datamosh_licensed', 'zoth_etsy_licensed', 'zoth_nexus3d_licensed', 'zoth_osint_licensed', 'zoth_policy_licensed', 'zoth_sacred_licensed', 'zoth_ufo_licensed'];
+        for (var i = 0; i < keys.length; i++) {
+          localStorage.setItem(keys[i], 'true');
+        }
+        localStorage.setItem('pm_license_v2', JSON.stringify({ method: 'open_access', ref: 'free_forever', at: '2026-01-01T00:00:00Z' }));
+        window.isPro = true;
+        window.isProLicensed = true;
+      } catch (e) {}
+    })();
+  </script>
+  <style id="zoth-open-access-override">
+    .paywall-overlay, .output-paywall-overlay, #outputPaywallOverlay, #schemaPaywallOverlay,
+    #transformerPaywallOverlay, #proPaywallModal, #licenseModal, #salesBanner, #founding-offer-banner,
+    #funnelHeroBanner, [data-alias="paywallOverlay"], [data-alias="founding-offer-banner"] {
+      display: none !important;
+      opacity: 0 !important;
+      pointer-events: none !important;
+    }
+    .paywall-wrap #outputPreview, .paywall-wrap #reportContentArea, .paywall-content,
+    .paywall-content.locked, .paywall-wrap.is-locked #outputPreview, .paywall-wrap.locked #outputPreview {
+      filter: none !important;
+      -webkit-filter: none !important;
+      user-select: auto !important;
+      pointer-events: auto !important;
+    }
+  </style>
+
 </head>
 <body data-theme="dark">
+
+<div id="zoth-coffee-support-bar" style="background: linear-gradient(90deg, rgba(16,185,129,0.12), rgba(212,175,55,0.14)); border-bottom: 1px solid rgba(212,175,55,0.35); padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; z-index: 9999;">
+  <span style="color: #10B981; font-weight: 800;">✦ 100% FREE &amp; OPEN ACCESS · ZERO PAYWALLS</span>
+  <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="background: #D4AF37; color: #08080B; padding: 4px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">☕ Buy Us a Coffee (Stripe)</a>
+  <a href="solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="if(navigator.clipboard){navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='✓ Copied GG2eQb...dXoK!';}" style="background: rgba(20,241,149,0.15); color: #14F195; border: 1px solid rgba(20,241,149,0.45); padding: 4px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">◎ Solana Tip (GG2e...dXoK)</a>
+</div>
+
 <!-- Top Material App Bar -->
   <header class="google-appbar">
     <div class="brand-container">
@@ -855,16 +892,14 @@
 
     <div class="appbar-actions">
       <div id="header-pro-container" style="display: inline-flex; align-items: center; gap: 8px;">
-        <span id="licenseBadge" class="license-badge-free" style="color: #a1a1aa; font-weight: 700; font-size: 11px; border: 1px solid rgba(255,255,255,0.15); padding: 4px 10px; border-radius: 9999px; background: rgba(255, 255, 255, 0.04);">⚡ FREE TIER</span>
-        <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" id="header-buy-btn" style="padding: 6px 14px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 600; display: inline-flex; align-items: center; gap: 6px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-          Buy License ($19)
+        <span style="color: #10B981; font-weight: 700; font-size: 11px; border: 1px solid rgba(16,185,129,0.3); padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.1);">✦ 100% FREE &amp; OPEN ACCESS</span>
+        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" id="header-buy-btn" style="padding: 6px 14px; background: #D4AF37; color: #08080B; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
+          ☕ Buy Us a Coffee (Stripe)
+        </a>
+        <a href="solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="navigator.clipboard&&navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='✓ Copied Solana Tip!';" style="padding: 6px 14px; background: rgba(20,241,149,0.12); color: #14F195; border: 1px solid rgba(20,241,149,0.4); border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
+          ◎ Solana Tip: GG2e...dXoK
         </a>
       </div>
-      <button onclick="openDePayCheckout()" style="padding: 6px 14px; background: #14F195; color: #000; border-radius: 6px; border: none; font-size: 12px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        Pay with SOL
-      </button>
       <div class="server-status-chip" id="server-status" title="Pure Python HTTP Server Status">
         <div class="status-pulse" id="status-dot"></div>
         <span id="status-label">Studio API Connected</span>
@@ -887,29 +922,12 @@
     </div>
   </header>
 
-  <!-- High-Converting Sales Funnel Banner -->
-  <div id="funnelHeroBanner" style="background: linear-gradient(90deg, rgba(99,91,255,0.18) 0%, rgba(20,241,149,0.18) 100%); border-bottom: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; font-size: 13px; z-index: 95;">
-    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-      <span style="background: #ef4444; color: #fff; font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px;">Founding Sale</span>
-      <span style="font-weight: 600; color: #fff;">Sovereign Lifetime Pass:</span>
-      <span style="color: #94a3b8; text-decoration: line-through;">$79</span>
-      <span style="color: #14F195; font-weight: 800; font-size: 14px;">$19 Lifetime</span>
-      <span style="color: #cbd5e1; font-size: 12px;">• Unlimited Binary STL/OBJ Exports • Watertight Manifold Slicing • Zero Telemetry</span>
-    </div>
-    <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-      <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" style="padding: 5px 12px; background: #635BFF; color: #fff; border-radius: 6px; text-decoration: none; font-size: 11px; font-weight: 700; display: inline-flex; align-items: center; gap: 5px;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-        Card / Apple Pay ($19)
-      </a>
-      <button onclick="openDePayCheckout()" style="padding: 5px 12px; background: #14F195; color: #000; border-radius: 6px; border: none; font-size: 11px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-        <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        Pay with SOL
-      </button>
-      <button onclick="openLicenseActivationModal()" style="background: transparent; border: 1px solid rgba(255,255,255,0.2); color: #cbd5e1; padding: 4px 8px; border-radius: 6px; font-size: 11px; cursor: pointer; display: inline-flex; align-items: center; gap: 4px;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-2-2l2 2m-2 2l2-2m-7 7l4 4 2-2-4-4m-6 4l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"></path></svg>
-        Activate Key
-      </button>
-    </div>
+  <!-- Sovereign Support Banner -->
+  <div id="funnelHeroBanner" style="background: linear-gradient(90deg, rgba(16,185,129,0.12), rgba(212,175,55,0.16)); border-bottom: 1px solid rgba(212,175,55,0.3); padding: 8px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 11px; font-family: monospace; z-index: 95; flex-wrap: wrap;">
+    <span style="color:#10B981;font-weight:800;">✦ 100% FREE &amp; OPEN ACCESS · ZERO PAYWALLS · LOCAL DAEMON :8084</span>
+    <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="background:#D4AF37;color:#08080B;padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;">☕ Buy Us a Coffee (Stripe)</a>
+    <a href="solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="navigator.clipboard&&navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='✓ Copied Solana Tip!';" style="background:rgba(20,241,149,0.12);color:#14F195;border:1px solid rgba(20,241,149,0.4);padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;cursor:pointer;">◎ Solana Tip: GG2e...dXoK</a>
+    <a href="http://127.0.0.1:3000/tools/badge3d-coin-generator" style="background:#10B981;color:#05070B;padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;">Open Zoth Studio God-Mode ↗</a>
   </div>
 
   <!-- Studio Workspace -->
@@ -1159,15 +1177,15 @@
     <aside class="specs-panel">
       
       <!-- 1-Click Export Section -->
-      <section class="studio-card paywall-locked-container" id="exportPaywallSection">
+      <section class="studio-card" id="exportPaywallSection">
         <div class="card-header">
           <div class="card-title">
             <span class="material-symbols-outlined">download</span>
             Production Export
           </div>
-          <span style="font-size: 10px; font-weight: 700; color: #d4af37; background: rgba(212,175,55,0.15); padding: 2px 6px; border-radius: 4px;">PRO EXPORT</span>
+          <span style="font-size: 10px; font-weight: 700; color: #10B981; background: rgba(16,185,129,0.15); padding: 2px 6px; border-radius: 4px;">100% UNLOCKED</span>
         </div>
-        <div class="paywall-blur-target" style="display: flex; flex-direction: column; gap: 8px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
           <button id="btn-export-stl" class="btn-primary" onclick="exportSTL()">
             <span class="material-symbols-outlined">view_in_ar</span>
             Export Binary STL (3D Print)
@@ -1180,24 +1198,6 @@
             <span class="material-symbols-outlined">terminal</span>
             Copy MCP Tool Call
           </button>
-        </div>
-        <div class="paywall-lock-overlay" id="exportLockOverlay">
-          <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(212,175,55,0.12); border: 1px solid rgba(212,175,55,0.3); display: flex; align-items: center; justify-content: center; margin-bottom: 6px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-          </div>
-          <strong style="color: #fff; font-size: 13px; margin-bottom: 4px;">Production Exports Locked</strong>
-          <p style="font-size: 11px; color: #a1a1aa; margin-bottom: 10px; line-height: 1.3;">Unlock unlimited binary STL, OBJ CAD models &amp; agent toolcalls.</p>
-          <div style="display: flex; gap: 8px; width: 100%; justify-content: center;">
-            <button onclick="openPaywallModal()" style="padding: 7px 14px; background: #635BFF; color: #fff; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-              Unlock ($19)
-            </button>
-            <button onclick="openDePayCheckout()" style="padding: 7px 12px; background: #14F195; color: #000; border: none; border-radius: 6px; font-size: 11px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 5px;">
-              <svg width="11" height="11" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-              Pay SOL
-            </button>
-          </div>
-          <button id="btn-paywall-key" onclick="openLicenseActivationModal()" style="margin-top: 8px; background: transparent; border: none; color: #d4af37; font-family: monospace; font-size: 10px; cursor: pointer; text-decoration: underline;">Have a key? Activate</button>
         </div>
       </section>
 
@@ -2070,9 +2070,9 @@
     }
 
     // Pro Licensing & Paywall Logic
-    let isProLicensed = false;
+    let isProLicensed = true;
 
-    function checkProLicense() {
+    function checkProLicense() { isProLicensed = true; try { updateProUI(); } catch(e){} return true;
       const urlParams = new URLSearchParams(window.location.search);
       const isParamLicensed = urlParams.get("licensed") === "true" || urlParams.get("pro") === "true" || urlParams.get("session_id");
       if (isParamLicensed) {
@@ -2167,14 +2167,15 @@
 
     function openDePayCheckout() {
       if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
-        DePayWidgets.Payment({ integration: '428790dd-7ad1-407c-8ecf-c048c77a4cb8' });
+        (navigator.clipboard && navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK'));
       } else {
-        window.open('https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G', '_blank');
+        window.open('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X', '_blank');
       }
     }
 
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
+      isProLicensed = true;
       const savedTheme = localStorage.getItem('badge3d_theme');
       if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -2186,82 +2187,13 @@
       if (savedTheme === 'light' && scene) {
         scene.background = new THREE.Color(0xf1f3f4);
       }
-      checkProLicense();
+      updateProUI();
       const dot = document.getElementById('status-dot');
       const lbl = document.getElementById('status-label');
       if (dot) dot.classList.remove('offline');
       if (lbl) lbl.innerText = 'Studio Active (Client Engine)';
     });
   </script>
-
-  <!-- Pro Paywall Modal -->
-  <div id="proPaywallModal" data-alias="paywall-modal" style="display: none; position: fixed; inset: 0; background: rgba(5,7,12,0.85); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); z-index: 1200; align-items: center; justify-content: center; padding: 1rem;">
-    <div style="max-width: 520px; width: 100%; border: 1px solid rgba(212,175,55,0.4); background: #0c0d14; border-radius: 16px; padding: 1.75rem; box-shadow: 0 20px 50px rgba(0,0,0,0.8); position: relative;">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <span style="font-size: 1.5rem;">◉</span>
-          <h3 style="margin: 0; font-size: 1.25rem; font-weight: 700; color: #f4f4f5;">Unlock Badge3D Pro</h3>
-        </div>
-        <button onclick="closePaywallModal()" style="background: none; border: none; color: #a1a1aa; font-size: 1.25rem; cursor: pointer; padding: 4px;">✕</button>
-      </div>
-      <p style="font-size: 0.88rem; color: #a1a1aa; margin-bottom: 1.25rem; line-height: 1.5;">
-        Generate high-resolution watertight 3D coins, medallions, and challenge tokens ready for slicing and physical precious-metal minting.
-      </p>
-      
-      <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 12px 16px; margin-bottom: 1.25rem;">
-        <div style="font-size: 0.78rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #d4af37; margin-bottom: 8px;">What's Included:</div>
-        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem; color: #e4e4e7;">
-          <li>✔ Unlimited Binary STL & Wavefront OBJ 3D Model Exports</li>
-          <li>✔ Watertight 2-Manifold mesh guarantee (Bambu, Prusa, Cura)</li>
-          <li>✔ Procedural bas-relief displacement & custom SVG logo embossing</li>
-          <li>✔ Precision metal weight estimators (Gold, Silver, Bronze, Titanium)</li>
-          <li>✔ Full MCP JSON-RPC Server & Python Stdlib local toolchain</li>
-          <li>✔ Perpetual commercial minting rights & lifetime updates</li>
-        </ul>
-      </div>
-
-      <div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 1rem;">
-        <span style="font-size: 1.75rem; font-weight: 800; color: #14F195;">$19</span>
-        <span style="font-size: 0.9rem; color: #71717a; text-decoration: line-through;">$79 regular</span>
-        <span style="font-size: 0.8rem; color: #a1a1aa;">• One-time payment, lifetime access</span>
-      </div>
-
-      <div style="display: flex; flex-direction: column; gap: 0.6rem; margin-bottom: 1rem;">
-        <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" style="padding: 0.8rem; border-radius: 8px; background: #635BFF; color: #fff; text-decoration: none; font-weight: 700; text-align: center; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.92rem;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-          Unlock with Credit Card / Apple Pay ($19)
-        </a>
-        <button onclick="openDePayCheckout()" style="padding: 0.8rem; border-radius: 8px; border: 1px solid #14F195; color: #14F195; background: rgba(20,241,149,0.12); font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 0.92rem;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          Unlock with Crypto (Solana SOL / USDC)
-        </button>
-      </div>
-
-      <button onclick="openLicenseActivationModal()" style="background: none; border: none; color: #a1a1aa; font-size: 0.78rem; cursor: pointer; text-decoration: underline; width: 100%; text-align: center; display: flex; align-items: center; justify-content: center; gap: 5px;">
-        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-2-2l2 2m-2 2l2-2m-7 7l4 4 2-2-4-4m-6 4l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"></path></svg>
-        Already purchased? Activate with License Key or Email
-      </button>
-    </div>
-  </div>
-
-  <!-- License Key Activation Modal -->
-  <div id="licenseModal" data-alias="paywall-modal" style="display: none; position: fixed; inset: 0; background: rgba(5,7,12,0.9); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); z-index: 1300; align-items: center; justify-content: center; padding: 1rem;">
-    <div style="max-width: 440px; width: 100%; border: 1px solid rgba(212,175,55,0.4); background: #0c0d14; border-radius: 16px; padding: 1.5rem; box-shadow: 0 20px 50px rgba(0,0,0,0.8);">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
-        <h3 style="margin: 0; font-size: 1.15rem; font-weight: 700; color: #f4f4f5; display: flex; align-items: center; gap: 8px;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 2l-2 2m-2-2l2 2m-2 2l2-2m-7 7l4 4 2-2-4-4m-6 4l-4 4a5 5 0 1 1-7-7l4-4a5 5 0 0 1 7 7z"></path></svg>
-          Activate Pro License
-        </h3>
-        <button onclick="closeLicenseModal()" style="background: none; border: none; color: #a1a1aa; cursor: pointer; font-size: 1.25rem;">✕</button>
-      </div>
-      <p style="font-size: 0.85rem; color: #a1a1aa; margin-bottom: 0.75rem;">Enter your Stripe receipt email or license key to activate:</p>
-      <input type="text" id="licenseKeyInput" data-alias="license-input" placeholder="BADGE-PRO-2026 or receipt email" style="width: 100%; padding: 0.7rem; border-radius: 8px; border: 1px solid rgba(255,255,255,0.15); background: #14141c; color: #fff; margin-bottom: 0.75rem; box-sizing: border-box; font-size: 0.9rem;">
-      <button id="btnActivateKey" onclick="activateLicenseSubmit()" style="width: 100%; padding: 0.75rem; border-radius: 8px; background: #635BFF; color: #fff; border: none; font-weight: 700; cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; gap: 6px;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-        Activate Lifetime License
-      </button>
-    </div>
-  </div>
   
   <footer style="text-align: center; padding: 2rem 1rem; font-size: 0.8rem; color: var(--md-sys-color-on-surface-variant); border-top: 1px solid var(--md-sys-color-outline-variant); margin-top: 2rem; background: var(--md-sys-color-surface);">
     <div style="margin-bottom: 0.75rem; display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap;">

@@ -43,7 +43,7 @@
           "@type": "Offer",
           "price": "19.00",
           "priceCurrency": "USD",
-          "url": "https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G"
+          "url": "https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X"
         }
       },
       {
@@ -522,13 +522,13 @@
       </p>
 
       <div class="cta-row">
-        <a href="https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G" target="_blank" rel="noopener" class="btn-checkout">
+        <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener" class="btn-checkout">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
           <span>Acquire Studio Pass ($19)</span>
         </a>
         <button onclick="openDePayCheckout()" class="btn-checkout" style="background: #14F195; color: #07090E; border: none; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
-          <span>Pay with SOL ($19)</span>
+          <span>◎ Solana Tip (GG2eQb…dXoK)</span>
         </button>
         <a href="/" class="btn-launch">
           Open 3D WebGL Studio
@@ -566,7 +566,7 @@
       </div>
 
       <div class="owner-entry-card">
-        <h4>Virginia Beach 3D Tooling &amp; Medallion Engineering</h4>
+        <h4>Virginia Beach 3D Tooling & Medallion Engineering</h4>
         <p>Direct 3D relief coin and medallion modeling for Virginia Beach and Hampton Roads metal artisans.</p>
         <div class="owner-contact-row">
           <div class="owner-contact-item">
@@ -659,13 +659,12 @@
     <div>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">NullAI Platform</a></div>
   </footer>
 
-  <script src="https://integrate.depay.com/widgets/v13.js"></script>
   <script>
     function openDePayCheckout() {
       if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
-        DePayWidgets.Payment({ integration: '428790dd-7ad1-407c-8ecf-c048c77a4cb8' });
+        (navigator.clipboard && navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK'));
       } else {
-        window.open('https://buy.stripe.com/14A7sKfYF5dScdGeoMfw40G', '_blank');
+        window.open('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X', '_blank');
       }
     }
   </script>
