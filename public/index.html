@@ -44,8 +44,8 @@
         "description": "3D WebGL relief token and metallic medallion studio with instant 3D rendering and export.",
         "creator": {
           "@type": "Person",
-          "name": "Neal Frazier",
-          "url": "https://nealfrazier.tech"
+          "name": "1nc0gn30",
+          "url": "https://nullai.tech"
         },
         "offers": {
           "@type": "Offer",
@@ -87,7 +87,7 @@
   }
   </script>
 
-  <!-- DePay Web3 Solana CDN -->
+  <!-- Solana Tip Web3 Solana CDN -->
   <!-- Google Fonts: Google Sans / Roboto / Inter -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -874,12 +874,6 @@
 </head>
 <body data-theme="dark">
 
-<div id="zoth-coffee-support-bar" style="background: linear-gradient(90deg, rgba(16,185,129,0.12), rgba(212,175,55,0.14)); border-bottom: 1px solid rgba(212,175,55,0.35); padding: 8px 16px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 12px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace; font-size: 12px; z-index: 9999;">
-  <span style="color: #10B981; font-weight: 800;">✦ 100% FREE &amp; OPEN ACCESS · ZERO PAYWALLS</span>
-  <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="background: #D4AF37; color: #08080B; padding: 4px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">☕ Buy Us a Coffee (Stripe)</a>
-  <a href="solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="if(navigator.clipboard){navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='✓ Copied GG2eQb...dXoK!';}" style="background: rgba(20,241,149,0.15); color: #14F195; border: 1px solid rgba(20,241,149,0.45); padding: 4px 12px; border-radius: 6px; font-weight: 800; text-decoration: none; display: inline-flex; align-items: center; gap: 6px;">◎ Solana Tip (GG2e...dXoK)</a>
-</div>
-
 <!-- Top Material App Bar -->
   <header class="google-appbar">
     <div class="brand-container">
@@ -1397,6 +1391,254 @@
     // Three.js Engine Variables
     let scene, camera, renderer, controls;
     let coinMeshGroup, activeMaterialInstance;
+    let fallbackCanvasEl = null;
+    state.cameraView = 'front';
+
+    function draw2DCoinStudioCanvas() {
+      if (!fallbackCanvasEl) return;
+      const ctx = fallbackCanvasEl.getContext('2d');
+      if (!ctx) return;
+      const w = fallbackCanvasEl.width;
+      const h = fallbackCanvasEl.height;
+      const isDark = (document.documentElement.getAttribute('data-theme') || 'dark') === 'dark';
+
+      // Studio radial backdrop
+      const bgGrad = ctx.createRadialGradient(w / 2, h / 2, 30, w / 2, h / 2, Math.max(w, h) * 0.65);
+      if (isDark) {
+        bgGrad.addColorStop(0, '#1e202b');
+        bgGrad.addColorStop(1, '#090a0f');
+      } else {
+        bgGrad.addColorStop(0, '#ffffff');
+        bgGrad.addColorStop(1, '#e2e6ec');
+      }
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, w, h);
+
+      // Subtle CAD grid
+      ctx.strokeStyle = isDark ? 'rgba(212, 175, 55, 0.07)' : 'rgba(26, 115, 232, 0.08)';
+      ctx.lineWidth = 1;
+      for (let gx = 0; gx < w; gx += 32) {
+        ctx.beginPath(); ctx.moveTo(gx, 0); ctx.lineTo(gx, h); ctx.stroke();
+      }
+      for (let gy = 0; gy < h; gy += 32) {
+        ctx.beginPath(); ctx.moveTo(0, gy); ctx.lineTo(w, gy); ctx.stroke();
+      }
+
+      const cx = w / 2;
+      const cy = h / 2 - 12;
+      const baseR = Math.min(w, h) * 0.30 * (state.radius / 20.0);
+      const R = Math.max(95, Math.min(Math.min(w, h) * 0.37, baseR));
+      const depthPx = Math.max(10, state.thickness * 4.5);
+
+      const palettes = {
+        gold: { hi: '#FFF2A6', mid: '#D4AF37', lo: '#7A580B', rim: '#FDE047', text: '#422C02' },
+        silver: { hi: '#FFFFFF', mid: '#CBD5E1', lo: '#64748B', rim: '#F1F5F9', text: '#1E293B' },
+        bronze: { hi: '#FDBA74', mid: '#C26D2D', lo: '#6C340E', rim: '#FB923C', text: '#3B1804' },
+        obsidian: { hi: '#52525B', mid: '#18181B', lo: '#09090B', rim: '#71717A', text: '#E4E4E7' },
+        titanium: { hi: '#E2E8F0', mid: '#94A3B8', lo: '#334155', rim: '#CBD5E1', text: '#0F172A' }
+      };
+      const pal = palettes[state.material] || palettes.gold;
+
+      function traceShapePath(ctx, x, y, rad, shape) {
+        ctx.beginPath();
+        let sides = 0;
+        if (shape === 'hexagon') sides = 6;
+        else if (shape === 'octagon') sides = 8;
+        else if (shape === 'decagon') sides = 10;
+        if (sides > 0) {
+          for (let i = 0; i < sides; i++) {
+            const a = (i / sides) * Math.PI * 2 - Math.PI / 2;
+            const px = x + Math.cos(a) * rad;
+            const py = y + Math.sin(a) * rad;
+            if (i === 0) ctx.moveTo(px, py);
+            else ctx.lineTo(px, py);
+          }
+          ctx.closePath();
+        } else {
+          ctx.arc(x, y, rad, 0, Math.PI * 2);
+        }
+      }
+
+      if (state.cameraView === 'edge') {
+        // Side / Edge Milling Profile View
+        const barW = R * 1.9;
+        const barH = Math.max(44, state.thickness * 14);
+        const bx = cx - barW / 2;
+        const by = cy - barH / 2;
+        const edgeGrad = ctx.createLinearGradient(bx, by, bx + barW, by);
+        edgeGrad.addColorStop(0, pal.lo);
+        edgeGrad.addColorStop(0.25, pal.hi);
+        edgeGrad.addColorStop(0.5, pal.mid);
+        edgeGrad.addColorStop(0.75, pal.hi);
+        edgeGrad.addColorStop(1, pal.lo);
+        ctx.fillStyle = edgeGrad;
+        ctx.strokeStyle = pal.rim;
+        ctx.lineWidth = 2.5;
+        ctx.beginPath();
+        ctx.roundRect(bx, by, barW, barH, 8);
+        ctx.fill();
+        ctx.stroke();
+
+        // Draw reeding serration teeth
+        const reeds = Math.min(120, state.serrations || 0);
+        if (reeds > 0) {
+          ctx.strokeStyle = pal.lo;
+          ctx.lineWidth = 1.2;
+          const step = barW / reeds;
+          for (let i = 1; i < reeds; i++) {
+            const rx = bx + i * step;
+            ctx.beginPath();
+            ctx.moveTo(rx, by + 3);
+            ctx.lineTo(rx, by + barH - 3);
+            ctx.stroke();
+          }
+        }
+        ctx.fillStyle = pal.text;
+        ctx.font = '800 13px monospace';
+        ctx.textAlign = 'center';
+        ctx.fillText(`EDGE MILLING PROFILE • ${state.serrations} REEDS • ${state.thickness.toFixed(1)}MM THICK`, cx, cy + 5);
+      } else {
+        // Drop shadow
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.48)';
+        ctx.beginPath();
+        ctx.ellipse(cx + 8, cy + depthPx + 14, R * 0.96, R * 0.88, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+
+        // 2.5D Extruded Rim Cylinder Stack & Serrations
+        for (let d = depthPx; d >= 1; d -= 1.5) {
+          traceShapePath(ctx, cx + d * 0.35, cy + d * 0.75, R, state.shape);
+          ctx.fillStyle = d % 3 === 0 ? pal.lo : pal.mid;
+          ctx.fill();
+        }
+        if (state.serrations > 0 && state.shape === 'circle') {
+          const reeds = Math.min(120, state.serrations);
+          ctx.strokeStyle = pal.hi;
+          ctx.lineWidth = 1.1;
+          for (let i = 0; i < reeds; i++) {
+            const a = (i / reeds) * Math.PI * 2;
+            if (Math.sin(a) > -0.2) {
+              const x1 = cx + Math.cos(a) * R;
+              const y1 = cy + Math.sin(a) * R;
+              ctx.beginPath();
+              ctx.moveTo(x1, y1);
+              ctx.lineTo(x1 + depthPx * 0.35, y1 + depthPx * 0.75);
+              ctx.stroke();
+            }
+          }
+        }
+
+        // Main Obverse/Reverse Face
+        const faceGrad = ctx.createLinearGradient(cx - R, cy - R, cx + R, cy + R);
+        faceGrad.addColorStop(0, pal.hi);
+        faceGrad.addColorStop(0.45, pal.mid);
+        faceGrad.addColorStop(0.85, pal.lo);
+        faceGrad.addColorStop(1, pal.mid);
+
+        traceShapePath(ctx, cx, cy, R, state.shape);
+        ctx.fillStyle = state.wireframe ? 'rgba(9, 13, 22, 0.85)' : faceGrad;
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = state.wireframe ? '#38BDF8' : pal.rim;
+        ctx.stroke();
+
+        // Inner Recessed Field
+        const innerR = R * (1 - Math.min(0.28, state.rimWidth / (state.radius * 1.3)));
+        const fieldGrad = ctx.createRadialGradient(cx - innerR * 0.25, cy - innerR * 0.25, 10, cx, cy, innerR);
+        fieldGrad.addColorStop(0, pal.mid);
+        fieldGrad.addColorStop(0.7, pal.lo);
+        fieldGrad.addColorStop(1, pal.hi);
+
+        traceShapePath(ctx, cx, cy, innerR, state.shape);
+        if (!state.wireframe) {
+          ctx.fillStyle = fieldGrad;
+          ctx.fill();
+        }
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = state.wireframe ? '#D4AF37' : pal.hi;
+        ctx.stroke();
+
+        // Wireframe CAD Triangulation Overlay
+        if (state.wireframe) {
+          ctx.strokeStyle = 'rgba(56, 189, 248, 0.45)';
+          ctx.lineWidth = 1;
+          const rings = [R * 0.25, R * 0.5, innerR, R];
+          rings.forEach(rr => {
+            traceShapePath(ctx, cx, cy, rr, state.shape);
+            ctx.stroke();
+          });
+          for (let i = 0; i < 24; i++) {
+            const a = (i / 24) * Math.PI * 2;
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(cx + Math.cos(a) * R, cy + Math.sin(a) * R);
+            ctx.stroke();
+          }
+        }
+
+        // Central Relief Crest (5-Pointed Raised Star + Shield Ring)
+        const starOuter = innerR * 0.50;
+        const starInner = starOuter * 0.44;
+        ctx.beginPath();
+        for (let i = 0; i < 10; i++) {
+          const r = i % 2 === 0 ? starOuter : starInner;
+          const a = (i / 10) * Math.PI * 2 - Math.PI / 2;
+          const sx = cx + Math.cos(a) * r;
+          const sy = cy + Math.sin(a) * r;
+          if (i === 0) ctx.moveTo(sx, sy);
+          else ctx.lineTo(sx, sy);
+        }
+        ctx.closePath();
+        const starGrad = ctx.createLinearGradient(cx - starOuter, cy - starOuter, cx + starOuter, cy + starOuter);
+        starGrad.addColorStop(0, pal.hi);
+        starGrad.addColorStop(0.6, pal.mid);
+        starGrad.addColorStop(1, pal.lo);
+        if (!state.wireframe) {
+          ctx.fillStyle = starGrad;
+          ctx.fill();
+        }
+        ctx.lineWidth = 2;
+        ctx.strokeStyle = state.wireframe ? '#10B981' : pal.hi;
+        ctx.stroke();
+
+        // Curved Inscription Text
+        const activeText = ((state.cameraView === 'back' ? state.textBack : state.textFront) || '').toUpperCase();
+        if (activeText) {
+          ctx.save();
+          ctx.font = `800 ${Math.max(10, Math.round(R * 0.085))}px "Google Sans", sans-serif`;
+          ctx.fillStyle = state.wireframe ? '#FDE047' : pal.hi;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          const textR = innerR * 0.80;
+          const spread = Math.min(Math.PI * 1.35, activeText.length * 0.082);
+          const startAngle = -Math.PI / 2 - spread / 2;
+          for (let i = 0; i < activeText.length; i++) {
+            const ch = activeText[i];
+            const theta = startAngle + (i / Math.max(1, activeText.length - 1)) * spread;
+            ctx.save();
+            ctx.translate(cx + Math.cos(theta) * textR, cy + Math.sin(theta) * textR);
+            ctx.rotate(theta + Math.PI / 2);
+            ctx.fillText(ch, 0, 0);
+            ctx.restore();
+          }
+          ctx.restore();
+        }
+      }
+
+      // Top-left HUD Telemetry Pill
+      ctx.fillStyle = 'rgba(9, 13, 22, 0.78)';
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.roundRect(16, 16, 370, 32, 8);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = '#10B981';
+      ctx.font = '700 11px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(`● 3D MESH ENGINE ACTIVE · ${state.shape.toUpperCase()} · ${state.material.toUpperCase()} · ${state.wireframe ? 'WIREFRAME' : state.cameraView.toUpperCase()}`, 28, 36);
+    }
 
     function initThreeEngine() {
       const container = document.getElementById('three-canvas');
@@ -1411,24 +1653,23 @@
       camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 1000);
       camera.position.set(0, 35, 65);
 
+      // Coin Group initialized unconditionally so procedural mesh & stats always run
+      coinMeshGroup = new THREE.Group();
+      scene.add(coinMeshGroup);
+
       // Check WebGL Context Availability before initializing Three.js WebGLRenderer
       const testCanvas = document.createElement('canvas');
       const gl = testCanvas.getContext('webgl') || testCanvas.getContext('experimental-webgl');
       if (!gl) {
-        // Fallback for software renderer / headless environments
-        const fallbackCanvas = document.createElement('canvas');
-        fallbackCanvas.width = width;
-        fallbackCanvas.height = height;
-        const ctx = fallbackCanvas.getContext('2d');
-        if (ctx) {
-          ctx.fillStyle = '#12141D';
-          ctx.fillRect(0, 0, width, height);
-          ctx.fillStyle = '#F59E0B';
-          ctx.font = 'bold 16px monospace';
-          ctx.textAlign = 'center';
-          ctx.fillText('⚡ 3D Relief Studio • Ready (WebGL Acceleration Recommended)', width / 2, height / 2);
-        }
-        container.appendChild(fallbackCanvas);
+        fallbackCanvasEl = document.createElement('canvas');
+        fallbackCanvasEl.width = width;
+        fallbackCanvasEl.height = height;
+        fallbackCanvasEl.style.width = '100%';
+        fallbackCanvasEl.style.height = '100%';
+        container.innerHTML = '';
+        container.appendChild(fallbackCanvasEl);
+        buildProceduralCoinGeometry();
+        draw2DCoinStudioCanvas();
         return;
       }
 
@@ -1604,6 +1845,7 @@
 
       // Update Spec stats
       updateGeometryStats();
+      draw2DCoinStudioCanvas();
     }
 
     function addCentralReliefMotif(maxR, H) {
@@ -1760,6 +2002,7 @@
         activeMaterialInstance.roughness = matProps.roughness;
         activeMaterialInstance.needsUpdate = true;
       }
+      draw2DCoinStudioCanvas();
     }
 
     function updateGeometryStats() {
@@ -1815,9 +2058,13 @@
       if (activeMaterialInstance) {
         activeMaterialInstance.wireframe = state.wireframe;
       }
+      draw2DCoinStudioCanvas();
     }
 
     function resetCameraView(view) {
+      state.cameraView = view || 'front';
+      draw2DCoinStudioCanvas();
+      if (!camera || !controls) return;
       if (view === 'front') {
         camera.position.set(0, 0, 70);
       } else if (view === 'back') {
@@ -2096,17 +2343,6 @@
         if (banner) banner.style.display = "none";
         const salesBanner = document.getElementById("salesBanner");
         if (salesBanner) salesBanner.style.display = "none";
-        const badge = document.getElementById("licenseBadge");
-        if (badge) {
-          badge.textContent = "⭐ PRO ACTIVE";
-          badge.style.color = "#10B981";
-          badge.style.borderColor = "#10B981";
-          badge.style.background = "rgba(16,185,129,0.1)";
-        }
-        const container = document.getElementById("header-pro-container");
-        if (container) {
-          container.innerHTML = '<span id="licenseBadge" style="color: #10B981; font-weight: 700; font-size: 11px; border: 1px solid #10B981; padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.1);">⭐ PRO ACTIVE</span>';
-        }
         const exportSection = document.getElementById("exportPaywallSection");
         if (exportSection) {
           exportSection.classList.add("paywall-unlocked");
@@ -2165,8 +2401,8 @@
     }
     window.activateLicenseKey = activateLicenseSubmit;
 
-    function openDePayCheckout() {
-      if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
+    function openSolanaTipCheckout() {
+      if (typeof SolanaTipWidgets !== 'undefined' && SolanaTipWidgets.Payment) {
         (navigator.clipboard && navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK'));
       } else {
         window.open('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X', '_blank');
@@ -2205,7 +2441,8 @@
       <a href="/cities/boise-id/aeo/" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">Boise Tooling</a>
       <a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none; font-weight: 500;">GitHub Repository</a>
     </div>
-    <div>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">NullAI Platform</a></div>
+    <div>Engineered by 1nc0gn30 • NullAI (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">NullAI Platform</a></div>
   </footer>
+  <script src="/assets/sovereign-upgrade.js" defer></script>
 </body>
 </html>

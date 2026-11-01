@@ -22,7 +22,7 @@
 
 <p align="center">
   <b>Generate millimeter-accurate, 3D-printable challenge coins, bullion medals, and crypto badges directly in the browser or via AI Agent MCP commands.</b><br/>
-  🌐 <b>Live Web App</b>: <a href="https://badge3d-coin-studio.netlify.app">badge3d-coin-studio.netlify.app</a> • 💻 <b>Zoth Studio</b>: <a href="https://zoth.nullai.tech/tools/badge3d-coin-generator">zoth.nullai.tech/tools/badge3d-coin-generator</a> • 💳 <b>Founding License</b>: <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X">$19 Lifetime via Stripe</a> or Solana Tip (`GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK`) • ⚡ <b>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30">@1nc0gn30</a>)</b> • NullAI Platform
+  🌐 <b>Live Web App</b>: <a href="https://badge3d-coin-studio.netlify.app">badge3d-coin-studio.netlify.app</a> • 💻 <b>Zoth Studio</b>: <a href="https://zoth.nullai.tech/tools/badge3d-coin-generator">zoth.nullai.tech/tools/badge3d-coin-generator</a> • 💳 <b>Founding License</b>: <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X">$0 Lifetime via Stripe</a> or Solana Tip (`GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK`) • ⚡ <b>Engineered by 1nc0gn30 • NullAI (<a href="https://github.com/1nc0gn30">@1nc0gn30</a>)</b> • NullAI Platform
 </p>
 
 </div>
@@ -303,4 +303,4 @@ This project is licensed under the **MIT License**. Free for commercial and pers
 
 ---
 
-*Engineered with precision by Neal Frazier Tech ([@1nc0gn30](https://github.com/1nc0gn30)) • NullAI Platform ([nullai.tech](https://nullai.tech))*
+*Engineered with precision by 1nc0gn30 • NullAI ([@1nc0gn30](https://github.com/1nc0gn30)) • NullAI Platform ([nullai.tech](https://nullai.tech))*

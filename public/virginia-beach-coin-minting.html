@@ -36,8 +36,8 @@
         "description": "Browser-based 3D relief coin and medallion design studio tailored for independent precision engravers and machine shops in Virginia Beach, VA.",
         "creator": {
           "@type": "Person",
-          "name": "Neal Frazier",
-          "url": "https://nealfrazier.tech"
+          "name": "1nc0gn30",
+          "url": "https://nullai.tech"
         },
         "offers": {
           "@type": "Offer",
@@ -62,7 +62,7 @@
             "name": "Is there a recurring seat license or monthly subscription?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "No. The license is a flat one-time $19 tooling pass with lifetime export rights. You keep all generated assets, client models, and physical mint runs forever."
+              "text": "No. The license is a flat one-time $0 tooling pass with lifetime export rights. You keep all generated assets, client models, and physical mint runs forever."
             }
           },
           {
@@ -512,8 +512,8 @@
 
     <div class="offer-card">
       <div class="price-row">
-        <span class="price-num">$19</span>
-        <span class="price-regular">$79 regular</span>
+        <span class="price-num">$0</span>
+        <span class="price-regular">$0 regular</span>
         <span class="price-badge">One-Time Studio Pass • Lifetime Exports</span>
       </div>
 
@@ -524,9 +524,9 @@
       <div class="cta-row">
         <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener" class="btn-checkout">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
-          <span>Acquire Studio Pass ($19)</span>
+          <span>Acquire Studio Pass ($0)</span>
         </a>
-        <button onclick="openDePayCheckout()" class="btn-checkout" style="background: #14F195; color: #07090E; border: none; cursor: pointer;">
+        <button onclick="openSolanaTipCheckout()" class="btn-checkout" style="background: #14F195; color: #07090E; border: none; cursor: pointer;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
           <span>◎ Solana Tip (GG2eQb…dXoK)</span>
         </button>
@@ -570,13 +570,13 @@
         <p>Direct 3D relief coin and medallion modeling for Virginia Beach and Hampton Roads metal artisans.</p>
         <div class="owner-contact-row">
           <div class="owner-contact-item">
-            <strong>Studio:</strong> Neal Frazier Tech &middot; NullAI Platform
+            <strong>Studio:</strong> 1nc0gn30 • NullAI &middot; NullAI Platform
           </div>
           <div class="owner-contact-item">
             <strong>Phone:</strong> <a href="tel:9482047987">(948) 204-7987</a>
           </div>
           <div class="owner-contact-item">
-            <strong>Inquiries:</strong> <a href="mailto:neal@nealfrazier.tech">neal@nealfrazier.tech</a>
+            <strong>Inquiries:</strong> <a href="mailto:neal@nullai.tech">neal@nullai.tech</a>
           </div>
           <div class="owner-contact-item">
             <strong>Regional Node:</strong> Virginia Beach, VA 23451
@@ -656,12 +656,12 @@
       <a href="/cities/boise-id/aeo/">Boise Tooling</a>
       <a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener">GitHub</a>
     </div>
-    <div>Engineered by Neal Frazier Tech (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">NullAI Platform</a></div>
+    <div>Engineered by 1nc0gn30 • NullAI (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--primary); text-decoration: none;">NullAI Platform</a></div>
   </footer>
 
   <script>
-    function openDePayCheckout() {
-      if (typeof DePayWidgets !== 'undefined' && DePayWidgets.Payment) {
+    function openSolanaTipCheckout() {
+      if (typeof SolanaTipWidgets !== 'undefined' && SolanaTipWidgets.Payment) {
         (navigator.clipboard && navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK'));
       } else {
         window.open('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X', '_blank');

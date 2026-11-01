@@ -1,6 +1,6 @@
 # Autonomous AI Agent Discovery & Crawling Policy (ai.txt)
 software-name: Badge3D Coin Studio
-publisher: Neal Frazier Tech (@1nc0gn30)
+publisher: 1nc0gn30 (@1nc0gn30)
 platform: NullAI Platform
 ai-crawling: allowed
 ai-grounding: allowed

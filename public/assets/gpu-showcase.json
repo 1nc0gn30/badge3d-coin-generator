@@ -1,0 +1,41 @@
+{
+  "repo_id": "badge3d-coin-generator",
+  "title": "Badge3D Coin Generator",
+  "engineered_by": "1nc0gn30 (@1nc0gn30) \u2022 NullAI Platform",
+  "gpu_engine": "NVIDIA A100 80GB PCIe (ComfyUI FLUX.1 + Qwen2.5-Coder-32B + Trimesh GLB)",
+  "archetype": "tesseract",
+  "accent_hex": "#38BDF8",
+  "qwen32b_design_spec": "Badge3D Coin Generator: Tesseract archetype, #38BDF8 accent, dynamic 3D coins, interactive UI, seamless transitions, high-fidelity shaders.",
+  "assets": {
+    "hero_4k": "/assets/gpu-hero-4k.png",
+    "og_banner": "/og-banner.jpg",
+    "model_3d_glb": "/assets/gpu-artifact.glb",
+    "showreel_webm": "/assets/gpu-showreel.webm",
+    "ad_mp4": "/assets/gpu-ad-15s.mp4"
+  },
+  "benchmark_ms": {
+    "index": 21,
+    "total_repos": 99,
+    "repo_id": "badge3d-coin-generator",
+    "title": "Badge3D Coin Generator",
+    "archetype": "tesseract",
+    "accent_hex": "#38BDF8",
+    "glb_ms": 839,
+    "flux_hero_ms": 7251,
+    "flux_og_ms": 6180,
+    "video_ms": 1633,
+    "qwen32b_ms": 4538,
+    "total_ms": 20443,
+    "glb_kb": 126.9,
+    "hero_kb": 589.6,
+    "og_kb": 345.0,
+    "qwen32b_spec": "Badge3D Coin Generator: Tesseract archetype, #38BDF8 accent, dynamic 3D coins, interactive UI, seamless transitions, high-fidelity shaders.",
+    "hero_gallery_url": "/gallery/badge3d-coin-generator_gpu-hero-4k.png",
+    "og_gallery_url": "/gallery/badge3d-coin-generator_og-banner.jpg",
+    "glb_gallery_url": "/gallery/badge3d-coin-generator.glb",
+    "vram_used_mb": 55829,
+    "vram_total_mb": 81152,
+    "timestamp": "03:26:38 UTC"
+  },
+  "timestamp": "2026-11-01T03:26:38Z"
+}

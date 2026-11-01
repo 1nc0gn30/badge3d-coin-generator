@@ -1,5 +1,5 @@
 # Badge3D Coin Studio — Context & Model Discovery (llms.txt)
-> Sovereign in-browser developer utility engineered by Neal Frazier Tech.
+> Sovereign in-browser developer utility engineered by 1nc0gn30 • NullAI.
 - [Application]: https://badge3d-coin-studio.netlify.app/
 - [Terms of Service]: https://badge3d-coin-studio.netlify.app/terms.html
 - [Privacy Policy]: https://badge3d-coin-studio.netlify.app/privacy.html
