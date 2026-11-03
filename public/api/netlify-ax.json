@@ -1,7 +1,7 @@
 {
   "schema_version": "2026-10-04",
   "generator": "Zoth Sovereign Netlify AX & AI Engine v3.5",
-  "project_path": "/home/zoth/NullAITech/badge3d-coin-generator",
+  "project_path": "~/NullAITech/badge3d-coin-generator",
   "score": 100,
   "total_vectors": 14,
   "passed": 14,
