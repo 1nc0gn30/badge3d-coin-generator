@@ -134,13 +134,18 @@ class Color:
 
 def print_banner() -> None:
     """Print stylish ASCII banner for badge3d-coin-generator."""
+    l1 = Color.bold(Color.yellow(r"____            _             _____ ____      ____"))
+    l2 = Color.bold(Color.yellow(r"| __ )  __ _  __| | __ _  ___ |___ //  _ \    / ___|___  ___"))
+    l3 = Color.bold(Color.yellow("|  _ \\ / _` |/ _` |/ _` |/ _ \\  |_ \\| | | |  | |   / _ \\/ _ \\"))
+    l4 = Color.bold(Color.yellow(r"| |_) | (_| | (_| | (_| |  __/ ___) | |_| |  | |__| (_) | |)"))
+    l5 = Color.bold(Color.yellow(r"|____/ \__,_|\__,_|\__, |\___||____/|____/    \____\___/ \_/"))
     banner = f"""
 {Color.cyan("╔═════════════════════════════════════════════════════════════════════╗")}
-{Color.cyan("║")}   {Color.bold(Color.yellow("____            _             _____ ____      ____"))}          {Color.cyan("║")}
-{Color.cyan("║")}  {Color.bold(Color.yellow("| __ )  __ _  __| | __ _  ___ |___ //  _ \\    / ___|___  ___"))} {Color.cyan("║")}
-{Color.cyan("║")}  {Color.bold(Color.yellow("|  _ \\ / _` |/ _` |/ _` |/ _ \\  |_ \\| | | |  | |   / _ \\/ _ \\"))}{Color.cyan("║")}
-{Color.cyan("║")}  {Color.bold(Color.yellow("| |_) | (_| | (_| | (_| |  __/ ___) | |_| |  | |__| (_) | |)"))}{Color.cyan("║")}
-{Color.cyan("║")}  {Color.bold(Color.yellow("|____/ \\__,_|\\__,_|\\__, |\\___||____/|____/    \\____\\___/ \\_/"))} {Color.cyan("║")}
+{Color.cyan("║")}   {l1}          {Color.cyan("║")}
+{Color.cyan("║")}  {l2} {Color.cyan("║")}
+{Color.cyan("║")}  {l3}{Color.cyan("║")}
+{Color.cyan("║")}  {l4}{Color.cyan("║")}
+{Color.cyan("║")}  {l5} {Color.cyan("║")}
 {Color.cyan("║")}                     {Color.yellow("|___/")}   {Color.bold("3D Coin Generator & Studio")}  {Color.dim(f"v{__version__}")}  {Color.cyan("║")}
 {Color.cyan("╚═════════════════════════════════════════════════════════════════════╝")}
 """
