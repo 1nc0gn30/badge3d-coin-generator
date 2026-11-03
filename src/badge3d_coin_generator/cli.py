@@ -29,7 +29,7 @@ import time
 import urllib.parse
 import webbrowser
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Sequence, Tuple, Union
+from typing import Any, Callable, Dict, List, Optional, Sequence, Tuple, Union
 
 from .__init__ import (
     COIN_PRESETS,

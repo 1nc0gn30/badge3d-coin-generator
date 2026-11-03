@@ -9,7 +9,6 @@ Zero external dependencies (100% Python Standard Library).
 
 from __future__ import annotations
 
-import cgi
 import io
 import json
 import math
