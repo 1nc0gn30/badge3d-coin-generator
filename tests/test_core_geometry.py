@@ -72,7 +72,7 @@ class TestCompat(unittest.TestCase):
 
     def setUp(self) -> None:
         self.temp_dir = tempfile.TemporaryDirectory()
-        self.tmp_path = Path(self.temp_dir.name)
+        self.tmp_path = Path(self.temp_dir.name).resolve()
 
     def tearDown(self) -> None:
         self.temp_dir.cleanup()
@@ -223,7 +223,7 @@ class TestExporters(unittest.TestCase):
 
     def setUp(self) -> None:
         self.temp_dir = tempfile.TemporaryDirectory()
-        self.tmp_path = Path(self.temp_dir.name)
+        self.tmp_path = Path(self.temp_dir.name).resolve()
 
         # Create a lightweight test coin mesh
         p = CoinParameters(radius=10.0, thickness=2.0, edge_reed_count=20, radial_segments=40, field_rings=6)
