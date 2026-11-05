@@ -2443,6 +2443,22 @@
     </div>
     <div>Engineered by 1nc0gn30 • NullAI (<a href="https://github.com/1nc0gn30/badge3d-coin-generator" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">@1nc0gn30</a>) &middot; <a href="https://nullai.tech" target="_blank" rel="noopener" style="color: var(--md-sys-color-primary); text-decoration: none;">NullAI Platform</a></div>
   </footer>
-  <script src="/assets/sovereign-upgrade.js" defer></script>
+  
+
+  <script src="/sovereign_tutorial.js"></script>
+  <script>
+    window.addEventListener("DOMContentLoaded", function() {
+      if (window.createSovereignTutorial) {
+        window.createSovereignTutorial({
+          toolId: "badge3d-coin-generator",
+          toolName: "Badge3D Coin Generator",
+          tagline: "Design shiny metallic 3D coins, badges, and seals right in your browser!",
+          accentColor: "#EAB308",
+          steps: [{"icon": "\ud83e\ude99", "title": "Instant 3D Metallic Render", "desc": "Turn simple 2D logos, symbols, or text into photorealistic gold, silver, and bronze 3D spinning coins."}, {"icon": "\u2728", "title": "Real-Time Lighting & Shaders", "desc": "Adjust roughness, metalness, and rim lighting with intuitive sliders to get the exact gleam you want."}, {"icon": "\ud83d\udce6", "title": "Export GLTF / PNG / Video", "desc": "Download 3D .GLB files for games or high-res transparent PNGs for badges and awards."}]
+        });
+      }
+    });
+  </script>
+
 </body>
 </html>
