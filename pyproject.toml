@@ -4,12 +4,12 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "badge3d-coin-generator"
-version = "1.0.0"
-description = "Pure Python 3D Coin, Medal & Relief Generator with Parametric Engine, Binary STL/OBJ Exporters, MCP Server and Web Studio UI (design influenced by Material 3)"
+version = "2.5.0"
+description = "Pure Python 3D Coin, Medal & Relief Generator with Parametric Engine, Binary STL/OBJ Exporters, MCP Server and Web Studio UI"
 readme = "README.md"
 license = { text = "MIT" }
 authors = [
-    { name = "Badge3D Engineering Team", email = "engineering@badge3d.dev" }
+    { name = "1nc0gn30", email = "ops@nullai.tech" }
 ]
 keywords = [
     "3d",

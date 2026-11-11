@@ -1,363 +1,152 @@
-<div align="center">
-  <img src="assets/hero-banner.svg" alt="Badge3D Coin Generator — Sovereign Architecture Banner" width="100%" />
-</div>
-
-<br />
-
-<div align="center">
-
-# 🪙 Badge3D Coin Generator
-
-**Pure Python 3D Parametric Coin, Medal & Relief Mesh Generator with Real-Time Web Studio & AI Agent MCP Server**
-
-[![Live Demo](https://img.shields.io/badge/Live%20App-badge3d--coin--studio.netlify.app-00DC82?style=flat&logo=netlify)](https://badge3d-coin-studio.netlify.app)
-[![Access](https://img.shields.io/badge/Access-100%25%20Free%20%26%20Open-10B981?style=flat)](https://zoth.nullai.tech/tools/badge3d-coin-generator)
-[![Buy Us a Coffee](https://img.shields.io/badge/Support-☕%20Buy%20Us%20a%20Coffee-D4AF37?style=flat)](https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X)
-[![Solana Tip](https://img.shields.io/badge/Tip-◎%20Solana-14F195?style=flat)](solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK)
-[![Zoth Studio Ready](https://img.shields.io/badge/Zoth%20Studio-God%20Mode%20Active-D4AF37?style=flat)](https://zoth.nullai.tech/tools/badge3d-coin-generator)
-[![CI Matrix](https://img.shields.io/badge/CI-Multi--OS%20%7C%20Py%203.9--3.13-success?logo=github-actions)](https://github.com/1nc0gn30/badge3d-coin-generator/actions)
-[![Zero Dependencies](https://img.shields.io/badge/Dependencies-Zero%20(Pure%20Stdlib)-blue.svg)](https://docs.python.org/3/)
-[![3D Print Ready](https://img.shields.io/badge/3D%20Print-Watertight%20Manifold%20STL-orange.svg)](https://en.wikipedia.org/wiki/STL_(file_format))
-[![MCP Server](https://img.shields.io/badge/MCP-Claude%20%7C%20Cursor%20%7C%20Cline-8A2BE2.svg)](https://modelcontextprotocol.io)
-
 <p align="center">
-  <b>Generate millimeter-accurate, 3D-printable challenge coins, bullion medals, and crypto badges directly in the browser or via AI Agent MCP commands.</b><br/>
-  🌐 <b>Live Web App</b>: <a href="https://badge3d-coin-studio.netlify.app">badge3d-coin-studio.netlify.app</a> • 💻 <b>Zoth Studio</b>: <a href="https://zoth.nullai.tech/tools/badge3d-coin-generator">zoth.nullai.tech/tools/badge3d-coin-generator</a> • 💳 <b>Founding License</b>: <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X">$0 Lifetime via Stripe</a> or Solana Tip (`GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK`) • ⚡ <b>Engineered by 1nc0gn30 • NullAI (<a href="https://github.com/1nc0gn30">@1nc0gn30</a>)</b> • NullAI Platform
+  <img src="assets/hero-banner.svg" alt="Badge3D Coin Generator" width="100%">
 </p>
 
-</div>
+# Badge3D Coin Generator
 
----
+Parametric 3D coin, medallion, and relief mesh generator written in pure Python standard library with a Three.js WebGL workstation, built-in FDM G-code slicer, cylindrical rim milling and cryptographic security stamp engine, and JSON-RPC 2.0 MCP server.
 
-## 🌟 Highlights & Key Capabilities
+- **Version**: `2.5.0`
+- **Local Workstation Port**: `127.0.0.1:8084`
+- **Zoth Studio Dossier**: [https://zoth.nullai.tech/tools/badge3d-coin-generator](https://zoth.nullai.tech/tools/badge3d-coin-generator)
+- **Author**: [1nc0gn30](https://1nc0gn30.si) (`@1nc0gn30`) · [NullAI](https://nullai.tech)
 
-- **Zero External Dependencies**: 100% Pure Python Standard Library (`dependencies = []`). Runs out-of-the-box on Linux, macOS, Windows, and Termux without compiling C extensions or requiring NumPy/Trimesh.
-- **Parametric 3D Mesh Engine**: Full control over outer diameter, total thickness, raised protective rims, step walls, edge bevels/chamfers, central loops, and edge serrations (sinusoidal, square, fluted, trapezoidal reeding).
-- **Edge Milling & Cryptographic Security Stamp**: High-precision incuse/raised cylindrical rim lettering, deterministic hash-derived anti-counterfeiting micro-grooves with parity verification checksums, and segmented reeding sectors.
-- **Pure Python SVG Vector-to-Relief Rasterizer**: Built-in cubic/quadratic Bézier curve flattener, path tokenizer, and scanline polygon fill rasterizer that converts 2D SVGs into 3D displacement heightmaps.
-- **High-Performance Exporters**:
-  - **Binary STL**: Standard IEEE 754 32-bit Little-Endian with 80-byte header, exact face counts, and calculated face normals.
-  - **ASCII STL**: Human-readable STL format for CAD debugging.
-  - **Wavefront OBJ & MTL**: Complete polygonal mesh with vertex normals (`vn`), UV texture coordinates (`vt`), and material definitions.
-  - **glTF / GLB 2.0**: Ready for Three.js, Babylon.js, WebGL viewers, and augmented reality.
-- **Badge3D Coin Studio Web UI**: Material 3 influenced Light/Dark studio with interactive Three.js 3D viewport, real-time metallic PBR shaders (24K Gold, Antique Silver, Bronze, Obsidian, Titanium), turntable controls, dropzone logo uploader, and 1-click STL export.
-- **AI Agent MCP Server**: Full Model Context Protocol (MCP) server for Claude Desktop, Cursor, and Cline to create 3D coins through natural language.
-- **Watertight Manifold Geometry**: All generated meshes are verified 2-manifolds with outward-facing consistent normals, zero unstitched boundaries, and zero non-manifold edges.
+## Overview
 
----
+`badge3d-coin-generator` synthesizes watertight 2-manifold triangle meshes for commemorative medallions, challenge coins, bullion proofs, and hex/octagon badges without external CAD or C++ runtime dependencies. It computes exact mesh volume (`mm³` / `cm³`), precious-metal casting weights (24k Gold, 18k Gold, Sterling Silver, C932 Bronze, Grade-5 Titanium, Platinum), and exports print-ready Binary STL, ASCII STL, Wavefront OBJ/MTL, glTF 2.0 / GLB, and RepRap/Marlin G-code.
 
-## 📐 Architecture & Workflow
+Core capabilities:
+- **Parametric Relief & SVG Heightmap Engine**: 10 procedural relief generators (`wreath`, `star`, `cross`, `sunburst`, `hex_grid`, `shield`, `roman_head`, `skull`, `concentric`, `smooth`) plus SVG path rasterization (`SVGRasterizer`) for custom obverse/reverse displacement maps.
+- **Cylindrical Edge Milling & Security Stamps**: Sinusoidal, trapezoidal, and square-notch reeding, segmented reeding sectors, cylindrical rim text inscriptions (`incuse` or `raised`), and SHA-256 hash-derived anti-counterfeiting groove patterns.
+- **Pure-Python Slicer Engine**: Layer plane intersection, rectilinear/grid/concentric/triangle infill toolpaths, overhang printability analysis, and filament mass estimation (`PLA`, `PETG`, `ABS`, `Resin`).
+- **Dual Interface**: Browser-based Three.js WebGL workstation (`127.0.0.1:8084`) and stdio MCP server with 9 registered tools.
 
-```
-   ┌─────────────────────────────────────────────────────────────┐
-   │                       INPUT SOURCES                         │
-   │  Parametric Dimensions  │  Vector SVG Logos  │  Text & Fonts│
-   └───────────────┬─────────────────────┬───────────────┬───────┘
-                   │                     │               │
-                   ▼                     ▼               │
-   ┌──────────────────────────────────────────────┐      │
-   │      Pure Python SVG Scanline Rasterizer     │      │
-   │  - Bézier Curve Flattening (Cubic/Quad)      │      │
-   │  - Path Tokenizer & Non-Zero Winding Fill    │      │
-   │  - Discrete 2D Floating Elevation Heightmap  │      │
-   └──────────────────────┬───────────────────────┘      │
-                          │                              │
-                          ▼                              ▼
-   ┌─────────────────────────────────────────────────────────────┐
-   │             Parametric Polar Mesh Engine (CoinMeshEngine)   │
-   │  - Concentric Polar Grid (Obverse & Reverse Fields)         │
-   │  - Bilinear Heightmap Elevation Displacement                │
-   │  - Outer Rim Extrusion & Chamfer/Bevel Steps                │
-   │  - Edge Reeding / Serration Waveform Modulation             │
-   │  - Area-Weighted Vertex Normal Accumulation                 │
-   └──────────────────────────────┬──────────────────────────────┘
-                                  │
-                                  ▼
-   ┌─────────────────────────────────────────────────────────────┐
-   │                   3D EXPORTERS & INTERFACES                 │
-   ├──────────────────────────────┬──────────────────────────────┤
-   │  Binary STL (.stl)           │  Wavefront OBJ (.obj/.mtl)   │
-   │  glTF / GLB 2.0 Container    │  Physical Mass Calculator    │
-   ├──────────────────────────────┼──────────────────────────────┤
-   │  Badge3D Coin Studio (UI)   │  Model Context Protocol (MCP)│
-   └──────────────────────────────┴──────────────────────────────┘
+## Architecture
+
+```text
+badge3d-coin-generator/
+├── server.py                             # Standalone server launcher (127.0.0.1:8084)
+├── bin/badge3d.js                        # Unified Node/ZothOS CLI & desktop wrapper
+├── src/badge3d_coin_generator/
+│   ├── __init__.py                       # CoinGenerator API & 5 standard coin presets
+│   ├── mesh_engine.py                    # Watertight 2-manifold radial & Cartesian mesh builder
+│   ├── svg_rasterizer.py                 # SVG path parser & bilinear heightmap synthesizer
+│   ├── edge_milling.py                   # Rim reeding, inscriptions & SHA-256 groove stamps
+│   ├── exporters.py                      # Binary/ASCII STL, OBJ/MTL, glTF 2.0 & GLB writers
+│   ├── slicer_engine.py                  # Layer slicer, infill generator & G-code compiler
+│   ├── ui_server.py                      # ThreadingHTTPServer REST API (:8084)
+│   ├── mcp_server.py                     # MCP 2024-11-05 stdio JSON-RPC 2.0 server (9 tools)
+│   └── cli.py                            # Multi-subcommand CLI entry point
+├── public/                               # Three.js WebGL interactive coin studio
+└── tests/                                # Pytest unit & HTTP/MCP integration suite
 ```
 
----
+## Quickstart
 
-## 🚀 Quickstart
-
-### 1. Installation
+Clone the repository, install in editable mode, and start the local workstation on `127.0.0.1:8084`:
 
 ```bash
-# Clone the repository
 git clone https://github.com/1nc0gn30/badge3d-coin-generator.git
 cd badge3d-coin-generator
+python3 -m pip install -e .
 
-# Install in editable mode
-pip install -e .
+# Start the WebGL Studio & REST API server on 127.0.0.1:8084
+python3 server.py --host 127.0.0.1 --port 8084
 ```
 
-### 2. Launch Badge3D Coin Studio (Web UI)
+Open `http://127.0.0.1:8084` in a browser or inspect `/api/health`:
 
 ```bash
-badge3d serve --port 8080
+curl -s http://127.0.0.1:8084/api/health
 ```
-Open **`http://localhost:8080`** in your browser to interact with the real-time Material 3 3D studio.
 
-### 3. CLI Coin Generation
+## CLI & MCP Usage
+
+### CLI Subcommands
+
+ Installed scripts `badge3d` and `badge3d-coin-generator` (and ZothOS v3.4.0 `/usr/local/bin/badge3d`) expose:
 
 ```bash
-# Generate a standard 40mm military challenge coin
-badge3d generate --preset challenge_coin --output challenge_coin.stl
-
-# Generate a custom 38mm titanium crypto badge
-badge3d generate \
-  --radius 19.0 \
-  --thickness 3.2 \
-  --rim-width 2.0 \
-  --rim-height 0.8 \
-  --serrations 60 \
-  --output custom_badge.stl
-
-# View physical weight & mass breakdown for gold, silver, bronze, titanium
-badge3d stats --radius 20.0 --thickness 3.5
-```
-
----
-
-## 💎 Preset Catalog
-
-| Preset Name | Diameter | Thickness | Rim Width | Rim Height | Reeding | Bevel | Ideal Metal Finish | Description |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---|:---|
-| **`challenge_coin`** | 40.0 mm | 3.5 mm | 2.2 mm | 0.8 mm | 80 ribs | 0.4 mm | Polished Bronze / Brass | Classic military unit coin with raised outer rim and serrated edge |
-| **`crypto_token`** | 35.0 mm | 2.8 mm | 1.8 mm | 0.6 mm | Smooth | 0.5 mm | Cyberpunk Obsidian / Gold | Hexagonal boundary with cybernetic relief displacement |
-| **`roman_medallion`** | 42.0 mm | 4.0 mm | 2.8 mm | 1.0 mm | Smooth | 0.6 mm | Antique Silver (.925) | Classical hammered thick imperial coin with heavy relief |
-| **`sovereign_gold`** | 22.1 mm | 1.8 mm | 1.2 mm | 0.4 mm | 120 ribs | 0.2 mm | 24K Pure Gold | Fine investment bullion with micro-reeded perimeter |
-| **`scifi_hex_badge`** | 38.0 mm | 3.2 mm | 2.4 mm | 0.9 mm | 48 ribs | 0.6 mm | Brushed Grade 5 Titanium | Octagonal futuristic tactical duty badge |
-
----
-
-## 🖨️ 3D Printing & Slicing Specifications
-
-Every mesh produced by `badge3d-coin-generator` is a watertight closed 2-manifold optimized for additive manufacturing.
-
-### FDM 3D Printing (Bambu Studio / PrusaSlicer / Cura)
-- **Orientation**: Lay flat on build plate (Z-axis vertical).
-- **Layer Height**: `0.08 mm` to `0.12 mm` (0.08mm recommended for high-relief details).
-- **Nozzle Diameter**: `0.2 mm` or `0.4 mm`.
-- **Infill**: `100% Solid` (Concentric top/bottom pattern).
-- **Ironing**: Enable **"Iron top surfaces"** (Flow: 12%, Speed: 20mm/s) to achieve a mirror-smooth background field between relief engravings.
-- **First Layer**: First layer height `0.2 mm`, line width `120%` for maximum bed adhesion.
-
-### SLA / Resin 3D Printing (Anycubic, Elegoo, Formlabs)
-- **Orientation**: Tilt coin at **35° to 45°** relative to the build plate. *Do not print flat directly against the FEP film to avoid suction cup force tearing.*
-- **Layer Height**: `0.025 mm` (25 microns) or `0.05 mm`.
-- **Support Strategy**: Place light supports along the lower outer rim perimeter only. Avoid placing supports across the face relief artwork.
-- **Exposure**: Follow resin manufacturer specs (e.g. 2.2s normal exposure on 12K Mono screens).
-
-### Lost-Wax Investment Casting (Precious Metals)
-- **Casting Wax Resin**: Print using castable photopolymer resin (e.g. Formlabs Castable Wax 40, Siraya Tech Cast).
-- **Shrinkage Compensation**: Scale coin dimensions by **+1.5% to +2.0%** in slicer prior to export to compensate for metal cooling contraction.
-- **Burnout Schedule**: Standard 12-hour progressive burnout ramp to 730°C (1350°F) in gypsum investment flask.
-
----
-
-## 🤖 AI Agent MCP Server Configuration
-
-`badge3d-coin-generator` exposes a complete **Model Context Protocol (MCP)** server over `stdio` JSON-RPC for AI assistants (Claude Desktop, Cursor, Cline).
-
-### 1. Claude Desktop Setup
-Add the following to your `claude_desktop_config.json`:
-
-```json
-{
-  "mcpServers": {
-    "badge3d": {
-      "command": "python",
-      "args": ["-m", "badge3d_coin_generator.mcp_server"]
-    }
-  }
-}
-```
-
-### 2. Cursor Setup
-Add to `.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "badge3d-coin-generator": {
-      "command": "badge3d",
-      "args": ["mcp"]
-    }
-  }
-}
-```
-
-### 3. Cline / VS Code Setup
-Add to `cline_mcp_settings.json`:
-
-```json
-{
-  "mcpServers": {
-    "badge3d": {
-      "command": "python3",
-      "args": ["-m", "badge3d_coin_generator.mcp_server"]
-    }
-  }
-}
-```
-
-### Available MCP Tools:
-- **`generate_coin`**: Generate 3D coin mesh and export to binary STL / OBJ with custom dimensions, rims, serrations, and relief displacement.
-- **`list_presets`**: Query all available coin presets (`challenge_coin`, `crypto_token`, `roman_medallion`, etc.).
-- **`get_coin_stats`**: Compute physical dimensions, volume (cm³), and mass in 24K Gold, Silver, Bronze, Titanium, and PLA.
-
----
-
-## 🐍 Python API Reference
-
-```python
-from badge3d_coin_generator.mesh_engine import CoinParameters, CoinMeshEngine
-from badge3d_coin_generator.exporters import export_binary_stl, export_obj
-from badge3d_coin_generator.ui_server import compute_physical_statistics
-
-# 1. Configure parametric dimensions
-params = CoinParameters(
-    radius=20.0,             # 40mm diameter
-    thickness=3.5,            # 3.5mm total thickness
-    rim_width=2.2,            # 2.2mm raised rim
-    rim_height=0.8,           # 0.8mm rim elevation
-    bevel_width=0.4,          # 0.4mm rim edge chamfer
-    edge_reed_count=80,       # 80 serrated reeding ridges
-    reed_depth=0.30,          # 0.3mm reed groove depth
-    relief_depth_obverse=0.8, # 0.8mm obverse relief height
-    smooth_shading=True,
-)
-
-# 2. Generate 3D polygonal mesh
-engine = CoinMeshEngine(params)
-mesh = engine.generate()
-
-print(f"Generated mesh with {mesh.vertex_count:,} vertices and {mesh.triangle_count:,} triangles.")
-print(f"Is watertight manifold: {mesh.is_watertight()}")
-
-# 3. Export to Binary STL for 3D printing
-export_binary_stl(mesh, "custom_coin.stl")
-
-# 4. Export to Wavefront OBJ for CAD / Blender
-export_obj(mesh, "custom_coin.obj")
-
-# 5. Compute metal mass estimates
-stats = compute_physical_statistics(params, mesh=mesh)
-print(f"Solid Volume: {stats['volume_cm3']} cm³")
-print(f"Weight in 24K Gold: {stats['weights_grams']['gold_24k']} grams")
-print(f"Weight in Sterling Silver: {stats['weights_grams']['silver_925']} grams")
-```
-
----
-
-## 💻 CLI Command Reference
-
-```bash
-# Print general help
-badge3d --help
-
-# List all built-in presets
-badge3d presets
-
-# Generate 3D coin from preset
-badge3d generate --preset challenge_coin --output output.stl
-
-# Generate custom dimensions
-badge3d generate --radius 22.5 --thickness 3.0 --rim-width 2.0 --output coin.stl
-
-# Launch Web UI Server
-badge3d serve --host 127.0.0.1 --port 8080
-
-# Start MCP Server for AI agents
-badge3d mcp
-
-# Calculate physical volume and weights
-badge3d stats --radius 20.0 --thickness 3.5
-```
-
----
-
-## 🧪 Running the Test Suite
-
-```bash
-# Run full pytest suite with verbose output
-pytest -v
-
-# Run with test coverage
-pytest --cov=badge3d_coin_generator tests/
-```
-
----
-
-## 📄 License
-
-This project is licensed under the **MIT License**. Free for commercial and personal 3D printing, CAD modeling, and manufacturing.
-
----
-
-*Engineered with precision by 1nc0gn30 • NullAI ([@1nc0gn30](https://github.com/1nc0gn30)) • NullAI Platform ([nullai.tech](https://nullai.tech))*
-
----
-
-## 🏛️ ZothOS v3.4, Zoth Studio v2 & Obsidian Second Brain Ecosystem
-
-```mermaid
-flowchart LR
-    subgraph ZothOS["🐧 ZothOS v3.4 CLI & Braille TUI"]
-        CLI["badge3d-coin-generator --help / --json"]
-        TUI["badge3d-coin-generator-tui<br/>Unicode U+2800 2x4 Braille"]
-    end
-
-    subgraph Workstation["⚡ Sovereign Workstation"]
-        WEB["http://127.0.0.1:3000<br/>REST API & /health"]
-    end
-
-    subgraph Studio["🌌 Zoth Studio v2 & ZothOS-Lite"]
-        GODMODE["http://127.0.0.1:3000/tools/badge3d-coin-generator<br/>God-Mode Workstation"]
-        LITE["http://127.0.0.1:8145<br/>ZothOS-Lite Web Desktop"]
-    end
-
-    subgraph SecondBrain["💎 Obsidian Second Brain & STDP"]
-        TRACKER["http://127.0.0.1:8151<br/>Zoth Obsidian Tracker"]
-        NEURO["http://127.0.0.1:8094<br/>Neuro-Memory STDP Cortex"]
-        NOTE["Studio/Tools/Studio badge3d-coin-generator.md"]
-    end
-
-    CLI --> WEB
-    TUI --> WEB
-    WEB <--> GODMODE
-    WEB <--> LITE
-    WEB --> TRACKER
-    TRACKER <--> NOTE
-    NOTE <--> NEURO
-```
-
-### Cross-Surface Integration Matrix
-
-| Surface | Endpoint / Binary | Capabilities |
-| :--- | :--- | :--- |
-| **Standalone Workstation** | `http://127.0.0.1:3000` | 100% Free & Open-Access Web Deck, live `/health` & REST telemetry |
-| **Zoth Studio v2 Route** | `http://127.0.0.1:3000/tools/badge3d-coin-generator` | Interactive God-Mode component inside Zoth Studio (`https://zoth.nullai.tech`) |
-| **ZothOS v3.4 CLI & TUI** | `badge3d-coin-generator` / `badge3d-coin-generator-tui` | Global binary in `/usr/local/bin/` with Unicode `U+2800` Braille TUI & `--json` output |
-| **ZothOS-Lite Web Desktop** | `http://127.0.0.1:8145` | Browser-native KDE-style window manager & terminal launcher |
-| **Zoth Obsidian Tracker** | `http://127.0.0.1:8151` | Interactive Obsidian Second Brain vault explorer (`~/Documents/Obsidian Vault/Studio/Tools/Studio badge3d-coin-generator.md`) |
-| **Neuro-Memory STDP Cortex** | `http://127.0.0.1:8094` | 3-Factor STDP synaptic memory daemon & 21-tool MCP server |
-
-```bash
-# Inspect CLI & Unicode U+2800 Braille TUI on ZothOS v3.4
+# Show CLI help or JSON service status
 badge3d-coin-generator --help
-badge3d-coin-generator-tui --status
-badge3d-coin-generator-tui --json
+badge3d-coin-generator --status --json
 
-# Verify Second Brain Vault & 12-Step Verification Gallery on :8151
-zoth-obsidian-tracker --verify
+# List coin presets as JSON
+badge3d-coin-generator presets --json
+
+# Generate a watertight Binary STL with rim inscription and SHA-256 security grooves
+badge3d-coin-generator generate \
+  --preset commemorative_gold \
+  --edge-inscription "NULLAI SOVEREIGN MINT" \
+  --security-stamp "SERIAL-2026-001" \
+  -o gold_medallion.stl
+
+# Export Wavefront OBJ + MTL
+badge3d-coin-generator generate -r 20.0 -t 3.2 --pattern hex_grid -f obj -o hex_coin.obj
+
+# Slice a coin directly to Marlin/RepRap G-code
+badge3d-coin-generator slice --preset challenge_coin --layer-height 0.16 --infill-density 0.25 --filament pla -o coin.gcode --json
+
+# Inspect cylindrical edge milling & security stamp checksum
+badge3d-coin-generator edge --inscription "LIBERTY" --stamp "MINT-SEED-42" --json
+
+# Launch the HTTP server on 127.0.0.1:8084
+badge3d-coin-generator serve --host 127.0.0.1 --port 8084 --no-browser
+
+# Run toolchain diagnostics & self-verification
+badge3d-coin-generator diagnostics
+badge3d-coin-generator test
 ```
 
+### REST API Endpoints (`127.0.0.1:8084`)
+
+| Method | Endpoint | Description |
+| :--- | :--- | :--- |
+| `GET` | `/health`, `/api/health` | Service health and version (`2.5.0`) |
+| `GET` | `/api/presets` | Studio preset catalog and dimensions |
+| `GET` | `/api/stats` | Query volume (`cm³`/`mm³`), metal casting masses, and slicing estimates |
+| `GET/POST` | `/api/slice-gcode` | Slice coin geometry to G-code layers or downloadable `.gcode` |
+| `POST` | `/api/generate` | Generate watertight 3D mesh and physical topology statistics |
+| `POST` | `/api/export-stl` | Stream downloadable IEEE-754 little-endian Binary STL |
+| `POST` | `/api/export-obj` | Stream downloadable Wavefront OBJ mesh |
+| `POST` | `/api/edge/profile` | Compute compound rim reeding, inscription, and stamp summary |
+| `POST` | `/api/edge/crypto-stamp` | Derive deterministic SHA-256 rim tooth depths and parity checksum |
+| `POST` | `/api/edge/inscribe` | Evaluate cylindrical coordinate text unwrap metrics |
+
+### MCP Server (`stdio`)
+
+Launch over `stdio` for Claude Desktop, Cursor, Windsurf, or ZothOS agents:
+
+```bash
+badge3d-coin-generator mcp
+```
+
+Registered MCP tools (9):
+- `coin_generate` — Generate 3D coin mesh topology, watertight status, volume, and precious-metal mass table.
+- `coin_export_stl` — Export Binary or ASCII STL with FDM/SLA printability checks.
+- `coin_export_obj` — Export Wavefront `.obj` and `.mtl` files.
+- `coin_presets` — Inspect the preset catalog (`commemorative_gold`, `cyberpunk_hex`, `antique_roman`, `military_challenge`, `sovereign_silver`).
+- `coin_slice_gcode` — Slice coin mesh into G-code layers with overhang analysis.
+- `coin_generate_edge_profile` — Synthesize compound rim reeding and inscription specifications.
+- `coin_stamp_crypto_hash` — Compute SHA-256 anti-counterfeiting groove depths and checksum.
+- `coin_inscribe_edge_text` — Compute cylindrical rim text pitch and coordinates.
+- `coin_diagnostics` — Run host I/O and geometry throughput benchmarks.
+
+## Testing & Verification
+
+Run the automated test suite and CLI checks locally:
+
+```bash
+python3 -m pytest -q
+PYTHONPATH=src python3 -m badge3d_coin_generator.cli --status --json
+PYTHONPATH=src python3 -m badge3d_coin_generator.cli test
+```
+
+## Support
+
+Badge3D Coin Generator is 100% free and open-source with zero paywalls or feature gates. Optional support:
+- [Buy Us a Coffee (Stripe)](https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X)
+
+## License
+
+Released under the [MIT License](LICENSE). Copyright (c) 2026 1nc0gn30 · NullAI ([https://nullai.tech](https://nullai.tech)).

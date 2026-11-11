@@ -57,7 +57,7 @@ from .mesh_engine import (
 # Version & Protocol Constants
 MCP_PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "badge3d-coin-generator"
-SERVER_VERSION = "0.1.0"
+SERVER_VERSION = "2.5.0"
 
 
 def _log(msg: str) -> None:

@@ -73,8 +73,8 @@ from .edge_milling import (
     generate_edge_milling_profile_summary,
 )
 
-__version__ = "0.1.0"
-__author__ = "Badge3D Architecture Team"
+__version__ = "2.5.0"
+__author__ = "1nc0gn30"
 __description__ = "Pure Python 3D Parametric Coin Generator, MCP Server & CLI"
 __license__ = "MIT"
 

@@ -805,71 +805,13 @@
       transform: translateY(0);
       opacity: 1;
     }
-
-    /* Paywall Frosted Glass Blur & Lock */
-    .paywall-locked-container {
-      position: relative;
-    }
-    .paywall-blur-target {
-      filter: none;
-      user-select: none;
-      transition: filter 0.3s ease;
-    }
-    .paywall-unlocked .paywall-blur-target {
-      filter: none;
-      pointer-events: auto;
-      user-select: auto;
-    }
-    .paywall-lock-overlay {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 12px;
-      background: rgba(12, 13, 20, 0.75);
-      backdrop-filter: none;
-      -webkit-backdrop-filter: none;
-      border-radius: var(--md-sys-shape-corner-medium);
-      z-index: 5;
-    }
-    .paywall-unlocked .paywall-lock-overlay {
-      display: none !important;
-    }
   </style>
 
-  <!-- Zoth 100% Open-Access & Buy Us a Coffee Invariant -->
+  <!-- 100% Open-Access Runtime Init -->
   <script id="zoth-open-access-init">
-    (function() {
-      try {
-        var keys = ['agent_audiocipher_pro', 'agent_cyber_turtle_pro', 'agent_datamosh_pro', 'agent_nexus3d_pro', 'agent_policy_pro', 'audiocipher_license', 'audiocipher_pro_licensed', 'badge3d_pro_licensed', 'certpath_pro_key', 'certpath_pro_licensed', 'cron_rhythm_pro_key', 'cron_rhythm_pro_licensed', 'cwv-speed-engine_pro_licensed', 'cwv_pro_licensed', 'cyber_turtle_pro_licensed', 'datamosh_pro_licensed', 'deepsearch-research-agent_pro_licensed', 'deepsearch_pro_licensed', 'entropy_studio_licensed', 'envguard-secrets-vault_pro_licensed', 'envguard_pro_license', 'etsy_connector_pro', 'jwt_guard_licensed', 'mdg_pro_licensed', 'neuro_pro_licensed', 'nexus3d_pro_licensed', 'omnipost_pro_key', 'omnipost_pro_licensed', 'osint_pro_licensed', 'payload-entropy-studio_pro_licensed', 'polyglot_pro_licensed', 'pro_licensed', 'promptmaster_pro_licensed', 'promptmaster_pro_active', 'robots-txt-auditor_pro_licensed', 'robots_pro_licensed', 'schema_illustrator_pro_licensed', 'sovereign_pro_licensed', 'subsweep-lead-scanner_pro_licensed', 'subsweep_licensed', 'turtle_pro_licensed', 'ufo_sacred_licensed', 'vector-search-engine_pro_licensed', 'vector_studio_pro_licensed', 'web-security-guard_pro_licensed', 'web_security_guard_licensed', 'yourdigitalspace_pro', 'zela_guide_pro_licensed', 'zoth_ascii_magic_pro', 'zoth_audiocipher_licensed', 'zoth_badge3d_licensed', 'zoth_cyber_turtle_licensed', 'zoth_datamosh_licensed', 'zoth_etsy_licensed', 'zoth_nexus3d_licensed', 'zoth_osint_licensed', 'zoth_policy_licensed', 'zoth_sacred_licensed', 'zoth_ufo_licensed'];
-        for (var i = 0; i < keys.length; i++) {
-          localStorage.setItem(keys[i], 'true');
-        }
-        localStorage.setItem('pm_license_v2', JSON.stringify({ method: 'open_access', ref: 'free_forever', at: '2026-01-01T00:00:00Z' }));
-        window.isPro = true;
-        window.isProLicensed = true;
-      } catch (e) {}
-    })();
+    window.isPro = true;
+    window.isProLicensed = true;
   </script>
-  <style id="zoth-open-access-override">
-    .paywall-overlay, .output-paywall-overlay, #outputPaywallOverlay, #schemaPaywallOverlay,
-    #transformerPaywallOverlay, #proPaywallModal, #licenseModal, #salesBanner, #founding-offer-banner,
-    #funnelHeroBanner, [data-alias="paywallOverlay"], [data-alias="founding-offer-banner"] {
-      display: none !important;
-      opacity: 0 !important;
-      pointer-events: none !important;
-    }
-    .paywall-wrap #outputPreview, .paywall-wrap #reportContentArea, .paywall-content,
-    .paywall-content.locked, .paywall-wrap.is-locked #outputPreview, .paywall-wrap.locked #outputPreview {
-      filter: none !important;
-      -webkit-filter: none !important;
-      user-select: auto !important;
-      pointer-events: auto !important;
-    }
-  </style>
 
 </head>
 <body data-theme="dark">
@@ -886,12 +828,9 @@
 
     <div class="appbar-actions">
       <div id="header-pro-container" style="display: inline-flex; align-items: center; gap: 8px;">
-        <span style="color: #10B981; font-weight: 700; font-size: 11px; border: 1px solid rgba(16,185,129,0.3); padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.1);">✦ 100% FREE &amp; OPEN ACCESS</span>
+        <span style="color: #10B981; font-weight: 700; font-size: 11px; border: 1px solid rgba(16,185,129,0.3); padding: 4px 10px; border-radius: 9999px; background: rgba(16,185,129,0.1);">100% FREE &amp; OPEN ACCESS</span>
         <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" id="header-buy-btn" style="padding: 6px 14px; background: #D4AF37; color: #08080B; border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 800; display: inline-flex; align-items: center; gap: 6px;">
-          ☕ Buy Us a Coffee (Stripe)
-        </a>
-        <a href="solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="navigator.clipboard&&navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='✓ Copied Solana Tip!';" style="padding: 6px 14px; background: rgba(20,241,149,0.12); color: #14F195; border: 1px solid rgba(20,241,149,0.4); border-radius: 6px; text-decoration: none; font-size: 12px; font-weight: 800; cursor: pointer; display: inline-flex; align-items: center; gap: 6px;">
-          ◎ Solana Tip: GG2e...dXoK
+          Buy Us a Coffee (Stripe)
         </a>
       </div>
       <div class="server-status-chip" id="server-status" title="Pure Python HTTP Server Status">
@@ -916,12 +855,11 @@
     </div>
   </header>
 
-  <!-- Sovereign Support Banner -->
-  <div id="funnelHeroBanner" style="background: linear-gradient(90deg, rgba(16,185,129,0.12), rgba(212,175,55,0.16)); border-bottom: 1px solid rgba(212,175,55,0.3); padding: 8px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 11px; font-family: monospace; z-index: 95; flex-wrap: wrap;">
-    <span style="color:#10B981;font-weight:800;">✦ 100% FREE &amp; OPEN ACCESS · ZERO PAYWALLS · LOCAL DAEMON :8084</span>
-    <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="background:#D4AF37;color:#08080B;padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;">☕ Buy Us a Coffee (Stripe)</a>
-    <a href="solana:GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK" onclick="navigator.clipboard&&navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK');this.textContent='✓ Copied Solana Tip!';" style="background:rgba(20,241,149,0.12);color:#14F195;border:1px solid rgba(20,241,149,0.4);padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;cursor:pointer;">◎ Solana Tip: GG2e...dXoK</a>
-    <a href="http://127.0.0.1:3000/tools/badge3d-coin-generator" style="background:#10B981;color:#05070B;padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;">Open Zoth Studio God-Mode ↗</a>
+  <!-- Support Banner -->
+  <div id="supportBanner" style="background: linear-gradient(90deg, rgba(16,185,129,0.12), rgba(212,175,55,0.16)); border-bottom: 1px solid rgba(212,175,55,0.3); padding: 8px 16px; display: flex; align-items: center; justify-content: center; gap: 12px; font-size: 11px; font-family: monospace; z-index: 95; flex-wrap: wrap;">
+    <span style="color:#10B981;font-weight:800;">100% FREE &amp; OPEN ACCESS · ZERO PAYWALLS · LOCAL DAEMON :8084</span>
+    <a href="https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X" target="_blank" rel="noopener noreferrer" style="background:#D4AF37;color:#08080B;padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;">Buy Us a Coffee (Stripe)</a>
+    <a href="https://zoth.nullai.tech/tools/badge3d-coin-generator" target="_blank" rel="noopener noreferrer" style="background:#10B981;color:#05070B;padding:4px 10px;border-radius:4px;font-weight:800;text-decoration:none;">Zoth Studio Dossier ↗</a>
   </div>
 
   <!-- Studio Workspace -->
@@ -1171,7 +1109,7 @@
     <aside class="specs-panel">
       
       <!-- 1-Click Export Section -->
-      <section class="studio-card" id="exportPaywallSection">
+      <section class="studio-card" id="exportSection">
         <div class="card-header">
           <div class="card-title">
             <span class="material-symbols-outlined">download</span>
@@ -2088,10 +2026,6 @@
 
     // Export Handlers (STL / OBJ)
     async function exportSTL() {
-      if (!isProLicensed) {
-        openPaywallModal();
-        return;
-      }
       showToast('Generating 3D Print Ready Binary STL...');
       generateClientSideSTL();
     }
@@ -2162,10 +2096,6 @@
     }
 
     async function exportOBJ() {
-      if (!isProLicensed) {
-        openPaywallModal();
-        return;
-      }
       showToast('Generating Wavefront OBJ...');
       let objContent = `# Wavefront OBJ generated by Badge3D Coin Studio\no CoinMesh\n`;
       let vertOffset = 1;
@@ -2199,10 +2129,6 @@
     }
 
     function copyMCPToolCall() {
-      if (!isProLicensed) {
-        openPaywallModal();
-        return;
-      }
       const mcpJson = JSON.stringify({
         tool: "generate_coin",
         arguments: {
@@ -2316,102 +2242,8 @@
       renderer.render(scene, camera);
     }
 
-    // Pro Licensing & Paywall Logic
-    let isProLicensed = true;
-
-    function checkProLicense() { isProLicensed = true; try { updateProUI(); } catch(e){} return true;
-      const urlParams = new URLSearchParams(window.location.search);
-      const isParamLicensed = urlParams.get("licensed") === "true" || urlParams.get("pro") === "true" || urlParams.get("session_id");
-      if (isParamLicensed) {
-        activateProLicense("URL-PRO-ACTIVATE");
-        if (window.history && window.history.replaceState) {
-          window.history.replaceState({}, document.title, window.location.pathname);
-        }
-        return;
-      }
-      if (localStorage.getItem("pro_licensed") === "true" ||
-          localStorage.getItem("zoth_badge3d_licensed") === "true" ||
-          localStorage.getItem("badge3d_pro_licensed") === "true") {
-        isProLicensed = true;
-        updateProUI();
-      }
-    }
-
-    function updateProUI() {
-      if (isProLicensed) {
-        const banner = document.getElementById("funnelHeroBanner");
-        if (banner) banner.style.display = "none";
-        const salesBanner = document.getElementById("salesBanner");
-        if (salesBanner) salesBanner.style.display = "none";
-        const exportSection = document.getElementById("exportPaywallSection");
-        if (exportSection) {
-          exportSection.classList.add("paywall-unlocked");
-        }
-      }
-    }
-
-    function activateProLicense(key) {
-      isProLicensed = true;
-      localStorage.setItem("pro_licensed", "true");
-      localStorage.setItem("zoth_badge3d_licensed", "true");
-      localStorage.setItem("badge3d_pro_licensed", "true");
-      if (key) localStorage.setItem("badge3d_pro_key", key);
-      updateProUI();
-      closeLicenseModal();
-      closePaywallModal();
-      showToast("Pro License Activated! Unlimited exports unlocked.");
-    }
-
-    function openPaywallModal() {
-      const m = document.getElementById("proPaywallModal");
-      if (m) m.style.display = "flex";
-    }
-
-    function closePaywallModal() {
-      const m = document.getElementById("proPaywallModal");
-      if (m) m.style.display = "none";
-    }
-
-    function openLicenseActivationModal() {
-      closePaywallModal();
-      const m = document.getElementById("licenseModal");
-      if (m) m.style.display = "flex";
-    }
-
-    function openLicenseModal() {
-      openLicenseActivationModal();
-    }
-    window.openLicenseModal = openLicenseModal;
-
-    function closeLicenseModal() {
-      const m = document.getElementById("licenseModal");
-      if (m) m.style.display = "none";
-    }
-
-    function activateLicenseSubmit(providedKey) {
-      const inputEl = document.getElementById("licenseKeyInput") || document.getElementById("license-input");
-      const val = (providedKey || (inputEl ? inputEl.value : "")).trim();
-      if (val.length >= 3) {
-        activateProLicense(val);
-        return true;
-      } else {
-        showToast("⚠️ Please enter a valid license key or receipt email.");
-        return false;
-      }
-    }
-    window.activateLicenseKey = activateLicenseSubmit;
-
-    function openSolanaTipCheckout() {
-      if (typeof SolanaTipWidgets !== 'undefined' && SolanaTipWidgets.Payment) {
-        (navigator.clipboard && navigator.clipboard.writeText('GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK'));
-      } else {
-        window.open('https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X', '_blank');
-      }
-    }
-
     // Initialize on load
     window.addEventListener('DOMContentLoaded', () => {
-      isProLicensed = true;
       const savedTheme = localStorage.getItem('badge3d_theme');
       if (savedTheme) {
         document.documentElement.setAttribute('data-theme', savedTheme);
@@ -2423,7 +2255,6 @@
       if (savedTheme === 'light' && scene) {
         scene.background = new THREE.Color(0xf1f3f4);
       }
-      updateProUI();
       const dot = document.getElementById('status-dot');
       const lbl = document.getElementById('status-label');
       if (dot) dot.classList.remove('offline');

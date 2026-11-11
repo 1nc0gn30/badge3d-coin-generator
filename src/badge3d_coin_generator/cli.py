@@ -1150,6 +1150,16 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Disable ANSI terminal styling and colors.",
     )
+    parser.add_argument(
+        "--status",
+        action="store_true",
+        help="Print service status metadata.",
+    )
+    parser.add_argument(
+        "--json",
+        action="store_true",
+        help="Output service status as JSON when no subcommand is given.",
+    )
 
     subparsers = parser.add_subparsers(dest="command", help="Available subcommands")
 
@@ -1187,9 +1197,9 @@ def build_parser() -> argparse.ArgumentParser:
     pre_p.add_argument("--filter", type=str, help="Filter presets by keyword.")
 
     # 3. serve
-    srv_p = subparsers.add_parser("serve", aliases=["studio", "web", "ui"], help="Launch Material 3 Web Studio.")
+    srv_p = subparsers.add_parser("serve", aliases=["studio", "web", "ui"], help="Launch Badge3D Web Studio.")
     srv_p.add_argument("--host", type=str, default="127.0.0.1", help="Binding host IP (default: 127.0.0.1).")
-    srv_p.add_argument("-P", "--port", type=int, default=8099, help="Port to listen on (default: 8099).")
+    srv_p.add_argument("-P", "--port", type=int, default=8084, help="Port to listen on (default: 8084).")
     srv_p.add_argument("-p", dest="port", type=int, help=argparse.SUPPRESS)
     srv_p.add_argument("--no-browser", dest="open_browser", action="store_false", help="Do not open browser automatically.")
     srv_p.set_defaults(open_browser=True)
@@ -1234,7 +1244,29 @@ def build_parser() -> argparse.ArgumentParser:
     # 8. test
     subparsers.add_parser("test", aliases=["check", "self-test"], help="Run self-verification test runner.")
 
+    # 9. status
+    st_p = subparsers.add_parser("status", help="Show service status and registered presets/tools.")
+    st_p.add_argument("--json", action="store_true", help="Output JSON metadata.")
+
     return parser
+
+
+def handle_status(as_json: bool = False) -> int:
+    """Print Badge3D service status summary."""
+    from .mcp_server import TOOLS_DEFINITIONS
+    payload = {
+        "service": "badge3d-coin-generator",
+        "version": __version__,
+        "default_host": "127.0.0.1",
+        "default_port": 8084,
+        "preset_count": len(get_coin_presets()),
+        "mcp_tools": [t["name"] for t in TOOLS_DEFINITIONS],
+    }
+    if as_json:
+        print(json.dumps(payload, indent=2))
+    else:
+        print(f"badge3d-coin-generator v{__version__} (127.0.0.1:8084) | presets={payload['preset_count']} | mcp_tools={len(payload['mcp_tools'])}")
+    return 0
 
 
 def main(args_list: Optional[Sequence[str]] = None) -> int:
@@ -1243,6 +1275,12 @@ def main(args_list: Optional[Sequence[str]] = None) -> int:
     args = parser.parse_args(args_list)
 
     Color.setup(no_color=args.no_color)
+
+    if getattr(args, "status", False) or (getattr(args, "json", False) and not args.command):
+        code = handle_status(as_json=getattr(args, "json", False))
+        if args_list is not None:
+            return code
+        sys.exit(code)
 
     if not args.command:
         print_banner()
@@ -1268,6 +1306,8 @@ def main(args_list: Optional[Sequence[str]] = None) -> int:
         code = handle_diagnostics(args)
     elif cmd in ("test", "check", "self-test"):
         code = handle_test(args)
+    elif cmd == "status":
+        code = handle_status(as_json=getattr(args, "json", False))
     else:
         parser.print_help()
         code = 1
