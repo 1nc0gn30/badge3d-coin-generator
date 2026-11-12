@@ -220,3 +220,49 @@ def test_http_post_export_obj(live_server: str) -> None:
         obj_text = resp.read().decode("utf-8")
         assert "v " in obj_text
         assert "f " in obj_text
+
+
+def test_http_post_export_glb(live_server: str) -> None:
+    """Test POST /api/export-glb returns valid binary GLTF (GLB) bytes."""
+    payload = json.dumps({
+        "radius": 15.0,
+        "thickness": 2.5,
+        "radial_segments": 40,
+        "field_rings": 12,
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        f"{live_server}/api/export-glb",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=5.0) as resp:
+        assert resp.status == 200
+        assert "model/gltf-binary" in resp.headers.get("Content-Type", "")
+        glb_bytes = resp.read()
+        assert len(glb_bytes) > 20
+        assert glb_bytes[:4] == b"glTF"
+
+
+def test_http_post_export_gltf(live_server: str) -> None:
+    """Test POST /api/export-gltf returns valid GLTF JSON text."""
+    payload = json.dumps({
+        "radius": 15.0,
+        "thickness": 2.5,
+        "radial_segments": 40,
+        "field_rings": 12,
+    }).encode("utf-8")
+
+    req = urllib.request.Request(
+        f"{live_server}/api/export-gltf",
+        data=payload,
+        headers={"Content-Type": "application/json"},
+        method="POST",
+    )
+    with urllib.request.urlopen(req, timeout=5.0) as resp:
+        assert resp.status == 200
+        assert "model/gltf+json" in resp.headers.get("Content-Type", "")
+        gltf_json = json.loads(resp.read().decode("utf-8"))
+        assert gltf_json.get("asset", {}).get("version") == "2.0"
+        assert len(gltf_json.get("meshes", [])) > 0

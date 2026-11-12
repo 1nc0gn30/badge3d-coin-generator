@@ -1119,8 +1119,16 @@
             <span class="material-symbols-outlined">view_in_ar</span>
             Export Binary STL (3D Print)
           </button>
-          <button id="btn-export-obj" class="btn-secondary" onclick="exportOBJ()">
+          <button id="btn-export-glb" class="btn-secondary" onclick="exportGLB()" style="border-color: rgba(56,189,248,0.4); color: #38BDF8;">
             <span class="material-symbols-outlined">deployed_code</span>
+            Export Binary GLTF / GLB (Unreal / Web3)
+          </button>
+          <button id="btn-export-gcode" class="btn-secondary" onclick="exportGCode()" style="border-color: rgba(16,185,129,0.4); color: #10B981;">
+            <span class="material-symbols-outlined">precision_manufacturing</span>
+            Export Sliced G-Code (3D Printer)
+          </button>
+          <button id="btn-export-obj" class="btn-secondary" onclick="exportOBJ()">
+            <span class="material-symbols-outlined">data_object</span>
             Export Wavefront OBJ (CAD)
           </button>
           <button id="btn-copy-mcp" class="btn-secondary" onclick="copyMCPToolCall()">
@@ -1512,30 +1520,45 @@
           }
         }
 
-        // Central Relief Crest (5-Pointed Raised Star + Shield Ring)
-        const starOuter = innerR * 0.50;
-        const starInner = starOuter * 0.44;
-        ctx.beginPath();
-        for (let i = 0; i < 10; i++) {
-          const r = i % 2 === 0 ? starOuter : starInner;
-          const a = (i / 10) * Math.PI * 2 - Math.PI / 2;
-          const sx = cx + Math.cos(a) * r;
-          const sy = cy + Math.sin(a) * r;
-          if (i === 0) ctx.moveTo(sx, sy);
-          else ctx.lineTo(sx, sy);
+        // Central Relief Crest (Uploaded Logo OR 5-Pointed Raised Star + Shield Ring)
+        if (state.uploadedLogoImage) {
+          try {
+            ctx.save();
+            ctx.beginPath();
+            traceShapePath(ctx, cx, cy, innerR * 0.55, state.shape);
+            ctx.clip();
+            ctx.drawImage(state.uploadedLogoImage, cx - innerR * 0.55, cy - innerR * 0.55, innerR * 1.1, innerR * 1.1);
+            ctx.restore();
+            ctx.lineWidth = 2;
+            ctx.strokeStyle = state.wireframe ? '#10B981' : pal.hi;
+            traceShapePath(ctx, cx, cy, innerR * 0.55, state.shape);
+            ctx.stroke();
+          } catch (e) {}
+        } else {
+          const starOuter = innerR * 0.50;
+          const starInner = starOuter * 0.44;
+          ctx.beginPath();
+          for (let i = 0; i < 10; i++) {
+            const r = i % 2 === 0 ? starOuter : starInner;
+            const a = (i / 10) * Math.PI * 2 - Math.PI / 2;
+            const sx = cx + Math.cos(a) * r;
+            const sy = cy + Math.sin(a) * r;
+            if (i === 0) ctx.moveTo(sx, sy);
+            else ctx.lineTo(sx, sy);
+          }
+          ctx.closePath();
+          const starGrad = ctx.createLinearGradient(cx - starOuter, cy - starOuter, cx + starOuter, cy + starOuter);
+          starGrad.addColorStop(0, pal.hi);
+          starGrad.addColorStop(0.6, pal.mid);
+          starGrad.addColorStop(1, pal.lo);
+          if (!state.wireframe) {
+            ctx.fillStyle = starGrad;
+            ctx.fill();
+          }
+          ctx.lineWidth = 2;
+          ctx.strokeStyle = state.wireframe ? '#10B981' : pal.hi;
+          ctx.stroke();
         }
-        ctx.closePath();
-        const starGrad = ctx.createLinearGradient(cx - starOuter, cy - starOuter, cx + starOuter, cy + starOuter);
-        starGrad.addColorStop(0, pal.hi);
-        starGrad.addColorStop(0.6, pal.mid);
-        starGrad.addColorStop(1, pal.lo);
-        if (!state.wireframe) {
-          ctx.fillStyle = starGrad;
-          ctx.fill();
-        }
-        ctx.lineWidth = 2;
-        ctx.strokeStyle = state.wireframe ? '#10B981' : pal.hi;
-        ctx.stroke();
 
         // Curved Inscription Text
         const activeText = ((state.cameraView === 'back' ? state.textBack : state.textFront) || '').toUpperCase();
@@ -2123,6 +2146,153 @@
       a.click();
       window.URL.revokeObjectURL(url);
       showToast('OBJ file generated & downloaded!');
+    }
+
+    async function exportGLB() {
+      showToast('Generating GLTF / GLB binary mesh...');
+      try {
+        const res = await fetch('/api/export-glb', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            shape: state.shape,
+            radius: state.radius,
+            thickness: state.thickness,
+            rim_width: state.rimWidth,
+            rim_height: state.rimHeight,
+            edge_reed_count: state.serrations,
+            relief_depth_obverse: state.reliefDepth,
+            material: state.material,
+            text_front: state.textFront,
+            text_back: state.textBack
+          })
+        });
+        if (res.ok) {
+          const blob = await res.blob();
+          const url = window.URL.createObjectURL(blob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `coin-${state.shape}-${state.radius}mm.glb`;
+          a.click();
+          window.URL.revokeObjectURL(url);
+          showToast('GLB binary model downloaded!');
+          return;
+        }
+      } catch (e) {}
+      exportClientSideGLTF();
+    }
+
+    function exportClientSideGLTF() {
+      try {
+        const vertices = [];
+        const indices = [];
+        coinMeshGroup.traverse(child => {
+          if (child.isMesh && child.geometry) {
+            const geo = child.geometry.clone().toNonIndexed();
+            const pos = geo.attributes.position;
+            child.updateMatrixWorld();
+            const offset = vertices.length / 3;
+            for (let i = 0; i < pos.count; i++) {
+              const v = new THREE.Vector3(pos.getX(i), pos.getY(i), pos.getZ(i)).applyMatrix4(child.matrixWorld);
+              vertices.push(v.x, v.y, v.z);
+              indices.push(offset + i);
+            }
+          }
+        });
+
+        const gltf = {
+          asset: { version: "2.0", generator: "Badge3D Coin Studio" },
+          scene: 0,
+          scenes: [{ nodes: [0] }],
+          nodes: [{ mesh: 0, name: `Coin_${state.shape}` }],
+          meshes: [{
+            primitives: [{
+              attributes: { POSITION: 0 },
+              indices: 1,
+              mode: 4
+            }]
+          }],
+          accessors: [
+            {
+              bufferView: 0,
+              byteOffset: 0,
+              componentType: 5126,
+              count: vertices.length / 3,
+              type: "VEC3",
+              max: [state.radius, state.radius, state.thickness],
+              min: [-state.radius, -state.radius, -state.thickness]
+            },
+            {
+              bufferView: 1,
+              byteOffset: 0,
+              componentType: 5125,
+              count: indices.length,
+              type: "SCALAR",
+              max: [indices.length - 1],
+              min: [0]
+            }
+          ],
+          bufferViews: [
+            { buffer: 0, byteOffset: 0, byteLength: vertices.length * 4, target: 34962 },
+            { buffer: 0, byteOffset: vertices.length * 4, byteLength: indices.length * 4, target: 34963 }
+          ],
+          buffers: [{
+            byteLength: vertices.length * 4 + indices.length * 4,
+            uri: "data:application/octet-stream;base64," + btoa(
+              String.fromCharCode.apply(null, new Uint8Array(new Float32Array(vertices).buffer)) +
+              String.fromCharCode.apply(null, new Uint8Array(new Uint32Array(indices).buffer))
+            )
+          }]
+        };
+
+        const blob = new Blob([JSON.stringify(gltf, null, 2)], { type: 'model/gltf+json' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `coin-${state.shape}-${state.radius}mm.gltf`;
+        a.click();
+        window.URL.revokeObjectURL(url);
+        showToast('GLTF model exported!');
+      } catch (err) {
+        showToast('Falling back to STL export...');
+        exportSTL();
+      }
+    }
+
+    async function exportGCode() {
+      showToast('Synthesizing 3D Print G-Code via Slicer Engine...');
+      try {
+        const res = await fetch('/api/slice-gcode', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            radius: state.radius,
+            thickness: state.thickness,
+            rim_width: state.rimWidth,
+            rim_height: state.rimHeight,
+            edge_reed_count: state.serrations,
+            filament: 'pla',
+            infill: 'gyroid',
+            layer_height_mm: 0.12
+          })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.gcode) {
+            const blob = new Blob([data.gcode], { type: 'text/x-gcode;charset=utf-8' });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `coin-${state.shape}-${state.radius}mm.gcode`;
+            a.click();
+            window.URL.revokeObjectURL(url);
+            showToast(`G-Code exported! (${data.total_layers || 25} layers, ${data.est_print_time_mins || 20}m)`);
+            return;
+          }
+        }
+      } catch (e) {}
+      showToast('Backend slicer offline; downloading STL for slicer import.');
+      exportSTL();
     }
 
     function copyMCPToolCall() {

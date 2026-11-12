@@ -23,7 +23,13 @@ from pathlib import Path
 from typing import Any, Dict, Optional, Tuple, Union
 
 from .compat import PathLike, safe_path
-from .exporters import mesh_to_ascii_stl_text, mesh_to_binary_stl_bytes, mesh_to_obj_text
+from .exporters import (
+    mesh_to_ascii_stl_text,
+    mesh_to_binary_stl_bytes,
+    mesh_to_glb_bytes,
+    mesh_to_gltf_json,
+    mesh_to_obj_text,
+)
 from .mesh_engine import CoinMeshEngine, CoinParameters, MeshData
 
 # Standard density values in g/cm³ for precious metals and filaments
@@ -523,6 +529,47 @@ class CoinStudioRequestHandler(SimpleHTTPRequestHandler):
                 self.send_header("Access-Control-Allow-Origin", "*")
                 self.end_headers()
                 self.wfile.write(obj_bytes)
+            except Exception as exc:
+                self._send_json_response({"error": str(exc)}, status_code=500)
+            return
+
+        # 3b. Binary GLTF (GLB) Export endpoint
+        if path == "/api/export-glb":
+            try:
+                params = parse_coin_params_from_dict(req_data)
+                engine = CoinMeshEngine(params)
+                mesh = engine.generate()
+                glb_bytes = mesh_to_glb_bytes(mesh)
+
+                filename = f"coin-{params.radius:.1f}mm.glb"
+                self.send_response(HTTPStatus.OK)
+                self.send_header("Content-Type", "model/gltf-binary")
+                self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+                self.send_header("Content-Length", str(len(glb_bytes)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(glb_bytes)
+            except Exception as exc:
+                self._send_json_response({"error": str(exc)}, status_code=500)
+            return
+
+        # 3c. Text GLTF JSON Export endpoint
+        if path == "/api/export-gltf":
+            try:
+                params = parse_coin_params_from_dict(req_data)
+                engine = CoinMeshEngine(params)
+                mesh = engine.generate()
+                gltf_text = mesh_to_gltf_json(mesh)
+                gltf_bytes = gltf_text.encode("utf-8")
+
+                filename = f"coin-{params.radius:.1f}mm.gltf"
+                self.send_response(HTTPStatus.OK)
+                self.send_header("Content-Type", "model/gltf+json; charset=utf-8")
+                self.send_header("Content-Disposition", f'attachment; filename="{filename}"')
+                self.send_header("Content-Length", str(len(gltf_bytes)))
+                self.send_header("Access-Control-Allow-Origin", "*")
+                self.end_headers()
+                self.wfile.write(gltf_bytes)
             except Exception as exc:
                 self._send_json_response({"error": str(exc)}, status_code=500)
             return
