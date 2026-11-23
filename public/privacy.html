@@ -27,7 +27,7 @@
     "@context": "https://schema.org",
     "@graph": [
       {
-        "@type": "WebApplication",
+        "@type": ["WebApplication", "SoftwareApplication"],
         "@id": "https://badge3d-coin-studio.netlify.app/#app",
         "name": "Badge3D Coin Studio",
         "url": "https://badge3d-coin-studio.netlify.app/",
@@ -36,12 +36,12 @@
         "description": "3D WebGL relief token and metallic medallion studio with instant 3D rendering and export.",
         "creator": {
           "@type": "Person",
-          "name": "1nc0gn30",
+          "name": "Neal Frazier (@1nc0gn30)",
           "url": "https://nullai.tech"
         },
         "offers": {
           "@type": "Offer",
-          "price": "19.00",
+          "price": "0",
           "priceCurrency": "USD",
           "url": "https://buy.stripe.com/3cIfZg27PdKo2D64Ocfw40X"
         }
@@ -59,10 +59,10 @@
           },
           {
             "@type": "Question",
-            "name": "How does Badge3D verify commercial licenses?",
+            "name": "Does Badge3D Coin Studio require an account or license key?",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "License status is verified client-side using cryptographic tokens stored securely in your browser local storage."
+              "text": "No. Badge3D Coin Studio is 100% free and open-access with no accounts, no login gates, and no license tracking."
             }
           }
         ]
@@ -243,16 +243,16 @@
       <ul>
         <li><strong>We DO NOT collect:</strong> Your source code, configuration files, secrets, prompts, or AST outputs.</li>
         <li><strong>We DO NOT run:</strong> Third-party tracking scripts, advertising trackers, or behavioral session recording software.</li>
-        <li><strong>Local Storage Only:</strong> We store your Pro activation status and workspace drafts in your browser's local <code>localStorage</code> purely for state persistence.</li>
+        <li><strong>Local Storage Only:</strong> We store your workspace preferences and drafts in your browser's local <code>localStorage</code> purely for state persistence.</li>
       </ul>
     </div>
 
     <div class="legal-card">
-      <h2>3. Payment & Checkout Information</h2>
-      <p>When purchasing a Pro commercial license:</p>
+      <h2>3. Optional Community Tips</h2>
+      <p>Badge3D Coin Studio is 100% free. If you choose to send a voluntary tip:</p>
       <ul>
-        <li><strong>Stripe</strong> processes your credit card / digital wallet data under industry-standard PCI-DSS Level 1 compliance. We never see or store your full card details.</li>
-        <li><strong>Solana Tip / Solana</strong> processes transactions directly on the public blockchain without intermediate custodial accounts.</li>
+        <li><strong>Stripe (Buy Us a Coffee)</strong> processes optional card or digital wallet tips under PCI-DSS Level 1 compliance. We never see or store your card details.</li>
+        <li><strong>Solana</strong> processes optional on-chain tips directly to <code>GG2eQbVh8ut1BK6j1A2tz7pSySdLpD38BgyEhGcxdXoK</code> without custodial intermediaries.</li>
       </ul>
     </div>
 
