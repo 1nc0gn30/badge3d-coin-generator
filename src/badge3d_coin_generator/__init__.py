@@ -73,10 +73,54 @@ from .edge_milling import (
     generate_edge_milling_profile_summary,
 )
 
-__version__ = "2.5.0"
+__version__ = "2.6.0"
 __author__ = "1nc0gn30"
 __description__ = "Pure Python 3D Parametric Coin Generator, MCP Server & CLI"
 __license__ = "MIT"
+
+
+# ---------------------------------------------------------------------------
+# Numeric Bounds & Validation Helpers
+# ---------------------------------------------------------------------------
+
+def validate_finite_float(
+    value: Any,
+    name: str,
+    min_val: float,
+    max_val: float,
+) -> float:
+    """Validate that value is a finite float within [min_val, max_val]."""
+    if isinstance(value, bool):
+        raise ValueError(f"Parameter '{name}' must be a number, not boolean.")
+    try:
+        fval = float(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Parameter '{name}' must be a valid number.") from exc
+    if not math.isfinite(fval):
+        raise ValueError(f"Parameter '{name}' must be finite (got {value!r}).")
+    if fval < min_val or fval > max_val:
+        raise ValueError(f"Parameter '{name}' must be between {min_val} and {max_val} (got {fval}).")
+    return fval
+
+
+def validate_bounded_int(
+    value: Any,
+    name: str,
+    min_val: int,
+    max_val: int,
+) -> int:
+    """Validate that value is an integer within [min_val, max_val]."""
+    if isinstance(value, bool):
+        raise ValueError(f"Parameter '{name}' must be an integer, not boolean.")
+    if isinstance(value, float) and not math.isfinite(value):
+        raise ValueError(f"Parameter '{name}' must be finite.")
+    try:
+        ival = int(value)
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"Parameter '{name}' must be a valid integer.") from exc
+    if ival < min_val or ival > max_val:
+        raise ValueError(f"Parameter '{name}' must be between {min_val} and {max_val} (got {ival}).")
+    return ival
 
 
 # ---------------------------------------------------------------------------
@@ -177,18 +221,149 @@ COIN_PRESETS: Dict[str, Dict[str, Any]] = {
 }
 
 
+STUDIO_PRESET_MAP: Dict[str, Dict[str, Any]] = {
+    "challenge_coin": {
+        "id": "challenge_coin",
+        "name": "Military Challenge Coin",
+        "description": "Heavy solid bronze challenge coin with deep relief and protective bevel rim.",
+        "shape": "circle",
+        "radius": 20.0,
+        "diameter": 40.0,
+        "thickness": 3.5,
+        "rim_width": 2.2,
+        "rim_height": 0.8,
+        "serrations": 80,
+        "edge_reed_count": 80,
+        "reed_depth": 0.30,
+        "reed_profile": "sinusoidal",
+        "relief_pattern": "shield",
+        "edge_type": "reeded",
+        "bevel_width": 0.4,
+        "bevel_height": 0.4,
+        "relief_depth_obverse": 0.8,
+        "relief_depth_reverse": 0.8,
+        "material": "bronze",
+        "density_g_cm3": 8.73,
+        "text_front": "DEFENSE • HONOR • VALOR",
+        "text_back": "EXCELLENCE UNDER PRESSURE",
+    },
+    "crypto_token": {
+        "id": "crypto_token",
+        "name": "Crypto / Web3 Token",
+        "description": "Hexagonal obsidian Web3 token with geometric hex-grid relief.",
+        "shape": "hexagon",
+        "radius": 17.5,
+        "diameter": 35.0,
+        "thickness": 2.8,
+        "rim_width": 1.8,
+        "rim_height": 0.6,
+        "serrations": 0,
+        "edge_reed_count": 0,
+        "reed_depth": 0.0,
+        "reed_profile": "square",
+        "relief_pattern": "hex_grid",
+        "edge_type": "plain",
+        "bevel_width": 0.5,
+        "bevel_height": 0.5,
+        "relief_depth_obverse": 0.9,
+        "relief_depth_reverse": 0.9,
+        "material": "obsidian",
+        "density_g_cm3": 4.5,
+        "text_front": "ETHEREUM • DECENTRALIZED",
+        "text_back": "PROOF OF STAKE 2026",
+    },
+    "roman_medallion": {
+        "id": "roman_medallion",
+        "name": "Ancient Roman Medallion",
+        "description": "Classical antique silver medallion with hammered emperor relief.",
+        "shape": "circle",
+        "radius": 21.0,
+        "diameter": 42.0,
+        "thickness": 4.0,
+        "rim_width": 2.8,
+        "rim_height": 1.0,
+        "serrations": 0,
+        "edge_reed_count": 0,
+        "reed_depth": 0.0,
+        "reed_profile": "sinusoidal",
+        "relief_pattern": "roman_head",
+        "edge_type": "plain",
+        "bevel_width": 0.6,
+        "bevel_height": 0.6,
+        "relief_depth_obverse": 1.2,
+        "relief_depth_reverse": 1.2,
+        "material": "silver",
+        "density_g_cm3": 10.49,
+        "text_front": "SENATVS POPVLVSQVE ROMANVS",
+        "text_back": "IMPERIVM AETERNVM",
+    },
+    "sovereign_gold": {
+        "id": "sovereign_gold",
+        "name": "Sovereign Gold Bullion",
+        "description": "Classic 24K sovereign gold bullion round with fine trapezoidal reeding.",
+        "shape": "circle",
+        "radius": 11.05,
+        "diameter": 22.1,
+        "thickness": 1.8,
+        "rim_width": 1.2,
+        "rim_height": 0.4,
+        "serrations": 120,
+        "edge_reed_count": 120,
+        "reed_depth": 0.18,
+        "reed_profile": "trapezoidal",
+        "relief_pattern": "wreath",
+        "edge_type": "reeded",
+        "bevel_width": 0.2,
+        "bevel_height": 0.2,
+        "relief_depth_obverse": 0.5,
+        "relief_depth_reverse": 0.5,
+        "material": "gold",
+        "density_g_cm3": 19.32,
+        "text_front": "BRITANNIA • REGNA FIDELIS",
+        "text_back": "ONE SOVEREIGN 2026",
+    },
+    "scifi_hex_badge": {
+        "id": "scifi_hex_badge",
+        "name": "Sci-Fi Hex Command Badge",
+        "description": "Octagonal titanium command badge with square-milled tactical edge.",
+        "shape": "octagon",
+        "radius": 19.0,
+        "diameter": 38.0,
+        "thickness": 3.2,
+        "rim_width": 2.4,
+        "rim_height": 0.9,
+        "serrations": 48,
+        "edge_reed_count": 48,
+        "reed_depth": 0.40,
+        "reed_profile": "square",
+        "relief_pattern": "hex_grid",
+        "edge_type": "milled",
+        "bevel_width": 0.6,
+        "bevel_height": 0.6,
+        "relief_depth_obverse": 1.0,
+        "relief_depth_reverse": 1.0,
+        "material": "titanium",
+        "density_g_cm3": 4.43,
+        "text_front": "SECTOR 7 • TASK FORCE",
+        "text_back": "ORBITAL COMMAND STATION",
+    },
+}
+
+
 def get_coin_presets() -> Dict[str, Dict[str, Any]]:
     """Return a dictionary of all available coin presets and specifications."""
     return dict(COIN_PRESETS)
 
 
 def resolve_preset(name: Optional[str]) -> Optional[Dict[str, Any]]:
-    """Resolve preset by exact id, alias, or fuzzy substring match."""
-    if not name:
+    """Resolve preset by exact id (legacy COIN_PRESETS or STUDIO_PRESET_MAP), alias, or fuzzy substring match."""
+    if not name or not isinstance(name, str):
         return None
     key = name.lower().strip().replace("-", "_").replace(" ", "_")
     if key in COIN_PRESETS:
-        return COIN_PRESETS[key]
+        return dict(COIN_PRESETS[key])
+    if key in STUDIO_PRESET_MAP:
+        return dict(STUDIO_PRESET_MAP[key])
 
     aliases = {
         "gold": "commemorative_gold",
@@ -199,25 +374,33 @@ def resolve_preset(name: Optional[str]) -> Optional[Dict[str, Any]]:
         "cyberpunk": "cyberpunk_hex",
         "token": "cyberpunk_hex",
         "hex_token": "cyberpunk_hex",
+        "crypto": "crypto_token",
+        "web3": "crypto_token",
         "roman": "antique_roman",
         "antique": "antique_roman",
         "denarius": "antique_roman",
         "aureus": "antique_roman",
         "roman_coin": "antique_roman",
         "military": "military_challenge",
-        "challenge": "military_challenge",
-        "challenge_coin": "military_challenge",
+        "challenge": "challenge_coin",
         "silver": "sovereign_silver",
         "bullion": "sovereign_silver",
         "silver_bullion": "sovereign_silver",
         "sovereign": "sovereign_silver",
+        "scifi": "scifi_hex_badge",
+        "hex_badge": "scifi_hex_badge",
     }
     if key in aliases:
-        return COIN_PRESETS[aliases[key]]
+        target = aliases[key]
+        if target in COIN_PRESETS:
+            return dict(COIN_PRESETS[target])
+        if target in STUDIO_PRESET_MAP:
+            return dict(STUDIO_PRESET_MAP[target])
 
-    for p_id, p_data in COIN_PRESETS.items():
-        if key in p_id or key in p_data["name"].lower():
-            return p_data
+    for catalog in (COIN_PRESETS, STUDIO_PRESET_MAP):
+        for p_id, p_data in catalog.items():
+            if key in p_id or key in p_data["name"].lower():
+                return dict(p_data)
     return None
 
 
@@ -417,18 +600,31 @@ class CoinGenerator:
 
         if preset:
             p_data = resolve_preset(preset)
-            if p_data:
-                self.radius = float(p_data.get("radius", self.radius))
-                self.thickness = float(p_data.get("thickness", self.thickness))
-                self.serrations = int(p_data.get("serrations", self.serrations))
-                self.rim_width = float(p_data.get("rim_width", self.rim_width))
-                self.rim_height = float(p_data.get("rim_height", self.rim_height))
-                self.relief_pattern = str(p_data.get("relief_pattern", self.relief_pattern))
-                self.edge_type = str(p_data.get("edge_type", self.edge_type))
-                self.bevel_width = float(p_data.get("bevel_width", self.bevel_width))
-                self.bevel_height = float(p_data.get("bevel_height", self.bevel_height))
-                if not reverse_relief_pattern:
-                    self.reverse_relief_pattern = self.relief_pattern
+            if p_data is None:
+                raise ValueError(f"Unknown preset: {preset!r}")
+            self.radius = float(p_data.get("radius", self.radius))
+            self.thickness = float(p_data.get("thickness", self.thickness))
+            self.serrations = int(p_data.get("serrations", p_data.get("edge_reed_count", self.serrations)))
+            self.rim_width = float(p_data.get("rim_width", self.rim_width))
+            self.rim_height = float(p_data.get("rim_height", self.rim_height))
+            self.relief_pattern = str(p_data.get("relief_pattern", self.relief_pattern))
+            self.edge_type = str(p_data.get("edge_type", self.edge_type))
+            self.bevel_width = float(p_data.get("bevel_width", self.bevel_width))
+            self.bevel_height = float(p_data.get("bevel_height", self.bevel_height))
+            if not reverse_relief_pattern:
+                self.reverse_relief_pattern = self.relief_pattern
+
+        self.radius = validate_finite_float(self.radius, "radius", 1.0, 100.0)
+        self.thickness = validate_finite_float(self.thickness, "thickness", 0.5, 25.0)
+        self.rim_width = validate_finite_float(self.rim_width, "rim_width", 0.1, 20.0)
+        self.rim_height = validate_finite_float(self.rim_height, "rim_height", 0.0, 10.0)
+        self.bevel_width = validate_finite_float(self.bevel_width, "bevel_width", 0.0, 10.0)
+        self.bevel_height = validate_finite_float(self.bevel_height, "bevel_height", 0.0, 10.0)
+        self.serrations = validate_bounded_int(self.serrations, "serrations", 0, 360)
+        self.resolution = validate_bounded_int(self.resolution, "resolution", 16, 512)
+        self.field_rings = validate_bounded_int(self.field_rings, "field_rings", 4, 128)
+        self.security_stamp_grooves = validate_bounded_int(self.security_stamp_grooves, "security_stamp_grooves", 1, 512)
+        self.segmented_sectors = validate_bounded_int(self.segmented_sectors, "segmented_sectors", 0, 64)
 
     def generate(self) -> MeshData:
         """Generate a watertight, manifold 3D coin mesh."""

@@ -764,15 +764,18 @@ def _parse_color_to_luminance(color_str: str, default: float = 1.0) -> float:
     # Hex colors #RGB, #RRGGBB
     if c.startswith("#"):
         hex_val = c[1:]
-        if len(hex_val) == 3:
-            r = int(hex_val[0] * 2, 16) / 255.0
-            g = int(hex_val[1] * 2, 16) / 255.0
-            b = int(hex_val[2] * 2, 16) / 255.0
-        elif len(hex_val) >= 6:
-            r = int(hex_val[0:2], 16) / 255.0
-            g = int(hex_val[2:4], 16) / 255.0
-            b = int(hex_val[4:6], 16) / 255.0
-        else:
+        try:
+            if len(hex_val) == 3 and re.fullmatch(r"[0-9a-f]{3}", hex_val):
+                r = int(hex_val[0] * 2, 16) / 255.0
+                g = int(hex_val[1] * 2, 16) / 255.0
+                b = int(hex_val[2] * 2, 16) / 255.0
+            elif len(hex_val) >= 6 and re.fullmatch(r"[0-9a-f]{6,8}", hex_val):
+                r = int(hex_val[0:2], 16) / 255.0
+                g = int(hex_val[2:4], 16) / 255.0
+                b = int(hex_val[4:6], 16) / 255.0
+            else:
+                return default
+        except ValueError:
             return default
         return 0.299 * r + 0.587 * g + 0.114 * b
 
@@ -1029,12 +1032,53 @@ def parse_svg_path_d(d_str: str) -> List[List[Point2D]]:
 class SVGRasterizer:
     """Pure Python SVG Vector to 2D Heightmap Rasterizer."""
 
+    MIN_DIM = 8
+    MAX_DIM = 2048
+    MAX_SVG_BYTES = 1_048_576  # 1 MiB
+    _UNSAFE_SVG_PATTERN = re.compile(
+        r"<!\s*doctype|<!\s*entity|<\s*script\b|<\s*foreignobject\b|javascript\s*:",
+        re.IGNORECASE,
+    )
+
     def __init__(self, target_width: int = 256, target_height: int = 256) -> None:
-        self.target_width = target_width
-        self.target_height = target_height
+        if isinstance(target_width, bool) or isinstance(target_height, bool):
+            raise ValueError("target_width and target_height must be integers.")
+        w = int(target_width)
+        h = int(target_height)
+        if not (self.MIN_DIM <= w <= self.MAX_DIM) or not (self.MIN_DIM <= h <= self.MAX_DIM):
+            raise ValueError(
+                f"target_width and target_height must be between {self.MIN_DIM} and {self.MAX_DIM} "
+                f"(got {w}x{h})."
+            )
+        self.target_width = w
+        self.target_height = h
+
+    @staticmethod
+    def _parse_svg_number(raw: Optional[str], default: float = 0.0, positive_required: bool = False) -> float:
+        if raw is None:
+            return default
+        cleaned = re.sub(r"[^0-9eE.+\-]", "", str(raw).strip())
+        if not cleaned:
+            return default
+        try:
+            val = float(cleaned)
+        except ValueError:
+            return default
+        if not math.isfinite(val):
+            return default
+        if positive_required and val <= 0.0:
+            return default
+        return val
 
     def rasterize_svg_string(self, svg_text: str, bevel_relief: bool = True) -> Heightmap:
-        """Parse and rasterize an SVG XML string into a Heightmap."""
+        """Parse and rasterize an SVG XML string into a Heightmap safely."""
+        if not isinstance(svg_text, str) or not svg_text.strip():
+            raise ValueError("SVG content must be a non-empty string.")
+        if len(svg_text.encode("utf-8", errors="ignore")) > self.MAX_SVG_BYTES:
+            raise ValueError("SVG payload exceeds 1 MiB safety limit.")
+        if self._UNSAFE_SVG_PATTERN.search(svg_text):
+            raise ValueError("Unsafe SVG content rejected (DOCTYPE, ENTITY, script, foreignObject, or javascript:).")
+
         try:
             # Strip default xmlns namespaces so tags are easy to match
             cleaned_svg = re.sub(r'\sxmlns="[^"]+"', "", svg_text)
@@ -1042,16 +1086,40 @@ class SVGRasterizer:
         except Exception as err:
             raise ValueError(f"Failed to parse SVG XML: {err}") from err
 
+        root_tag = root.tag.split("}")[-1].lower()
+        if root_tag != "svg":
+            raise ValueError(f"Invalid SVG root element: expected <svg>, got <{root_tag}>.")
+
+        # Walk DOM to reject dangerous tags or inline event handlers
+        for elem in root.iter():
+            etag = elem.tag.split("}")[-1].lower()
+            if etag in ("script", "foreignobject", "iframe", "object", "embed"):
+                raise ValueError(f"Unsafe SVG element rejected: <{etag}>.")
+            for attr_name, attr_val in elem.attrib.items():
+                attr_local = attr_name.split("}")[-1].lower()
+                if attr_local.startswith("on"):
+                    raise ValueError(f"Unsafe SVG inline event handler rejected: {attr_local}.")
+                if isinstance(attr_val, str) and "javascript:" in attr_val.lower():
+                    raise ValueError(f"Unsafe SVG attribute value rejected on '{attr_local}'.")
+
         # Determine SVG viewBox / coordinate frame
         view_box = root.get("viewBox")
-        if view_box:
-            vb_parts = [float(p) for p in re.split(r"[\s,]+", view_box.strip())]
+        if view_box is not None and view_box.strip():
+            parts_raw = [p for p in re.split(r"[\s,]+", view_box.strip()) if p]
+            if len(parts_raw) != 4:
+                raise ValueError(f"Invalid SVG viewBox (expected 4 numbers): {view_box!r}")
+            try:
+                vb_parts = [float(p) for p in parts_raw]
+            except ValueError as err:
+                raise ValueError(f"Invalid numeric values in SVG viewBox: {view_box!r}") from err
+            if not all(math.isfinite(v) for v in vb_parts) or vb_parts[2] <= 0.0 or vb_parts[3] <= 0.0:
+                raise ValueError(f"SVG viewBox dimensions must be positive finite numbers: {view_box!r}")
             vb_x, vb_y, vb_w, vb_h = vb_parts[0], vb_parts[1], vb_parts[2], vb_parts[3]
         else:
             vb_x = 0.0
             vb_y = 0.0
-            vb_w = float(re.sub(r"[^\d.]", "", root.get("width", str(self.target_width))))
-            vb_h = float(re.sub(r"[^\d.]", "", root.get("height", str(self.target_height))))
+            vb_w = self._parse_svg_number(root.get("width"), default=float(self.target_width), positive_required=True)
+            vb_h = self._parse_svg_number(root.get("height"), default=float(self.target_height), positive_required=True)
 
         scale_x = self.target_width / max(1e-6, vb_w)
         scale_y = self.target_height / max(1e-6, vb_h)
@@ -1067,20 +1135,20 @@ class SVGRasterizer:
             fill_str = elem.get("fill", "#ffffff")
             stroke_str = elem.get("stroke", "none")
             stroke_w_str = elem.get("stroke-width", "1")
-            stroke_w = float(re.sub(r"[^\d.]", "", stroke_w_str)) if stroke_w_str else 1.0
+            stroke_w = self._parse_svg_number(stroke_w_str, default=1.0, positive_required=True)
+            clamped_stroke_px = max(0.5, min(64.0, stroke_w * scale_x))
 
             fill_lum = _parse_color_to_luminance(fill_str, default=1.0)
             has_fill = fill_str.strip().lower() not in ("none", "transparent") and fill_lum > 0.01
 
             # 1. Circle
             if tag == "circle":
-                cx = float(elem.get("cx", 0))
-                cy = float(elem.get("cy", 0))
-                r = float(elem.get("r", 0))
+                cx = self._parse_svg_number(elem.get("cx"), 0.0)
+                cy = self._parse_svg_number(elem.get("cy"), 0.0)
+                r = max(0.0, self._parse_svg_number(elem.get("r"), 0.0))
                 tcx, tcy = transform_pt((cx, cy))
-                tr = r * scale_x
-                if has_fill:
-                    # Draw filled circle
+                tr = min(float(max(self.target_width, self.target_height)), r * scale_x)
+                if has_fill and tr > 0.0:
                     min_x = max(0, int(tcx - tr - 1))
                     max_x = min(hm.width - 1, int(tcx + tr + 1))
                     min_y = max(0, int(tcy - tr - 1))
@@ -1092,13 +1160,13 @@ class SVGRasterizer:
 
             # 2. Rect
             elif tag == "rect":
-                rx = float(elem.get("x", 0))
-                ry = float(elem.get("y", 0))
-                rw = float(elem.get("width", 0))
-                rh = float(elem.get("height", 0))
+                rx = self._parse_svg_number(elem.get("x"), 0.0)
+                ry = self._parse_svg_number(elem.get("y"), 0.0)
+                rw = max(0.0, self._parse_svg_number(elem.get("width"), 0.0))
+                rh = max(0.0, self._parse_svg_number(elem.get("height"), 0.0))
                 p0 = transform_pt((rx, ry))
                 p1 = transform_pt((rx + rw, ry + rh))
-                if has_fill:
+                if has_fill and rw > 0.0 and rh > 0.0:
                     for y in range(max(0, int(p0[1])), min(hm.height, int(p1[1]) + 1)):
                         for x in range(max(0, int(p0[0])), min(hm.width, int(p1[0]) + 1)):
                             hm.set(x, y, max(hm.get(x, y), fill_lum))
@@ -1124,7 +1192,7 @@ class SVGRasterizer:
                     if stroke_str.lower() not in ("none", "transparent"):
                         s_lum = _parse_color_to_luminance(stroke_str, default=1.0)
                         for idx in range(len(t_sp) - 1):
-                            draw_thick_line(hm, t_sp[idx], t_sp[idx + 1], thickness_px=stroke_w * scale_x, elevation=s_lum)
+                            draw_thick_line(hm, t_sp[idx], t_sp[idx + 1], thickness_px=clamped_stroke_px, elevation=s_lum)
 
         if bevel_relief:
             hm = hm.bevel_edges(max_slope_px=max(4.0, self.target_width * 0.04), profile="chisel")

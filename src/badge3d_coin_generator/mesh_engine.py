@@ -535,24 +535,28 @@ class CoinMeshEngine:
         """
         p = self.params
 
-        # Validate and adjust parameters to avoid self-intersecting degenerate geometry
-        radius = max(1.0, p.radius)
-        thickness = max(0.5, p.thickness)
-        rim_width = max(0.2, min(p.rim_width, radius * 0.4))
-        rim_height = max(0.05, min(p.rim_height, thickness * 0.45))
-        field_radius = radius - rim_width
+        # Validate and cap parameters to prevent degenerate geometry or CPU/OOM DoS
+        if not math.isfinite(p.radius) or not math.isfinite(p.thickness):
+            raise ValueError("Coin radius and thickness must be finite numbers.")
+        radius = max(1.0, min(100.0, float(p.radius)))
+        thickness = max(0.5, min(25.0, float(p.thickness)))
+        rim_width = max(0.1, min(float(p.rim_width), radius * 0.4, 20.0))
+        rim_height = max(0.05, min(float(p.rim_height), thickness * 0.45, 10.0))
+        field_radius = max(0.5, radius - rim_width)
 
-        bevel_w = max(0.0, min(p.bevel_width, rim_width * 0.8))
-        bevel_h = max(0.0, min(p.bevel_height, (thickness * 0.5) - 0.1))
+        bevel_w = max(0.0, min(float(p.bevel_width), rim_width * 0.8))
+        bevel_h = max(0.0, min(float(p.bevel_height), (thickness * 0.5) - 0.1))
 
-        segments = max(16, p.radial_segments)
-        # If reeded, ensure segments is an integer multiple of reed count for clean topology
-        if p.edge_reed_count > 0:
-            reeds = p.edge_reed_count
-            samples_per_reed = max(2, math.ceil(segments / reeds))
-            segments = reeds * samples_per_reed
+        segments = max(16, min(512, int(p.radial_segments)))
+        reed_count = max(0, min(360, int(p.edge_reed_count)))
+        # If reeded, ensure segments is an integer multiple of reed count while staying bounded
+        if reed_count > 0:
+            samples_per_reed = max(2, math.ceil(segments / reed_count))
+            segments = min(720, reed_count * samples_per_reed)
+            if segments < reed_count:
+                segments = reed_count
 
-        rings = max(4, p.field_rings)
+        rings = max(4, min(128, int(p.field_rings)))
 
         half_thick = thickness * 0.5
         field_base_z_obverse = half_thick - rim_height

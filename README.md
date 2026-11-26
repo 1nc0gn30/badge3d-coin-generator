@@ -6,10 +6,10 @@
 
 Parametric 3D coin, medallion, and relief mesh generator written in pure Python standard library with a Three.js WebGL workstation, built-in FDM G-code slicer, cylindrical rim milling and cryptographic security stamp engine, and JSON-RPC 2.0 MCP server.
 
-- **Version**: `2.5.0`
+- **Version**: `2.6.0`
 - **Local Workstation Port**: `127.0.0.1:8084`
 - **Zoth Studio Dossier**: [https://zoth.nullai.tech/tools/badge3d-coin-generator](https://zoth.nullai.tech/tools/badge3d-coin-generator)
-- **Author**: [1nc0gn30](https://1nc0gn30.si) (`@1nc0gn30`) · [NullAI](https://nullai.tech)
+- **Author**: Neal Frazier Tech ([@1nc0gn30](https://github.com/1nc0gn30)) · [NullAI Platform](https://nullai.tech)
 
 ## Overview
 
@@ -102,16 +102,32 @@ badge3d-coin-generator test
 
 | Method | Endpoint | Description |
 | :--- | :--- | :--- |
-| `GET` | `/health`, `/api/health` | Service health and version (`2.5.0`) |
-| `GET` | `/api/presets` | Studio preset catalog and dimensions |
+| `GET / HEAD` | `/health`, `/api/health` | Service health and version (`2.6.0`) |
+| `GET` | `/api/presets` | Unified Studio + CLI preset catalog and dimensions |
 | `GET` | `/api/stats` | Query volume (`cm³`/`mm³`), metal casting masses, and slicing estimates |
-| `GET/POST` | `/api/slice-gcode` | Slice coin geometry to G-code layers or downloadable `.gcode` |
-| `POST` | `/api/generate` | Generate watertight 3D mesh and physical topology statistics |
+| `GET / POST` | `/api/slice-gcode` | Slice coin geometry to G-code layers or downloadable `.gcode` (`format: "gcode"`) |
+| `POST` | `/api/generate` | Generate watertight 2-manifold 3D mesh and physical topology statistics |
 | `POST` | `/api/export-stl` | Stream downloadable IEEE-754 little-endian Binary STL |
 | `POST` | `/api/export-obj` | Stream downloadable Wavefront OBJ mesh |
+| `POST` | `/api/export-glb` | Stream downloadable binary glTF 2.0 (`.glb`) mesh |
+| `POST` | `/api/export-gltf` | Stream downloadable JSON glTF 2.0 (`.gltf`) mesh with embedded buffer |
 | `POST` | `/api/edge/profile` | Compute compound rim reeding, inscription, and stamp summary |
 | `POST` | `/api/edge/crypto-stamp` | Derive deterministic SHA-256 rim tooth depths and parity checksum |
 | `POST` | `/api/edge/inscribe` | Evaluate cylindrical coordinate text unwrap metrics |
+
+### Security Model (`v2.6.0`)
+
+- **Loopback Guard**: Strict `Host` allowlist (`127.0.0.1`, `localhost`, `[::1]`) and exact-match `Origin` allowlist with `Vary: Origin` (zero wildcard CORS).
+- **Static Containment**: Canonicalized `public_root` enforcement (`is_relative_to`) rejecting `..`, `%2e%2e`, null bytes, and symlink escapes with HTTP `403`.
+- **Protocol & Geometry Limits**: `1 MiB` request body cap (`413`), strict JSON object validation (`400`), finite numeric bounds across mesh/slicer/edge APIs, SVG XML sanitization (rejecting `<!DOCTYPE`, `<!ENTITY`, `<script>`, `on*=` handlers, and non-`<svg>` roots), and confined MCP export paths (`BADGE3D_EXPORT_DIR` / working / temp directories).
+- **Zero-Egress Web Studio**: Self-hosted local Three.js + OrbitControls under `public/vendor/` with zero external CDN scripts or font requests.
+
+### Live Braille TUI (`badge3d-coin-generator-tui`)
+
+```bash
+badge3d-coin-generator-tui          # Interactive terminal telemetry & mesh benchmark
+badge3d-coin-generator-tui --json   # JSON probe of :8084/api/health + CoinMeshEngine benchmark
+```
 
 ### MCP Server (`stdio`)
 

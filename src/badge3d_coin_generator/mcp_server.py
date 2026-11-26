@@ -57,7 +57,46 @@ from .mesh_engine import (
 # Version & Protocol Constants
 MCP_PROTOCOL_VERSION = "2024-11-05"
 SERVER_NAME = "badge3d-coin-generator"
-SERVER_VERSION = "2.5.0"
+SERVER_VERSION = "2.6.0"
+
+
+def _resolve_confined_export_path(output_path_str: Any) -> Path:
+    """Confine MCP export file writes to BADGE3D_EXPORT_DIR (or CWD / system temp dir).
+
+    Rejects null bytes and path traversal escaping the allowed export root(s).
+    """
+    if not isinstance(output_path_str, str) or not output_path_str.strip():
+        raise ValueError("'output_path' must be a non-empty string.")
+    if "\x00" in output_path_str:
+        raise ValueError("'output_path' contains invalid null byte.")
+
+    raw_path = Path(output_path_str)
+    env_root = os.environ.get("BADGE3D_EXPORT_DIR", "").strip()
+    if env_root:
+        allowed_roots = [Path(env_root).expanduser().resolve()]
+        candidate = (allowed_roots[0] / raw_path).resolve() if not raw_path.is_absolute() else raw_path.resolve()
+    else:
+        cwd_root = Path.cwd().resolve()
+        tmp_root = get_temp_dir().resolve()
+        allowed_roots = [cwd_root, tmp_root]
+        candidate = (cwd_root / raw_path).resolve() if not raw_path.is_absolute() else raw_path.resolve()
+
+    if not any(candidate.is_relative_to(root) for root in allowed_roots):
+        raise ValueError(
+            "Export path escapes allowed export directory. "
+            "Set BADGE3D_EXPORT_DIR or write inside the working/temp directory."
+        )
+    return candidate
+
+
+def _sanitize_error_message(exc: Exception) -> str:
+    """Redact host filesystem paths and internal tracebacks from MCP tool errors."""
+    msg = str(exc) or exc.__class__.__name__
+    import re as _re
+    # Strip any Unix/Windows absolute paths to avoid leaking host layout
+    msg = _re.sub(r"/(?:home|Users|root|opt|etc|var|usr)/[^\s'\":,)]+", "<redacted-path>", msg)
+    msg = _re.sub(r"[A-Za-z]:\\[^\s'\":,)]+", "<redacted-path>", msg)
+    return msg[:300]
 
 
 def _log(msg: str) -> None:
@@ -583,7 +622,7 @@ class MCPServer:
         )
 
         t0 = time.perf_counter()
-        dest_path = safe_path(output_path_str)
+        dest_path = _resolve_confined_export_path(output_path_str)
         written_path = gen.export_stl(dest_path, binary=binary_mode)
         export_time_ms = round((time.perf_counter() - t0) * 1000.0, 2)
 
@@ -651,7 +690,7 @@ class MCPServer:
         )
 
         t0 = time.perf_counter()
-        dest_path = safe_path(output_path_str)
+        dest_path = _resolve_confined_export_path(output_path_str)
         written_obj = gen.export_obj(dest_path, object_name=object_name, include_normals=include_normals)
         export_time_ms = round((time.perf_counter() - t0) * 1000.0, 2)
 
@@ -849,7 +888,9 @@ class MCPServer:
             preset_id = args.get("preset")
             if preset_id:
                 coin_dict = resolve_preset(preset_id)
-                generator = CoinGenerator(**coin_dict)
+                if coin_dict is None:
+                    raise ValueError(f"Unknown preset: {preset_id!r}")
+                generator = CoinGenerator(preset=preset_id)
             else:
                 generator = CoinGenerator(
                     radius=float(args.get("radius", 20.0)),
@@ -884,7 +925,8 @@ class MCPServer:
 
             out_path = args.get("output_path")
             if out_path:
-                atomic_write_text(out_path, gcode_text)
+                confined = _resolve_confined_export_path(out_path)
+                atomic_write_text(confined, gcode_text)
 
             fmt = str(args.get("format", "summary")).lower()
             if fmt == "json":
@@ -921,8 +963,9 @@ class MCPServer:
                 "isError": False,
             }
         except Exception as err:
+            _log_err(f"Error slicing coin mesh: {err}")
             return {
-                "content": [{"type": "text", "text": f"Error slicing coin mesh: {err}"}],
+                "content": [{"type": "text", "text": f"Error slicing coin mesh: {_sanitize_error_message(err)}"}],
                 "isError": True,
             }
 
@@ -1027,25 +1070,43 @@ class MCPServer:
     # JSON-RPC 2.0 Protocol Dispatcher
     # -----------------------------------------------------------------------
 
-    def handle_request(self, req: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+    def handle_request(self, req: Any) -> Optional[Dict[str, Any]]:
         """Handle a single JSON-RPC 2.0 request or notification dictionary."""
+        if not isinstance(req, dict):
+            return {
+                "jsonrpc": "2.0",
+                "id": None,
+                "error": {"code": -32600, "message": "Invalid Request: JSON-RPC payload must be an object"},
+            }
+
         req_id = req.get("id")
         method = req.get("method")
-        params = req.get("params", {})
 
         if not method or not isinstance(method, str):
-            if req_id is not None:
+            return {
+                "jsonrpc": "2.0",
+                "id": req_id,
+                "error": {"code": -32600, "message": "Invalid Request: missing or non-string 'method'"},
+            }
+
+        if "params" in req:
+            raw_params = req["params"]
+            if not isinstance(raw_params, dict):
                 return {
                     "jsonrpc": "2.0",
                     "id": req_id,
-                    "error": {"code": -32600, "message": "Invalid Request: missing or non-string 'method'"},
+                    "error": {"code": -32602, "message": "Invalid params: 'params' must be a JSON object"},
                 }
-            return None
+            params: Dict[str, Any] = raw_params
+        else:
+            params = {}
 
         # 1. MCP initialize handshake
         if method == "initialize":
             self.initialized = True
             client_info = params.get("clientInfo", {})
+            if not isinstance(client_info, dict):
+                client_info = {}
             _log(f"Client connected: {client_info.get('name', 'Unknown')} (v{client_info.get('version', '0.0.0')})")
             return {
                 "jsonrpc": "2.0",
@@ -1092,7 +1153,27 @@ class MCPServer:
             tool_name = params.get("name")
             tool_args = params.get("arguments", {})
 
-            if not tool_name or tool_name not in self._tool_handlers:
+            if not isinstance(tool_name, str) or not tool_name:
+                return {
+                    "jsonrpc": "2.0",
+                    "id": req_id,
+                    "error": {
+                        "code": -32602,
+                        "message": "Invalid params: 'name' must be a non-empty string",
+                    },
+                }
+
+            if not isinstance(tool_args, dict):
+                return {
+                    "jsonrpc": "2.0",
+                    "id": req_id,
+                    "error": {
+                        "code": -32602,
+                        "message": "Invalid params: 'arguments' must be a JSON object",
+                    },
+                }
+
+            if tool_name not in self._tool_handlers:
                 return {
                     "jsonrpc": "2.0",
                     "id": req_id,
@@ -1120,7 +1201,7 @@ class MCPServer:
                         "content": [
                             {
                                 "type": "text",
-                                "text": f"Error executing tool '{tool_name}': {str(ex)}\n\nTraceback:\n{err_trace}",
+                                "text": f"Error executing tool '{tool_name}': {_sanitize_error_message(ex)}",
                             }
                         ],
                         "isError": True,
@@ -1162,13 +1243,22 @@ class MCPServer:
                 if raw_line.lower().startswith("content-length:"):
                     try:
                         content_len = int(raw_line.split(":", 1)[1].strip())
+                        if content_len < 0 or content_len > 1_048_576:
+                            raise ValueError("Content-Length out of bounds")
                         # Read blank line
                         empty_line = reader.readline()
-                        while empty_line.strip() != "":
+                        while empty_line and empty_line.strip() != "":
                             empty_line = reader.readline()
                         raw_body = reader.read(content_len)
                     except Exception as parse_header_err:
                         _log_err(f"Error parsing Content-Length frame: {parse_header_err}")
+                        err_resp = {
+                            "jsonrpc": "2.0",
+                            "id": None,
+                            "error": {"code": -32600, "message": "Invalid Request: malformed Content-Length frame"},
+                        }
+                        writer.write(json.dumps(err_resp) + "\n")
+                        writer.flush()
                         continue
                 else:
                     raw_body = raw_line
@@ -1195,23 +1285,48 @@ class MCPServer:
                         writer.write(json.dumps(resp) + "\n")
                         writer.flush()
                 elif isinstance(request_obj, list):
+                    if len(request_obj) == 0:
+                        err_resp = {
+                            "jsonrpc": "2.0",
+                            "id": None,
+                            "error": {"code": -32600, "message": "Invalid Request: empty batch"},
+                        }
+                        writer.write(json.dumps(err_resp) + "\n")
+                        writer.flush()
+                        continue
                     # Batch JSON-RPC
                     batch_responses = []
                     for single_req in request_obj:
-                        if isinstance(single_req, dict):
-                            single_resp = self.handle_request(single_req)
-                            if single_resp is not None:
-                                batch_responses.append(single_resp)
+                        single_resp = self.handle_request(single_req)
+                        if single_resp is not None:
+                            batch_responses.append(single_resp)
                     if batch_responses:
                         writer.write(json.dumps(batch_responses) + "\n")
                         writer.flush()
+                else:
+                    err_resp = {
+                        "jsonrpc": "2.0",
+                        "id": None,
+                        "error": {"code": -32600, "message": "Invalid Request: JSON-RPC payload must be an object"},
+                    }
+                    writer.write(json.dumps(err_resp) + "\n")
+                    writer.flush()
 
             except KeyboardInterrupt:
                 _log("Keyboard interrupt received. Shutting down.")
                 break
             except Exception as e:
                 _log_err(f"Unexpected error in MCP stdio loop: {e}\n{traceback.format_exc()}")
-                break
+                err_resp = {
+                    "jsonrpc": "2.0",
+                    "id": None,
+                    "error": {"code": -32603, "message": "Internal error"},
+                }
+                try:
+                    writer.write(json.dumps(err_resp) + "\n")
+                    writer.flush()
+                except Exception:
+                    break
 
 
 def run_mcp_server() -> None:

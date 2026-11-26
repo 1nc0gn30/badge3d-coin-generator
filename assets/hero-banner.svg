@@ -27,7 +27,7 @@
   <!-- Header Copy -->
   <g transform="translate(152, 62)">
     <rect x="0" y="-14" width="420" height="22" rx="11" fill="rgba(255,255,255,0.06)" stroke="#38BDF8" stroke-opacity="0.45"/>
-    <text x="12" y="1" fill="#38BDF8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" letter-spacing="1.1">WEBGL // SHADER &amp; MOTION // PORT :8084</text>
+    <text x="12" y="1" fill="#38BDF8" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700" letter-spacing="1.1">WEBGL // PBR MINT &amp; SLICER // v2.6.0 // PORT :8084</text>
     <text x="0" y="34" fill="#FFFFFF" font-family="Syne, Space Grotesk, sans-serif" font-size="30" font-weight="800" letter-spacing="0.4">BADGE3D COIN GENERATOR</text>
     <text x="0" y="60" fill="#94A3B8" font-family="Inter, sans-serif" font-size="13.5">100% in-browser WebGL 3D coin, medallion, and relief badge generator with PBR shaders.</text>
   </g>
@@ -47,10 +47,10 @@
     <rect x="744" y="0" width="352" height="98" rx="12" fill="#101320" stroke="#D4AF37" stroke-opacity="0.38"/>
     <text x="762" y="30" fill="#D4AF37" font-family="JetBrains Mono, monospace" font-size="10" font-weight="700">PILLAR 03 // ECOSYSTEM</text>
     <text x="762" y="56" fill="#FFFFFF" font-family="Space Grotesk, sans-serif" font-size="14" font-weight="700">Zoth Studio &amp; ZothOS Native</text>
-    <text x="762" y="78" fill="#64748B" font-family="JetBrains Mono, monospace" font-size="10.5">Zoth Studio v2 (:3000) &amp; ZothOS v3.3</text>
+    <text x="762" y="78" fill="#64748B" font-family="JetBrains Mono, monospace" font-size="10.5">Zoth Studio v2 (:3000) &amp; ZothOS v3.4</text>
   </g>
 
   <text x="600" y="298" text-anchor="middle" fill="#64748B" font-family="JetBrains Mono, monospace" font-size="10.5">
-    ENGINEERED BY 1NC0GN30 • NULLAI (@1nc0gn30)  •  NULLAI PLATFORM  •  ZOTH.NULLAI.TECH
+    ENGINEERED BY NEAL FRAZIER TECH (@1nc0gn30)  •  NULLAI PLATFORM  •  ZOTH.NULLAI.TECH
   </text>
 </svg>

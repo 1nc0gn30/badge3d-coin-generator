@@ -184,11 +184,15 @@ def derive_crypto_teeth_pattern(seed: str, count: int = 64) -> List[float]:
     
     Args:
         seed: Arbitrary string (e.g. coin serial number, key, timestamp).
-        count: Number of teeth around perimeter.
+        count: Number of teeth around perimeter (bounded 1..512).
         
     Returns:
         List of depth multipliers in [0.0, 1.0] corresponding to perimeter angles.
     """
+    if not isinstance(seed, str):
+        raise ValueError("seed must be a string.")
+    if isinstance(count, bool) or not isinstance(count, int) or count < 1 or count > 512:
+        raise ValueError(f"num_grooves/count must be an integer between 1 and 512 (got {count!r}).")
     # Hash seed using SHA-256
     hasher = hashlib.sha256(seed.encode("utf-8"))
     raw_digest = hasher.digest()

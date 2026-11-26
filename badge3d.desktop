@@ -1,20 +1,21 @@
 [Desktop Entry]
 Version=1.0
 Type=Application
-Name=Badge3D Coin Studio
-GenericName=Parametric 3D Relief & Coin Mint
-Comment=3D Coin Generator, High-Resolution Relief Displacement, Watertight Slicer & MCP Server
-Exec=/usr/local/bin/badge3d desktop
+Name=Badge3D Coin Generator
+GenericName=Parametric 3D Coin & Relief Studio
+Comment=Zero-egress 3D coin, medallion, and relief badge workstation with PBR metallic shaders, watertight STL/OBJ/GLB export, and Marlin G-code slicing.
+Exec=/usr/local/bin/badge3d-coin-generator desktop
+TryExec=/usr/local/bin/badge3d-coin-generator
 Icon=badge3d-coin-generator
 Terminal=false
-Categories=Development;Graphics;3DGraphics;Engineering;
+Categories=X-Zoth-Media;Development;Graphics;3DGraphics;Utility;
 StartupNotify=true
-Actions=CLI;Web;
+Actions=TUI;WebApp;
 
-[Desktop Action CLI]
-Name=Open Badge3D CLI
-Exec=x-terminal-emulator -e "/usr/local/bin/badge3d --help"
+[Desktop Action TUI]
+Name=Launch Badge3D Coin Generator Braille TUI
+Exec=/usr/local/bin/zoth-konsole --title "Badge3D Coin Generator TUI" -- /usr/local/bin/badge3d-coin-generator-tui
 
-[Desktop Action Web]
-Name=Open Web UI (Port 8084)
-Exec=/usr/local/bin/badge3d web
+[Desktop Action WebApp]
+Name=Open Local Web Workstation (:8084)
+Exec=xdg-open http://127.0.0.1:8084

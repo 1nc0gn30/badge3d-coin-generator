@@ -61,8 +61,8 @@
         </div>
 
         <div style="margin-top:22px; display:flex; justify-content:space-between; align-items:center; padding-top:14px; border-top:1px solid rgba(255,255,255,0.1); flex-wrap:wrap; gap:12px;">
-          <label style="display:flex; align-items:center; gap:8px; font-size:11px; color:#94A3B8; cursor:pointer;">
-            <input type="checkbox" id="sovDontShow-${toolId}" style="cursor:pointer;"> Don't show automatically on first visit
+          <label for="sovDontShow-${toolId}" style="display:flex; align-items:center; gap:8px; font-size:11px; color:#94A3B8; cursor:pointer;">
+            <input type="checkbox" id="sovDontShow-${toolId}" aria-label="Do not show tutorial automatically on first visit" style="cursor:pointer;"> Don't show automatically on first visit
           </label>
           <button id="sovActionBtn-${toolId}" style="background:${accentColor}; color:#000; border:none; padding:9px 22px; border-radius:999px; font-weight:800; font-size:12px; cursor:pointer; letter-spacing:0.04em;">Got It, Let's Build! 🚀</button>
         </div>

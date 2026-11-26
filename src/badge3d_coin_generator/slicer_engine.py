@@ -156,6 +156,20 @@ class SlicingConfig:
     nozzle_temp: Optional[int] = None
 
     def __post_init__(self) -> None:
+        if not math.isfinite(self.layer_height) or not (0.04 <= self.layer_height <= 1.0):
+            raise ValueError(f"layer_height must be finite and between 0.04 and 1.0 mm (got {self.layer_height!r}).")
+        if not math.isfinite(self.first_layer_height) or not (0.04 <= self.first_layer_height <= 1.5):
+            raise ValueError(f"first_layer_height must be finite and between 0.04 and 1.5 mm (got {self.first_layer_height!r}).")
+        if not math.isfinite(self.nozzle_diameter) or not (0.1 <= self.nozzle_diameter <= 2.0):
+            raise ValueError(f"nozzle_diameter must be finite and between 0.1 and 2.0 mm (got {self.nozzle_diameter!r}).")
+        if not math.isfinite(self.filament_diameter) or not (0.5 <= self.filament_diameter <= 5.0):
+            raise ValueError(f"filament_diameter must be finite and between 0.5 and 5.0 mm (got {self.filament_diameter!r}).")
+        if not math.isfinite(self.infill_density) or not (0.0 <= self.infill_density <= 1.0):
+            raise ValueError(f"infill_density must be finite and between 0.0 and 1.0 (got {self.infill_density!r}).")
+        if not math.isfinite(self.print_speed_mm_s) or self.print_speed_mm_s <= 0.0:
+            raise ValueError("print_speed_mm_s must be positive and finite.")
+        if not math.isfinite(self.travel_speed_mm_s) or self.travel_speed_mm_s <= 0.0:
+            raise ValueError("travel_speed_mm_s must be positive and finite.")
         if self.bed_temp is None:
             self.bed_temp = self.filament_type.default_bed_temp
         if self.nozzle_temp is None:
@@ -574,11 +588,15 @@ def slice_mesh(
         )
 
         # 4. Compute toolpath length and extrusion for this layer
-        perimeter_dist = sum(
-            math.hypot(c[k + 1][0] - c[k][0], c[k + 1][1] - c[k][1])
-            for c in contours
-            for k in range(len(c) - 1)
-        )
+        perimeter_dist = 0.0
+        for c in contours:
+            if len(c) < 2:
+                continue
+            for k in range(len(c) - 1):
+                perimeter_dist += math.hypot(c[k + 1][0] - c[k][0], c[k + 1][1] - c[k][1])
+            close_d = math.hypot(c[0][0] - c[-1][0], c[0][1] - c[-1][1])
+            if close_d > 1e-3:
+                perimeter_dist += close_d
         infill_dist = sum(s.length for s in infill)
         total_extrusion_dist = perimeter_dist + infill_dist
 
@@ -682,16 +700,23 @@ def _generate_gcode(result: SliceResult, flavor: str = "marlin") -> str:
 
         # Perimeters
         for c_idx, contour in enumerate(layer.perimeters):
-            if not contour:
+            if len(contour) < 2:
                 continue
             lines.append(f"; Perimeter {c_idx + 1}")
+            prev_pt = contour[0]
             # Travel to start
-            lines.append(f"G1 X{contour[0][0]:.3f} Y{contour[0][1]:.3f} F{feed_travel:.0f}")
-            # Extrude along contour
+            lines.append(f"G1 X{prev_pt[0]:.3f} Y{prev_pt[1]:.3f} F{feed_travel:.0f}")
+            # Extrude incrementally along consecutive perimeter points
             for pt in contour[1:]:
-                d = math.hypot(pt[0] - contour[0][0], pt[1] - contour[0][1])
+                d = math.hypot(pt[0] - prev_pt[0], pt[1] - prev_pt[1])
                 cumulative_e += d * e_ratio
                 lines.append(f"G1 X{pt[0]:.3f} Y{pt[1]:.3f} E{cumulative_e:.4f} F{feed_print:.0f}")
+                prev_pt = pt
+            # Close perimeter loop if final point differs from start
+            close_d = math.hypot(contour[0][0] - prev_pt[0], contour[0][1] - prev_pt[1])
+            if close_d > 1e-3:
+                cumulative_e += close_d * e_ratio
+                lines.append(f"G1 X{contour[0][0]:.3f} Y{contour[0][1]:.3f} E{cumulative_e:.4f} F{feed_print:.0f}")
 
         # Infill segments
         if layer.infill_segments:
